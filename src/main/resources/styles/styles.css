@@ -9,6 +9,7 @@
 .login-field {
     -fx-font-size: 14px;
     -fx-background-color: white;
+    -fx-text-fill: #ffd700;
     -fx-border-color: #90caf9;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
@@ -18,8 +19,8 @@
 }
 
 .login-button {
-    -fx-background-color: #ff4a4a;
-    -fx-text-fill: white;
+    -fx-background-color: #075fdb;
+    -fx-text-fill: #ffd700;
     -fx-font-weight: bold;
     -fx-padding: 10px 20px;
     -fx-background-radius: 10px;
@@ -29,7 +30,7 @@
 }
 
 .login-button:hover {
-    -fx-background-color: #c90000;
+    -fx-background-color: #006aff;
     -fx-translate-y: -5px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);
 }
@@ -97,16 +98,16 @@
 .table-view .table-cell {
     -fx-padding: 10px;
     -fx-alignment: CENTER;
-    -fx-text-fill: #ffd700;
+    -fx-text-fill: black;
     -fx-font-weight: bold;
 }
 
 .table-row-cell:even {
-    -fx-background-color: #ff4242;
+    -fx-background-color: #b5c7e6;
 }
 
 .table-row-cell:odd {
-    -fx-background-color: #cc0202;
+    -fx-background-color: #d9e1f1;
     -fx-text-fill: white;
 }
 
@@ -441,7 +442,7 @@ tela-principal{
 
     /* Novos estilos para formulários */
     .form-container {
-        -fx-background-color: #ff0000;
+        -fx-background-color: #0047ab;
         -fx-padding: 30px 30px 60px 30px;
         -fx-spacing: 50px;
         -fx-background-radius: 50px;
@@ -449,7 +450,7 @@ tela-principal{
     }
 
     .form-content-container {
-        -fx-background-color: #ff0000;
+        -fx-background-color: #0047ab;
         -fx-padding: 20px;
         -fx-spacing: 30px;
         -fx-background-radius: 20px;

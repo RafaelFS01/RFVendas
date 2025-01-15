@@ -1,16 +1,14 @@
--- TABELAS DO MYSQL
-create database Flux;
-use Flux;
+CRIAÇÃO DE TABELAS MYSQL:
 
--- Tabelas principais
--- Tabela de Categorias
+create database RFVendas;
+use RFVendas;
+
 CREATE TABLE categorias (
 id INT AUTO_INCREMENT PRIMARY KEY,
 nome VARCHAR(255) NOT NULL UNIQUE,
 descricao TEXT
 );
 
--- Tabela de Itens
 CREATE TABLE itens (
 id INT PRIMARY KEY,
 nome VARCHAR(255) NOT NULL UNIQUE,
@@ -44,27 +42,6 @@ PRIMARY KEY (id),
 UNIQUE KEY uk_nome_grupo (nome)
 );
 
-CREATE TABLE pedidos (
-id INT AUTO_INCREMENT PRIMARY KEY,
-cliente_id VARCHAR(255) NOT NULL, -- Assumindo que o ID do cliente é uma string (CPF/CNPJ)
-tipo_venda ENUM('NOTA_FISCAL', 'VENDA_NORMAL', 'PEDIDO') NOT NULL,
-data_pedido DATE NOT NULL,
-valor_total DECIMAL(10, 2) NOT NULL, -- DECIMAL para armazenar valores monetários com precisão
-status ENUM('CONCLUIDO', 'EM_ANDAMENTO', 'CANCELADO') NOT NULL,
-observacoes TEXT,
-FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE -- Se um cliente for deletado, seus pedidos também serão
-);
-
-CREATE TABLE itens_pedido (
-id INT AUTO_INCREMENT PRIMARY KEY,
-pedido_id INT NOT NULL,
-item_id INT NOT NULL,
-quantidade DECIMAL(10, 2) NOT NULL, -- Alterado para DECIMAL para maior precisão
-preco_venda DECIMAL(10, 2) NOT NULL, -- DECIMAL para valores monetários
-FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE, -- Se um pedido for deletado, seus itens também serão
-FOREIGN KEY (item_id) REFERENCES itens(id) -- Mantém a integridade referencial, mas você pode ajustar o comportamento ON DELETE conforme necessário
-);
-
 CREATE TABLE clientes (
 id VARCHAR(255) PRIMARY KEY NOT NULL,
 nome VARCHAR(255) NOT NULL,
@@ -83,6 +60,27 @@ UNIQUE KEY uk_cpf_cnpj (cpf_cnpj),
 FOREIGN KEY (id_grupo) REFERENCES grupos (id)
 );
 
+CREATE TABLE pedidos (
+id INT AUTO_INCREMENT PRIMARY KEY,
+cliente_id VARCHAR(255) NOT NULL, -- Assumindo que o ID do cliente é uma string (CPF/CNPJ)
+tipo_venda ENUM('FIADO', 'VENDA', 'PEDIDO') NOT NULL,
+data_pedido DATE NOT NULL,
+valor_total DECIMAL(10, 2) NOT NULL, -- DECIMAL para armazenar valores monetários com precisão
+status ENUM('CONCLUIDO', 'EM_ANDAMENTO', 'CANCELADO') NOT NULL,
+observacoes TEXT,
+FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE -- Se um cliente for deletado, seus pedidos também serão
+);
+
+CREATE TABLE itens_pedido (
+id INT AUTO_INCREMENT PRIMARY KEY,
+pedido_id INT NOT NULL,
+item_id INT NOT NULL,
+quantidade DECIMAL(10, 2) NOT NULL, -- Alterado para DECIMAL para maior precisão
+preco_venda DECIMAL(10, 2) NOT NULL, -- DECIMAL para valores monetários
+FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE, -- Se um pedido for deletado, seus itens também serão
+FOREIGN KEY (item_id) REFERENCES itens(id) -- Mantém a integridade referencial, mas você pode ajustar o comportamento ON DELETE conforme necessário
+);
+
 CREATE TABLE usuarios (
 id INT PRIMARY KEY AUTO_INCREMENT,
 username VARCHAR(50) UNIQUE NOT NULL,
@@ -94,10 +92,9 @@ ativo BOOLEAN DEFAULT TRUE,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
 -- Índices para otimização de performance
 CREATE INDEX idx_usuarios_username ON usuarios(username);
-CREATE INDEX idx_funcionarios_nome ON funcionarios(nome);
+CREATE INDEX idx_clientes_nome ON clientes(nome);
 
 -- Dados iniciais
 INSERT INTO usuarios (username, password, nome, email, nivel_acesso)

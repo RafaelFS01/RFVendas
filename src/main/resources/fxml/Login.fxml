@@ -9,8 +9,8 @@
 <?import javafx.scene.image.Image?>
 <BorderPane style="-fx-background-color: radial-gradient(
         radius 200%,                /* Define o raio do gradiente */
-        rgba(255, 0, 0, 1),    /* Cor mais intensa nas bordas */
-        rgba(255, 0, 0, 0.5)     /* Cor transparente no centro */
+        rgba(0, 71, 171, 1),    /* Cor mais intensa nas bordas */
+        rgba(0, 71, 171, 0.5)     /* Cor transparente no centro */
     );"
             xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="BackEnd.controller.LoginController">
@@ -23,14 +23,14 @@
     <top>
         <VBox alignment="TOP_CENTER" spacing="10">
 
-            <Label text="Bem-vindo ao Flux" textFill="#ffd700" style="-fx-font-weight: bold;
+            <Label text="Bem-vindo ao RF Vendas" textFill="#ffd700" style="-fx-font-weight: bold;
             -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 1), 4, 0.94, 0, 2);">
                 <font>
                     <Font name="Roboto" size="48.0" />
                 </font>
             </Label>
 
-            <Label text="Tempero da Baiana" textFill="#ffd700" style="-fx-font-weight: bold;
+            <Label text="RF Impressões" textFill="#ffd700" style="-fx-font-weight: bold;
             -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 1), 4, 0.94, 0, 2); -fx-padding: 0 0 20">
                 <font>
                     <Font name="Roboto" size="30.0" />
@@ -56,7 +56,7 @@
             <VBox alignment="CENTER" maxWidth="400">
                 <!-- VBox principal com espaçamento distribuído -->
                 <VBox alignment="TOP_CENTER"
-                      style="-fx-background-color: #ff0000;
+                      style="-fx-background-color: #0047ab;
                       -fx-padding: 20;
                       -fx-background-radius: 50;
                       -fx-effect: dropshadow(three-pass-box, rgba(255, 215, 0, 0.6), 100, 0.2, 0, 5);"
@@ -67,8 +67,8 @@
 
 
                         <Label text="Login" textFill="#ffd700" style="-fx-font-weight: bold;
-                        -fx-effect: dropshadow(three-pass-box, rgba(80, 80, 80, 0.7), 10, 0.9, 0, 1);
-                        -fx-font-size: 40">
+                        -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 1), 4, 0.94, 0, 2);
+                        -fx-font-size: 40; -fx-padding: 0 0 70px 0;">
                             <font>
                                 <Font name="Baloo Chettan" size="30"/>
                             </font>
@@ -76,16 +76,6 @@
                                 <Insets top="1" bottom="1"/>
                             </VBox.margin>
                         </Label>
-                        <ImageView fx:id="iconPicImage"
-                                   fitHeight="150"
-                                   fitWidth="200"
-                                   preserveRatio="true"
-                                   style="-fx-effect: dropshadow(three-pass-box, rgba(0, 143, 118, 1), 10, 0.9, 0, 1); ">
-                            <VBox.margin>
-                                <Insets bottom="-30"/>
-                            </VBox.margin>
-                        </ImageView>
-
                     </VBox>
 
                     <!-- Seção central -->
@@ -99,7 +89,7 @@
                         <!-- Campo do Usuário -->
                         <TextField fx:id="usernameField" maxWidth="300" promptText="Usuário                                                        👤"
                                    styleClass="login-field" style= "-fx-background-radius: 50;
-                                    -fx-background-color: #ff4a4a; -fx-prompt-text-fill: #ffd700;
+                                    -fx-background-color: #0047ab; -fx-prompt-text-fill: #ffd700;
                                     -fx-border-width: 0; -fx-font-weight: bold;" >
                             <font>
                                 <Font name="Hind Guntur" size="14.0"/>
@@ -111,7 +101,7 @@
                         <!-- Campo da Senha -->
                         <PasswordField fx:id="passwordField" maxWidth="300" promptText="Senha                                                          🔒" styleClass="login-field"
                                        style= "-fx-background-radius: 50;
-                                       -fx-background-color: #ff4a4a; -fx-prompt-text-fill: #ffd700;
+                                       -fx-background-color: #0047ab; -fx-prompt-text-fill: #ffd700;
                                        -fx-border-width: 0; -fx-font-weight: bold;">
                             <!-- Configurações da fonte -->
                             <font>

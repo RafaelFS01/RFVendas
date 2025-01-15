@@ -16,10 +16,10 @@ public class ConnectionFactory {
         try {
             props.load(new FileInputStream(CONFIG_FILE));
         } catch (IOException e) {
-            props.setProperty("db.url", "jdbc:mysql://localhost:3306/Flux");
+            props.setProperty("db.url", "jdbc:mysql://localhost:3306/RFVendas");
             props.setProperty("db.user", "root");
             props.setProperty("db.password", "root");
-            props.setProperty("db.name", "Flux");
+            props.setProperty("db.name", "RFVendas");
             props.setProperty("db.backup.path", "backup/");
         }
     }
