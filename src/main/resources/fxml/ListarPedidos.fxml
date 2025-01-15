@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="30" styleClass="form-container"
+      xmlns="http://javafx.com/javafx/19"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="BackEnd.controller.ListarPedidosController"
+      VBox.vgrow="ALWAYS">
+
+    <!-- Cabeçalho -->
+    <VBox styleClass="form-header" alignment="CENTER">
+        <Label text="Listagem de Pedidos" styleClass="form-title"/>
+        <Label text="Visualize e gerencie os pedidos do sistema" styleClass="form-subtitle"/>
+    </VBox>
+
+    <!-- Barra de Ferramentas -->
+    <HBox spacing="15" styleClass="toolbar-container" alignment="CENTER_LEFT">
+        <TextField fx:id="campoBusca" promptText="Buscar por cliente ou ID..." styleClass="search-field"/>
+        <ComboBox fx:id="filtroTipo" promptText="Tipo" styleClass="form-combo"/>
+        <ComboBox fx:id="filtroStatus" promptText="Status" styleClass="form-combo"/>
+        <DatePicker fx:id="dataInicial" promptText="Data Inicial" styleClass="form-field" />
+        <DatePicker fx:id="dataFinal" promptText="Data Final" styleClass="form-field" />
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+    </HBox>
+
+    <!-- Tabela de Pedidos -->
+    <TableView fx:id="tabelaPedidos" VBox.vgrow="ALWAYS">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+        <columns>
+            <TableColumn fx:id="colunaSelecao" text="" minWidth="50" maxWidth="50" />
+            <TableColumn fx:id="colunaId" text="ID" minWidth="80" maxWidth="100"/>
+            <TableColumn fx:id="colunaCliente" text="Cliente" minWidth="150" maxWidth="300"/>
+            <TableColumn fx:id="colunaTipo" text="Tipo" minWidth="120" maxWidth="150"/>
+            <TableColumn fx:id="colunaData" text="Data" minWidth="120" maxWidth="150"/>
+            <TableColumn fx:id="colunaValor" text="Valor" minWidth="100" maxWidth="120"/>
+            <TableColumn fx:id="colunaStatus" text="Status" minWidth="120" maxWidth="150"/>
+            <TableColumn fx:id="colunaAcoes" text="Ações" minWidth="300" maxWidth="400"/>
+        </columns>
+        <placeholder>
+            <Label text="Nenhum pedido encontrado." style="-fx-font-size: 26;"/>
+        </placeholder>
+    </TableView>
+
+    <!-- Botão Visualizar Pedido -->
+    <HBox spacing="20" alignment="CENTER_RIGHT">
+        <Button fx:id="btnVisualizarPedido" text="Visualizar Pedido" styleClass="btn-primary" onAction="#visualizarPedidos"/>
+        <padding>
+            <Insets top="5" right="10" bottom="5" left="10"/>
+        </padding>
+    </HBox>
+
+
+
+</VBox>

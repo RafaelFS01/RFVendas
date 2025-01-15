@@ -1,0 +1,895 @@
+/* styles.css */
+
+/* Estilos gerais */
+.root {
+    -fx-font-family: 'Segoe UI';
+}
+
+/* Estilos do Login */
+.login-field {
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+    -fx-border-color: #90caf9;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 10px;
+    -fx-alignment: CENTER;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+}
+
+.login-button {
+    -fx-background-color: #ff4a4a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 10px;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+}
+
+.login-button:hover {
+    -fx-background-color: #c90000;
+    -fx-translate-y: -5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);
+}
+
+/* Estilos do Menu */
+.menu-section {
+    -fx-text-fill: #ffd700;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 15 0 5 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0, 0, 1), 3, 0.8, 0, 1);
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(30, 30, 30, 0.5), 10, 0.9, 0, 1);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px;
+    -fx-cursor: hand;
+    -fx-max-width: infinity;
+}
+
+.menu-button:hover {
+    -fx-background-color: rgba(255,255,255,0.1);
+}
+
+/* Estilos das Tabelas */
+.table-view {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-table-cell-border-color: #f6f6f6;
+    -fx-background-radius: 15px 15px 0px 0px;
+}
+
+.table-view .table-column {
+    -fx-alignment: CENTER;
+}
+
+.table-view .placeholder {
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-text-fill: black; /* Define a cor do texto do cabeçalho */
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 215, 0, 1), 2, 1, 0, 1);
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10px 10px 0px 0px;
+    -fx-padding: 10px;
+    -fx-alignment: CENTER;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10px 10px 0px 0px;
+}
+
+.table-view .column-header-background .label {
+    -fx-text-fill: #ffd700; /* Define a cor do texto do cabeçalho */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 1), 3, 0.6, 0, 1);
+}
+
+.table-view .table-cell {
+    -fx-padding: 10px;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #ffd700;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #ff4242;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #cc0202;
+    -fx-text-fill: white;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #919191;
+}
+
+/* Estilo para a barra de rolagem horizontal do TableView */
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: transparent; /* Cor de fundo da barra de rolagem */
+}
+
+/* Estilo para a pista da barra de rolagem */
+.table-view .scroll-bar:horizontal .track {
+    -fx-background-color: rgba(255, 215, 0, 0.2); /* Cor do "trilho" da barra de rolagem */
+    -fx-padding: 5px;
+}
+
+/* Estilo para o botão de rolagem (thumb) */
+.table-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: #ffd700; /* Cor do botão de rolagem */
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Estilo para os botões de incremento e decremento */
+.table-view .scroll-bar:horizontal .increment-button,
+.table-view .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: #ffd700; /* Cor dos botões de incremento e decremento */
+}
+
+/* Estilo para a barra de rolagem vertical do TableView */
+.table-view .scroll-bar:vertical {
+    -fx-background-color: transparent; /* Cor de fundo da barra de rolagem */
+}
+
+/* Estilo para a pista da barra de rolagem */
+.table-view .scroll-bar:vertical .track {
+    -fx-background-color: rgba(255, 215, 0, 0.2); /* Cor do "trilho" da barra de rolagem */
+    -fx-padding: 5px;
+}
+
+/* Estilo para o botão de rolagem (thumb) */
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #ffd700; /* Cor do botão de rolagem */
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Estilo para os botões de incremento e decremento */
+.table-view .scroll-bar:vertical .increment-button,
+.table-view .scroll-bar:vertical .decrement-button {
+    -fx-background-color: #ffd700; /* Cor dos botões de incremento e decremento */
+}
+
+/* Estilização específica da tabela de avarias */
+.table-view .table-cell.quantidade {
+    -fx-alignment: CENTER;
+}
+
+.table-view .table-cell.data {
+    -fx-alignment: CENTER;
+}
+
+.table-info{
+    -fx-effect: dropshadow(three-pass-box, rgba(120, 120, 120, 1), 1, 0.65, 0, 1);
+}
+
+
+
+/* Estilo para a ScrollPane do menu */
+/* Estilo para a barra de rolagem horizontal do TableView */
+.menu-scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent; /* Cor de fundo da barra de rolagem */
+}
+
+/* Estilo para a pista da barra de rolagem */
+.menu-scroll-pane .scroll-bar:horizontal .track {
+    -fx-background-color: rgba(0, 179, 147, 0.2); /* Cor do "trilho" da barra de rolagem */
+    -fx-padding: 5px;
+}
+
+/* Estilo para o botão de rolagem (thumb) */
+.menu-scroll-pane .scroll-bar:horizontal .thumb {
+    -fx-background-color: #00B393; /* Cor do botão de rolagem */
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Estilo para os botões de incremento e decremento */
+.menu-scroll-pane .scroll-bar:horizontal .increment-button,
+.menu-scroll-pane .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent; /* Cor dos botões de incremento e decremento */
+}
+
+/* Estilo para a barra de rolagem vertical do TableView */
+.menu-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent; /* Cor de fundo da barra de rolagem */
+}
+
+/* Estilo para a pista da barra de rolagem */
+.menu-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: rgba(0, 179, 147, 0.2); /* Cor do "trilho" da barra de rolagem */
+    -fx-padding: 5px;
+}
+
+/* Estilo para o botão de rolagem (thumb) */
+.menu-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #00B393; /* Cor do botão de rolagem */
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Estilo para os botões de incremento e decremento */
+.menu-scroll-pane .scroll-bar:vertical .increment-button,
+.menu-scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent; /* Cor dos botões de incremento e decremento */
+}
+
+tela-principal{
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+}
+
+/* Estilo para a barra de rolagem horizontal do TableView */
+.tela-principal .scroll-bar:horizontal {
+    -fx-background-color: transparent; /* Cor de fundo da barra de rolagem */
+}
+
+/* Estilo para a pista da barra de rolagem */
+.tela-principal .scroll-bar:horizontal .track {
+    -fx-background-color: rgba(0, 179, 147, 0.2); /* Cor do "trilho" da barra de rolagem */
+    -fx-padding: 5px;
+}
+
+/* Estilo para o botão de rolagem (thumb) */
+.tela-principal .scroll-bar:horizontal .thumb {
+    -fx-background-color: #00B393; /* Cor do botão de rolagem */
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Estilo para os botões de incremento e decremento */
+.tela-principal .scroll-bar:horizontal .increment-button,
+.tela-principal .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent; /* Cor dos botões de incremento e decremento */
+}
+
+/* Estilo para a barra de rolagem vertical do TableView */
+.tela-principal .scroll-bar:vertical {
+    -fx-background-color: transparent; /* Cor de fundo da barra de rolagem */
+}
+
+/* Estilo para a pista da barra de rolagem */
+.tela-principal .scroll-bar:vertical .track {
+    -fx-background-color: rgba(0, 179, 147, 0.2); /* Cor do "trilho" da barra de rolagem */
+    -fx-padding: 5px;
+}
+
+/* Estilo para o botão de rolagem (thumb) */
+.tela-principal .scroll-bar:vertical .thumb {
+    -fx-background-color: #00B393; /* Cor do botão de rolagem */
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Estilo para os botões de incremento e decremento */
+.tela-principal .scroll-bar:vertical .increment-button,
+.tela-principal .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent; /* Cor dos botões de incremento e decremento */
+}
+
+.form-checkbox {
+    -fx-font-family: 'Segoe UI';
+    -fx-font-size: 14px;
+}
+
+.form-grid {
+    -fx-hgap: 15;
+    -fx-vgap: 15;
+}
+
+/* Estilização da ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Responsividade para diferentes tamanhos de tela */
+@media screen and (max-width: 800px) {
+    .form-field {
+        -fx-pref-width: 250px;
+    }
+
+    .form-container {
+        -fx-padding: 15px;
+    }
+
+    .search-field {
+        -fx-pref-width: 400px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .form-field {
+        -fx-pref-width: 200px;
+    }
+
+    .form-container {
+        -fx-padding: 10px;
+    }
+
+    /* Estilos para ComboBox */
+    .combo-box-popup > .list-view {
+        -fx-pref-height: 100px;
+        -fx-max-height: 200px;
+    }
+
+    .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
+        -fx-padding: 8px;
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: rgba(0, 179, 147, 0.4);
+        -fx-border-color: transparent;
+    }
+
+    .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected,
+    .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover {
+        -fx-background-color: rgba(0, 179, 147, 1);
+        -fx-text-fill: black;
+    }
+
+    .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+        -fx-background-color: rgba(0, 179, 147, 0.7);
+        -fx-font-weight: bold;
+    }
+
+    /* Estilo da barra de rolagem do ComboBox */
+    .combo-box-popup > .list-view > .virtual-flow > .scroll-bar:vertical {
+        -fx-pref-width: 12;
+        -fx-background-color: transparent;
+    }
+
+    .combo-box-popup > .list-view > .virtual-flow > .scroll-bar:vertical > .thumb {
+        -fx-background-color: #00B393;;
+        -fx-background-radius: 6px;
+    }
+
+    .combo-box-popup > .list-view > .virtual-flow > .scroll-bar:vertical > .track {
+            -fx-background-color: rgba(0, 179, 147, 0.2); /* Cor do "trilho" da barra de rolagem */
+            -fx-padding: 5px;
+        }
+
+    .combo-box-popup > .list-view > .virtual-flow > .scroll-bar:vertical > .thumb:hover {
+        -fx-background-color: #757575;
+    }
+
+    /* Campos do formulário */
+    .form-container TextField,
+    .form-container DatePicker {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: white;
+        -fx-border-color: transparent;
+        -fx-border-radius: 4px;
+        -fx-pref-width: 300;
+    }
+
+    /* Labels */
+    .form-container Label {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-text-fill: #2c3e50;
+    }
+
+    .btn-secondary {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: #e0e0e0;
+        -fx-text-fill: #424242;
+        -fx-padding: 10px 20px;
+        -fx-cursor: hand;
+        -fx-font-weight: bold;
+    }
+
+    .btn-secondary:hover {
+        -fx-background-color: #bdbdbd;
+        -fx-background-color: #283593;
+        -fx-translate-y: -5px;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); /* Aumenta a sombra ao passar o mouse */
+    }
+    /* Estilos para o cartão de detalhes */
+    .details-card {
+        -fx-background-color: white;
+        -fx-padding: 15px;
+        -fx-border-color: #e0e0e0;
+        -fx-background-radius: 15px;
+        -fx-border-width: 0px
+    }
+
+    .card-title {
+        -fx-font-size: 16px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #2c3e50;
+        -fx-font-family: 'Segoe UI';
+    }
+
+    /* Estilos para ComboBox */
+    .combo-box {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: white;
+        -fx-border-color: #e0e0e0;
+        -fx-border-radius: 4px;
+    }
+
+    .combo-box:hover {
+        -fx-border-color: #1a237e;
+    }
+
+    .form-group {
+        -fx-spacing: 20;
+        -fx-padding: 0 0 10 0;
+    }
+    /* Estilos existentes permanecem... */
+
+    /* Novos estilos para formulários */
+    .form-container {
+        -fx-background-color: #ff0000;
+        -fx-padding: 30px 30px 60px 30px;
+        -fx-spacing: 50px;
+        -fx-background-radius: 50px;
+        -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 100, 0.2, 0, 10);
+    }
+
+    .form-content-container {
+        -fx-background-color: #ff0000;
+        -fx-padding: 20px;
+        -fx-spacing: 30px;
+        -fx-background-radius: 20px;
+        -fx-effect: dropshadow(three-pass-box, rgba(255, 215, 0, 0.6), 100, 0.2, 0, 0);
+        -fx-max-width: 600px;
+    }
+
+    .info-box{
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-padding: 10 10 7 10;
+    -fx-spacing: 2;
+    -fx-effect: dropshadow(three-pass-box, rgba(112, 112, 112, 0.8), 5, 0.9, 0, 3);
+    }
+
+    .form-header {
+        -fx-spacing: 5px;
+        -fx-padding: 0 0 0 0;
+    }
+
+    .form-title {
+        -fx-font-size: 32px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #ffd700;
+        -fx-font-family: 'Segoe UI';
+        -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 1), 4, 0.94, 0, 2);
+    }
+
+    .form-subtitle {
+        -fx-font-size: 14px;
+        -fx-text-fill: black;
+        -fx-font-family: 'Segoe UI';
+    }
+
+    .form-label {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 15px;
+        -fx-text-fill: #f4f4f4;
+        -fx-font-weight: bold;
+        -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.9), 3, 0.6, 0, 1);
+    }
+
+    .form-field {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: white;
+        -fx-border-color: #e0e0e0;
+        -fx-background-radius: 15px;
+        -fx-padding: 8px;
+        -fx-border-width: 0;
+        -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+    }
+
+    .form-combo {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: white;
+        -fx-background-radius: 15px 15px 2px 2px;
+        -fx-padding: 4px;
+        -fx-border-width: 0;
+        -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+    }
+
+    .form-combo .list-cell {
+        -fx-padding: 8px;
+    }
+
+    .form-date-picker {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+        -fx-background-radius: 15px 15px 2px 2px;
+        -fx-border-weight: 0;
+        -fx-border-height: 0;
+        -fx-border-radius: 100px;
+        -fx-background-border: transparent;
+    }
+
+    .form-date-picker .text-field {
+        -fx-background-color: white;
+        -fx-background-border: white;
+        -fx-background-radius: 15px 15px 2px 2px;
+        -fx-border-color: white;
+        -fx-border-radius: 20px;
+        -fx-padding: 8px;
+    }
+
+    .date-picker .arrow-button {
+        -fx-background-color: silver;
+        -fx-background-radius: 5px 15px 2px 5px;
+        -fx-background-border: white;
+        -fx-border-radius: 15px 15px 2px 2px;
+    }
+
+    .form-text-area {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: white;
+        -fx-background-radius: 15px;
+        -fx-border-color: #e0e0e0;
+        -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+        -fx-border-width: 0;
+        -fx-padding: 8px;
+    }
+
+    .info-label {
+        -fx-font-size: 12px;
+        -fx-text-fill: #666666;
+        -fx-font-family: 'Segoe UI';
+    }
+
+    .button-container {
+        -fx-padding: 20px 0 0 0;
+    }
+
+    .btn-primary {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: #ffd700;
+        -fx-text-fill: black;
+        -fx-padding: 10px 20px;
+        -fx-cursor: hand;
+        -fx-font-weight: bold;
+        -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+    }
+
+    .btn-primary:hover {
+        -fx-background-color: #c4a700;
+        -fx-text-fill: white;
+        -fx-translate-y: -2px;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); /* Aumenta a sombra ao passar o mouse */
+    }
+
+    .btn-secondary {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: #e0e0e0;
+        -fx-text-fill: #424242;
+        -fx-padding: 10px 20px;
+        -fx-cursor: hand;
+        -fx-font-weight: bold;
+        -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+    }
+
+    .btn-secondary:hover {
+        -fx-background-color: #bdbdbd;
+        -fx-text-fill: white;
+        -fx-translate-y: -2px;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); /* Aumenta a sombra ao passar o mouse */
+    }
+
+    /* Estilização do ComboBox */
+    .form-combo .combo-box-popup .list-view {
+        -fx-background-color: white;
+        -fx-border-color: transparent;
+        -fx-border-width: 0;
+        -fx-background-radius: 0px 0px 5px 5px;
+    }
+
+    .form-combo .combo-box-popup .list-cell {
+        -fx-padding: 8px;
+        -fx-background-color: white;
+    }
+
+    .form-combo .combo-box-popup .list-cell:hover {
+        -fx-background-color: #f5f5f5;
+    }
+
+    .form-combo .combo-box-popup .list-cell:selected {
+        -fx-background-color: #e3f2fd;
+    }
+
+    /* Estilização do ScrollPane */
+    .form-container .scroll-pane {
+        -fx-background-color: transparent;
+        -fx-background: transparent;
+    }
+
+    .form-container .scroll-pane > .viewport {
+        -fx-background-color: transparent;
+    }
+
+    .form-container .scroll-pane .scroll-bar:vertical {
+        -fx-background-color: transparent;
+    }
+
+    .form-container .scroll-pane .scroll-bar:vertical .thumb {
+        -fx-background-color: #90a4ae;
+        -fx-background-radius: 4px;
+    }
+
+    /* Estilização da ScrollPane */
+    .scroll-pane {
+        -fx-background-color: transparent;
+        -fx-padding: 0;
+    }
+
+    .scroll-pane > .viewport {
+        -fx-background-color: transparent;
+    }
+
+
+    .area-principal .scroll-bar:vertical {
+            -fx-background-color: rgba(255, 255, 0, 0.2); /* Fundo amarelo claro */
+    }
+
+    .area-principal .scroll-bar:vertical .track {
+            -fx-background-color: rgba(255, 255, 0, 0.2); /* Cor do "trilho" da barra de rolagem */
+        }
+
+    .area-principal .scroll-bar:vertical .thumb {
+            -fx-background-color: #ffd700; /* "Polegar" vermelho */
+            -fx-background-radius: 4px;
+        }
+
+    .search-field {
+        -fx-pref-width: 300px;
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 14px;
+        -fx-background-color: white;
+        -fx-border-color: #e0e0e0;
+        -fx-border-radius: 4px;
+        -fx-padding: 8px;
+        -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.9), 3, 0.6, 0, 1);
+    }
+
+    .info-container{
+        -fx-padding: 5 5 5 5;
+        -fx-max-width: 70px;
+        -fx-max-height: 20px;
+        -fx-background-color: #04b494;
+        -fx-background-radius: 20px;
+        -fx-alignment: CENTER;
+        -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.9), 3, 0.6, 0, 1);
+    }
+
+    .info-number{
+            -fx-font-weight: bold;
+            -fx-font-family: 'Segoe UI';
+            -fx-font-size: 40;
+            -fx-background-color: transparent;
+            -fx-text-fill: #f4f4f4;
+            -fx-alignment: CENTER;
+            -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.9), 3, 0.6, 0, 1);
+        }
+
+    .status-bar {
+        -fx-background-color: #f8f9fa;
+        -fx-border-color: #e0e0e0;
+        -fx-border-width: 1 0 0 0;
+    }
+
+    .status-label {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 12px;
+        -fx-text-fill: #666666;
+    }
+
+    /* Botões da tabela */
+    .btn-edit {
+        -fx-background-color: #1976d2;
+        -fx-text-fill: white;
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 12px;
+        -fx-padding: 5px 10px;
+        -fx-cursor: hand;
+        -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+    }
+
+    .btn-edit:hover {
+        -fx-background-color: #1565c0;
+        -fx-translate-y: -5px;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); /* Aumenta a sombra ao passar o mouse */
+    }
+
+    .btn-delete {
+        -fx-background-color: #d32f2f;
+        -fx-text-fill: white;
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 12px;
+        -fx-padding: 5px 10px;
+        -fx-cursor: hand;
+        -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+    }
+
+    .btn-delete:hover {
+        -fx-background-color: #c62828;
+        -fx-translate-y: -5px;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); /* Aumenta a sombra ao passar o mouse */
+    }
+
+    .btn-avaria {
+        -fx-background-color: rgba(219, 169, 18, 0.8);
+        -fx-text-fill: white;
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 12px;
+        -fx-padding: 5px 10px;
+        -fx-cursor: hand;
+        -fx-effect: dropshadow(three-pass-box, rgba(40, 40, 40, 0.9), 2, 0.9, 0, 2);
+    }
+
+    .btn-avaria:hover {
+         -fx-background-color: #ab8513;
+         -fx-translate-y: -5px;
+         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); /* Aumenta a sombra ao passar o mouse */
+    }
+
+    /* Estilos da tabela */
+    .table-row-cell:hover {
+        -fx-background-color: #919191;
+    }
+
+    .table-row-cell:selected {
+        -fx-background-color: #bbdefb;
+    }
+
+    .table-row-cell:selected .table-cell {
+        -fx-text-fill: #1a237e;
+    }
+    /* Estilos para diálogos */
+    .dialog-container {
+        -fx-background-color: white;
+        -fx-min-width: 500px;
+    }
+
+    .dialog-header {
+        -fx-padding: 0 0 20px 0;
+    }
+
+    .dialog-title {
+        -fx-font-size: 20px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #1a237e;
+        -fx-font-family: 'Segoe UI';
+    }
+
+    .dialog-subtitle {
+        -fx-font-size: 14px;
+        -fx-text-fill: #757575;
+        -fx-font-family: 'Segoe UI';
+    }
+
+    .error-label {
+        -fx-text-fill: #d32f2f;
+        -fx-font-size: 12px;
+        -fx-font-family: 'Segoe UI';
+        -fx-padding: 5px;
+        -fx-background-color: #ffebee;
+        -fx-background-radius: 4px;
+        -fx-border-color: #ffcdd2;
+        -fx-border-radius: 4px;
+    }
+
+    .form-grid {
+        -fx-alignment: center;
+    }
+
+    .form-grid .form-field {
+        -fx-max-width: 200px;
+        -fx-min-width: 200px;
+    }
+
+    .form-grid .form-label {
+             -fx-max-width: 120px;
+             -fx-min-width: 120px;
+    }
+
+    .form-grid .form-date-picker {
+        -fx-min-width: 300px;
+    }
+
+    /* Animação de shake para erros */
+    .shake {
+        -fx-animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+        0%, 100% { -fx-translate-x: 0; }
+        25% { -fx-translate-x: -5px; }
+        75% { -fx-translate-x: 5px; }
+    }
+    /* Estilos para empréstimos ativos */
+    .table-row-cell:status-atrasado {
+        -fx-background-color: #ffebee;
+    }
+
+    .table-row-cell:status-atrasado:hover {
+        -fx-background-color: #ffcdd2;
+    }
+
+    .table-row-cell:status-em-dia {
+        -fx-background-color: #e8f5e9;
+    }
+
+    .table-row-cell:status-em-dia:hover {
+        -fx-background-color: #c8e6c9;
+    }
+
+    .status-bar {
+        -fx-background-color: #f8f9fa;
+        -fx-border-color: #e0e0e0;
+        -fx-border-width: 1 0 0 0;
+    }
+
+    .status-label {
+        -fx-font-family: 'Segoe UI';
+        -fx-font-size: 12px;
+        -fx-text-fill: #424242;
+    }
+
+    .toolbar-container {
+        -fx-background-color: rgba(255, 215, 0, 0.80);
+        -fx-background-radius: 5px;
+        -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 3, 0.6, 0, 5);
+    }
+
+    .search-field {
+        -fx-pref-width: 300px;
+    }
+
+    /* Estilos específicos para tela de avarias */
+    .info-quantidade {
+        -fx-font-size: 12px;
+        -fx-text-fill: #666666;
+        -fx-padding: 5px 0;
+    }
+
+    .info-quantidade.alerta {
+        -fx-text-fill: #d32f2f;
+    }
+
+    .form-text-area {
+        -fx-pref-height: 80px;
+        -fx-wrap-text: true;
+    }
+
+}
+
+
+    /* Ajustes de responsividade */
+@media screen and (max-width: 800px) {
+
+}
