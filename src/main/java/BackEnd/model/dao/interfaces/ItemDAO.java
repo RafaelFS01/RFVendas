@@ -1,5 +1,3 @@
-// Em src/main/java/seuprojeto/model/dao/interfaces/ItemDAO.java
-
 package BackEnd.model.dao.interfaces;
 
 import BackEnd.model.entity.Item;

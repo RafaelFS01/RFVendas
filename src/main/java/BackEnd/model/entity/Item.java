@@ -1,5 +1,3 @@
-// Em src/main/java/seuprojeto/model/entity/Item.java
-
 package BackEnd.model.entity;
 
 public class Item {
@@ -8,14 +6,23 @@ public class Item {
     private String descricao;
     private Double precoVenda;
     private Double precoCusto;
-    private String unidadeMedida;
-    private Double quantidadeEstoque;
-    private Double quantidadeMinima;
+    private String unidadeMedida; // Pode ser nulo para serviços
+    private Double quantidadeEstoque; // Pode ser nulo para serviços
+    private Double quantidadeMinima; // Pode ser nulo para serviços
     private Double quantidadeAtual;
-    private Categoria categoria; // Categoria principal
+    private Categoria categoria;
+    private String tipoProduto; // "ITEM" ou "SERVICO"
+
+    // Construtor padrão
+    public Item() {
+    }
+
+    // Construtor para diferenciar Item e Servico
+    public Item(String tipoProduto) {
+        this.tipoProduto = tipoProduto;
+    }
 
     // Getters e Setters
-
     public int getId() {
         return id;
     }
@@ -94,5 +101,13 @@ public class Item {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public String getTipoProduto() {
+        return tipoProduto;
+    }
+
+    public void setTipoProduto(String tipoProduto) {
+        this.tipoProduto = tipoProduto;
     }
 }

@@ -6,6 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Estilos readaptados.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/DependenciaDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/DependenciaDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/ItemDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/ItemDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/DependenciaDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/DependenciaDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/ItemDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/ItemDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Item.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/DependenciaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/DependenciaService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ItemService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/CadastrarItem.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/CadastrarItem.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

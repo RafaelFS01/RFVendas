@@ -20,72 +20,73 @@ public class DependenciaService {
         this.itemDAO = new ItemDAOImpl();
     }
 
+    // Construtor para Injeção de Dependência (Opcional)
+    public DependenciaService(DependenciaDAO dependenciaDAO, ItemDAO itemDAO) {
+        this.dependenciaDAO = dependenciaDAO;
+        this.itemDAO = itemDAO;
+    }
+
     public void salvarDependencia(Dependencia dependencia) throws Exception {
         validarDependencia(dependencia);
         dependenciaDAO.salvarDependencia(dependencia);
     }
 
-    private void validarDependencia(Dependencia dependencia) throws Exception {
-        if (dependencia.getIdItemDependente() <= 0 || itemDAO.buscarItemPorId(dependencia.getIdItemDependente()) == null) {
-            throw new Exception("Dependência inválida: ID de item dependente inválido ou item não encontrado.");
-        }
-        if (dependencia.getIdItemNecessario() <= 0 || itemDAO.buscarItemPorId(dependencia.getIdItemNecessario()) == null) {
-            throw new Exception("Dependência inválida: ID de item necessário inválido ou item não encontrado.");
-        }
-        if (dependencia.getIdCategoria() <= 0) {
-            throw new Exception("Dependência inválida: ID de categoria inválido ou item não encontrado.");
-        }
-        if (dependencia.getQuantidade() <= 0) {
-            throw new Exception("Dependência inválida: Quantidade deve ser maior que zero.");
-        }
-    }
-
-    public Dependencia buscarPorId(int id) throws Exception {
+    public Dependencia buscarDependenciaPorId(int id) throws Exception {
         return dependenciaDAO.buscarPorId(id);
     }
 
-    public List<Dependencia> buscarPorIdItemDependente(int idItemDependente) throws Exception {
-        return dependenciaDAO.buscarPorIdItemDependente(idItemDependente);
+    public List<Dependencia> listarDependenciasPorProduto(int idProduto) throws Exception {
+        return dependenciaDAO.buscarPorIdProdutoDependente(idProduto);
     }
 
-    public void atualizar(Dependencia dependencia) throws Exception {
-        if (dependencia.getId() <= 0) {
-            throw new Exception("Dependência inválida: ID deve ser maior que zero para atualização.");
-        }
+    public void atualizarDependencia(Dependencia dependencia) throws Exception {
         validarDependencia(dependencia);
         dependenciaDAO.atualizar(dependencia);
     }
 
-    public void excluir(int id) throws Exception {
-        if (id <= 0) {
-            throw new Exception("ID inválido: ID deve ser maior que zero para exclusão.");
-        }
+    public void excluirDependencia(int id) throws Exception {
         dependenciaDAO.excluir(id);
     }
 
-    public void excluirItem(int id) throws Exception {
-        if (id <= 0) {
-            throw new Exception("ID inválido: ID deve ser maior que zero para exclusão.");
-        }
-        dependenciaDAO.excluirItem(id);
+    public void excluirDependenciasDeProduto(int idProduto) throws Exception {
+        dependenciaDAO.excluirProduto(idProduto);
     }
 
-    public List<String> atualizarEstoqueItensDependentes(int itemId, Double quantidadeAdicionada) throws Exception {
+    private void validarDependencia(Dependencia dependencia) throws Exception {
+        // Adicionar validações para Dependencia, se necessário
+        if (dependencia.getIdItemDependente() <= 0) {
+            throw new Exception("O ID do produto dependente é obrigatório.");
+        }
+        if (dependencia.getIdItemNecessario() <= 0) {
+            throw new Exception("O ID do produto necessário é obrigatório.");
+        }
+        if (dependencia.getQuantidade() <= 0) {
+            throw new Exception("A quantidade deve ser maior que zero.");
+        }
+    }
+
+    public List<String> atualizarEstoqueItensDependentes(int idProduto, double quantidadeProduzida) throws Exception {
         List<String> erros = new ArrayList<>();
-        List<Dependencia> dependencias = dependenciaDAO.buscarPorIdItemDependente(itemId);
+        List<Dependencia> dependencias = listarDependenciasPorProduto(idProduto);
 
         for (Dependencia dependencia : dependencias) {
-            double quantidadeReduzir = quantidadeAdicionada * dependencia.getQuantidade();
-            Item itemDependente = itemDAO.buscarItemPorId(dependencia.getIdItemNecessario());
+            Item produtoNecessario = itemDAO.buscarItemPorId(dependencia.getIdItemNecessario());
+            double quantidadeNecessaria = dependencia.getQuantidade() * quantidadeProduzida;
 
-            if (itemDependente.getQuantidadeEstoque() >= quantidadeReduzir) {
-                itemDependente.setQuantidadeEstoque(itemDependente.getQuantidadeEstoque() - quantidadeReduzir);
-                itemDependente.setQuantidadeAtual(itemDependente.getQuantidadeAtual() - quantidadeReduzir);
-                itemDAO.atualizar(itemDependente);
+            if ("ITEM".equals(produtoNecessario.getTipoProduto())) {
+                if (produtoNecessario.getQuantidadeAtual() < quantidadeNecessaria) {
+                    erros.add("Quantidade insuficiente em estoque para o item: " + produtoNecessario.getNome());
+                } else {
+                    produtoNecessario.setQuantidadeAtual(produtoNecessario.getQuantidadeAtual() - quantidadeNecessaria);
+                    itemDAO.atualizar(produtoNecessario);
+                }
+            } else if ("SERVICO".equals(produtoNecessario.getTipoProduto())) {
+                // Lógica para quando a dependência for um serviço (se aplicável)
             } else {
-                erros.add("Estoque insuficiente para o item dependente: " + itemDependente.getNome() + " (ID: " + itemDependente.getId() + ")");
+                erros.add("Tipo de produto inválido na dependência para o produto: " + produtoNecessario.getNome());
             }
         }
+
         return erros;
     }
 }

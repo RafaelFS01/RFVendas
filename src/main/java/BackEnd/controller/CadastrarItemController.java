@@ -1,6 +1,12 @@
 package BackEnd.controller;
 
+import BackEnd.Main;
+import BackEnd.model.entity.Categoria;
+import BackEnd.model.entity.Item;
+import BackEnd.model.service.CategoriaService;
 import BackEnd.model.service.DependenciaService;
+import BackEnd.model.service.ItemService;
+import BackEnd.util.AlertHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,15 +16,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import BackEnd.Main;
-import BackEnd.model.entity.Categoria;
-import BackEnd.model.entity.Item;
-import BackEnd.model.service.CategoriaService;
-import BackEnd.model.service.ItemService;
-import BackEnd.util.AlertHelper;
-import javafx.scene.image.Image;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,41 +50,73 @@ public class CadastrarItemController implements Initializable {
     @FXML private Button adicionarDependencia4Button;
     @FXML private Button salvarDependencia;
     @FXML private Button salvarItem;
-
     @FXML private ComboBox<Categoria> categoriaComboBox;
+    @FXML private ComboBox<String> cbTipoProduto;
+    @FXML private Label unidadeMedidaLabel;
+    @FXML private Label quantidadeEstoqueLabel;
+    @FXML private Label quantidadeMinimaLabel;
 
-    private final ItemService itemService;
-    private final CategoriaService categoriaService;
-    private final DependenciaService dependenciaService;
+    private final ItemService itemService = new ItemService();
+    private final CategoriaService categoriaService = new CategoriaService();
+    private final DependenciaService dependenciaService = new DependenciaService();
 
-    // Variável estática para armazenar o ID do último item salvo
     private static int idItemAtual;
+    private boolean cadastrandoServico = false;
 
-    // Método estático para definir o ID do item atual
     public void setIdItemAtual(int id) {
         idItemAtual = id;
     }
 
-    // Método estático para obter o ID do item atual
     public static int obterIdItem() {
         return idItemAtual;
     }
 
-    public CadastrarItemController() {
-        this.itemService = new ItemService();
-        this.categoriaService = new CategoriaService();
-        this.dependenciaService = new DependenciaService();
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        configurarTipoProduto();
         configurarCampos();
         carregarCategorias();
     }
 
-    private void configurarCampos() {
-        // Configurar formatação e validação dos campos
+    private void configurarTipoProduto() {
+        cbTipoProduto.getItems().addAll("Item", "Serviço");
+        cbTipoProduto.valueProperty().addListener((observable, oldValue, newValue) -> {
+            configurarCamposTipoProduto(newValue);
+        });
+    }
 
+    private void configurarCamposTipoProduto(String tipoProduto) {
+        boolean isServico = "Serviço".equals(tipoProduto);
+        cadastrandoServico = isServico;
+
+        // Ajustar visibilidade com base no tipo de produto
+        unidadeMedidaLabel.setVisible(!isServico);
+        unidadeMedidaField.setVisible(!isServico);
+        quantidadeEstoqueLabel.setVisible(!isServico);
+        quantidadeEstoqueField.setVisible(!isServico);
+        quantidadeMinimaLabel.setVisible(!isServico);
+        quantidadeMinimaField.setVisible(!isServico);
+
+        // Limpar campos que não são aplicáveis a serviços
+        if (isServico) {
+            unidadeMedidaField.clear();
+            quantidadeEstoqueField.clear();
+            quantidadeMinimaField.clear();
+        }
+
+        // Ajustar prompt text e outros comportamentos específicos, se necessário
+        if (isServico) {
+            idField.setPromptText("Digite o código do serviço");
+            nomeField.setPromptText("Digite o nome do serviço");
+            // ... outros ajustes para campos de serviço
+        } else {
+            idField.setPromptText("Digite o código do item");
+            nomeField.setPromptText("Digite o nome do item");
+            // ... outros ajustes para campos de item
+        }
+    }
+
+    private void configurarCampos() {
         idField.textProperty().addListener((obs, old, novo) -> {
             if (novo != null) {
                 idField.setText(novo.toUpperCase());
@@ -96,8 +128,6 @@ public class CadastrarItemController implements Initializable {
                 nomeField.setText(novo.toUpperCase());
             }
         });
-
-        // Para campos numéricos, você pode adicionar listeners semelhantes ao exemplo para restringir a entrada
 
         precoVendaField.textProperty().addListener((obs, old, novo) -> {
             if (!novo.matches("\\d*(\\.\\d*)?")) {
@@ -131,46 +161,45 @@ public class CadastrarItemController implements Initializable {
             categoriaComboBox.setItems(categorias);
         } catch (Exception e) {
             AlertHelper.showError("Erro ao carregar categorias", e.getMessage());
-            System.out.println(e.getMessage());
         }
     }
 
     @FXML
     private void salvarItem(ActionEvent event) {
         try {
-            Item item = criarItem();
-            itemService.salvarItem(item);
-            // Atualiza o idItemAtual com o ID do item recém-salvo
-            setIdItemAtual(item.getId());
-
-            Optional<ButtonType> result = AlertHelper.showConfirmation(
-                    "Item salvo com sucesso!!!",
-                    "Deseja adicionar dependências ao produto?",
-                    "Serão itens que serão necessários para confecção do produto."
-            );
-
-            if (result.isPresent() && result.get() == ButtonType.YES) { // Compare com YES agora
-                //Fazer os campos de cadastro do produto ficarem bloqueados
-                idField.setDisable(true);
-                nomeField.setDisable(true);
-                descricaoField.setDisable(true);
-                precoVendaField.setDisable(true);
-                precoCustoField.setDisable(true);
-                unidadeMedidaField.setDisable(true);
-                quantidadeEstoqueField.setDisable(true);
-                quantidadeMinimaField.setDisable(true);
-                categoriaComboBox.setDisable(true);
-                // Ação a ser executada se o usuário clicar em "Sim"
-                abrirAdicionarDependencia1(event);
-                salvarDependencia.managedProperty().setValue(true);
-                salvarDependencia.visibleProperty().setValue(true);
-
+            if (cadastrandoServico) {
+                Item servico = criarServico();
+                itemService.salvarServico(servico);
+                setIdItemAtual(servico.getId());
+                AlertHelper.showSuccess("Serviço salvo com sucesso!");
             } else {
-                // Ação a ser executada se o usuário clicar em "Não" (ou fechar a janela)
-                limparCampos();
+                Item item = criarItem();
+                itemService.salvarItem(item);
+                setIdItemAtual(item.getId());
+                Optional<ButtonType> result = AlertHelper.showConfirmation(
+                        "Item salvo com sucesso!!!",
+                        "Deseja adicionar dependências ao produto?",
+                        "Serão itens que serão necessários para confecção do produto."
+                );
+
+                if (result.isPresent() && result.get() == ButtonType.YES) {
+                    idField.setDisable(true);
+                    nomeField.setDisable(true);
+                    descricaoField.setDisable(true);
+                    precoVendaField.setDisable(true);
+                    precoCustoField.setDisable(true);
+                    unidadeMedidaField.setDisable(true);
+                    quantidadeEstoqueField.setDisable(true);
+                    quantidadeMinimaField.setDisable(true);
+                    categoriaComboBox.setDisable(true);
+                    abrirAdicionarDependencia1(event);
+                    salvarDependencia.managedProperty().setValue(true);
+                    salvarDependencia.visibleProperty().setValue(true);
+                }
             }
+            limparCampos();
         } catch (Exception e) {
-            AlertHelper.showError("Erro ao salvar item", e.getMessage());
+            AlertHelper.showError("Erro ao salvar produto", e.getMessage());
         }
     }
 
@@ -178,17 +207,15 @@ public class CadastrarItemController implements Initializable {
     private void salvarDependencia(ActionEvent event) {
         try {
             AlertHelper.showSuccess("Dependências salvas com sucesso!!!");
-                // Ação a ser executada se o usuário clicar em "Não" (ou fechar a janela)
-                limparCampos();
-                configurarBind();
-
+            limparCampos();
+            configurarBind();
         } catch (Exception e) {
-            AlertHelper.showError("Erro ao salvar item", e.getMessage());
+            AlertHelper.showError("Erro ao salvar dependências", e.getMessage());
         }
     }
 
     private Item criarItem() {
-        Item item = new Item();
+        Item item = new Item("ITEM");
         item.setId(Integer.parseInt(idField.getText().trim()));
         item.setNome(nomeField.getText().trim());
         item.setDescricao(descricaoField.getText().trim());
@@ -202,6 +229,17 @@ public class CadastrarItemController implements Initializable {
         return item;
     }
 
+    private Item criarServico() {
+        Item servico = new Item("SERVICO");
+        servico.setId(Integer.parseInt(idField.getText().trim()));
+        servico.setNome(nomeField.getText().trim());
+        servico.setDescricao(descricaoField.getText().trim());
+        servico.setPrecoVenda(Double.parseDouble(precoVendaField.getText()));
+        servico.setPrecoCusto(Double.parseDouble(precoCustoField.getText()));
+        servico.setCategoria(categoriaComboBox.getValue());
+        return servico;
+    }
+
     @FXML
     private void limparCampos() {
         idField.clear();
@@ -213,7 +251,8 @@ public class CadastrarItemController implements Initializable {
         quantidadeEstoqueField.clear();
         quantidadeMinimaField.clear();
         categoriaComboBox.getSelectionModel().clearSelection();
-        //Fazer os campos de cadastro do produto desbloquearem.
+        cbTipoProduto.getSelectionModel().clearSelection();
+
         idField.setDisable(false);
         nomeField.setDisable(false);
         descricaoField.setDisable(false);
@@ -223,46 +262,60 @@ public class CadastrarItemController implements Initializable {
         quantidadeEstoqueField.setDisable(false);
         quantidadeMinimaField.setDisable(false);
         categoriaComboBox.setDisable(false);
+
+        idField.setPromptText("Digite o código do item");
+        nomeField.setPromptText("Digite o nome do item");
+
+        unidadeMedidaLabel.setVisible(true);
+        unidadeMedidaField.setVisible(true);
+        quantidadeEstoqueLabel.setVisible(true);
+        quantidadeEstoqueField.setVisible(true);
+        quantidadeMinimaLabel.setVisible(true);
+        quantidadeMinimaField.setVisible(true);
+
+        configurarCamposTipoProduto(cbTipoProduto.getValue());
     }
 
-    private void configurarBind(){
-        adicionarDependencia1Button.visibleProperty().setValue(false);
-        adicionarDependencia1Button.managedProperty().setValue(false);
-        adicionarDependencia2Button.visibleProperty().setValue(false);
-        adicionarDependencia2Button.managedProperty().setValue(false);
-        adicionarDependencia3Button.visibleProperty().setValue(false);
-        adicionarDependencia3Button.managedProperty().setValue(false);
-        adicionarDependencia4Button.visibleProperty().setValue(false);
-        adicionarDependencia4Button.managedProperty().setValue(false);
+    private void configurarBind() {
+        cbTipoProduto.setDisable(false);
 
-        salvarDependencia.visibleProperty().setValue(false);
-        salvarDependencia.managedProperty().setValue(false);
-        salvarItem.visibleProperty().setValue(true);
-        salvarItem.managedProperty().setValue(true);
+        adicionarDependencia1Button.setVisible(false);
+        adicionarDependencia1Button.setManaged(false);
+        adicionarDependencia2Button.setVisible(false);
+        adicionarDependencia2Button.setManaged(false);
+        adicionarDependencia3Button.setVisible(false);
+        adicionarDependencia3Button.setManaged(false);
+        adicionarDependencia4Button.setVisible(false);
+        adicionarDependencia4Button.setManaged(false);
 
-        dependencia1Label.visibleProperty().setValue(false);
-        dependencia1Label.managedProperty().setValue(false);
-        dependencia1Field.visibleProperty().setValue(false);
-        dependencia1Field.managedProperty().setValue(false);
+        salvarDependencia.setVisible(false);
+        salvarDependencia.setManaged(false);
+        salvarItem.setVisible(true);
+        salvarItem.setManaged(true);
 
-        dependencia2Label.visibleProperty().setValue(false);
-        dependencia2Label.managedProperty().setValue(false);
-        dependencia2Field.visibleProperty().setValue(false);
-        dependencia2Field.managedProperty().setValue(false);
+        dependencia1Label.setVisible(false);
+        dependencia1Label.setManaged(false);
+        dependencia1Field.setVisible(false);
+        dependencia1Field.setManaged(false);
 
-        dependencia3Label.visibleProperty().setValue(false);
-        dependencia3Label.managedProperty().setValue(false);
-        dependencia3Field.visibleProperty().setValue(false);
-        dependencia3Field.managedProperty().setValue(false);
+        dependencia2Label.setVisible(false);
+        dependencia2Label.setManaged(false);
+        dependencia2Field.setVisible(false);
+        dependencia2Field.setManaged(false);
 
-        dependencia4Label.visibleProperty().setValue(false);
-        dependencia4Label.managedProperty().setValue(false);
-        dependencia4Field.visibleProperty().setValue(false);
-        dependencia4Field.managedProperty().setValue(false);
+        dependencia3Label.setVisible(false);
+        dependencia3Label.setManaged(false);
+        dependencia3Field.setVisible(false);
+        dependencia3Field.setManaged(false);
+
+        dependencia4Label.setVisible(false);
+        dependencia4Label.setManaged(false);
+        dependencia4Field.setVisible(false);
+        dependencia4Field.setManaged(false);
     }
 
     @FXML
-    private void abrirCadastroCategoria(ActionEvent event)      {
+    private void abrirCadastroCategoria(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CadastrarCategoria.fxml"));
             Parent root = loader.load();
@@ -285,134 +338,65 @@ public class CadastrarItemController implements Initializable {
 
     @FXML
     private void abrirAdicionarDependencia1(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdicionarDependencia.fxml"));
-            Parent root = loader.load();
-            Button botaoAdicionarDependencia = (Button) event.getSource();
-
-            AdicionarDependenciaController controller = loader.getController();
-            // Passe o ID do item dependente para o controller da janela AdicionarDependencia
-            int idItemDependente = Integer.parseInt(idField.getText().trim()); // Obtenha o ID do campo idField
-            controller.setIdItemDependente(idItemDependente);
-
-            // Passar uma expressão lambda que define a ação a ser executada quando a dependência for salva
-            controller.setOnDependenciaSalva(item -> {
-                dependencia1Field.setText(item.getNome());
-            });
-
-            Stage stage = new Stage();
-            stage.setTitle("Adicionar Dependência");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/icon.png")));
-            stage.showAndWait();
-            // Fazer os campos e botão aparecerem
-            dependencia1Field.visibleProperty().setValue(true);
-            dependencia1Field.managedProperty().setValue(true);
-            dependencia1Label.visibleProperty().setValue(true);
-            dependencia1Label.managedProperty().setValue(true);
-            adicionarDependencia2Button.visibleProperty().setValue(true);
-            adicionarDependencia2Button.managedProperty().setValue(true);
-            // Fazer o botão desaparecer
-            botaoAdicionarDependencia.setVisible(false);
-            botaoAdicionarDependencia.setManaged(false);
-
-        } catch (IOException e) {
-            AlertHelper.showError("Erro ao abrir a janela de adição de dependência.", e.getMessage());
+        if (cadastrandoServico) {
+            abrirAdicionarDependenciaParaServico(event, 1);
+        } else {
+            abrirAdicionarDependenciaParaItem(event, 1);
         }
     }
 
     @FXML
     private void abrirAdicionarDependencia2(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdicionarDependencia.fxml"));
-            Parent root = loader.load();
-            Button botaoAdicionarDependencia = (Button) event.getSource();
-
-            AdicionarDependenciaController controller = loader.getController();
-            // Passe o ID do item dependente para o controller da janela AdicionarDependencia
-            int idItemDependente = Integer.parseInt(idField.getText().trim()); // Obtenha o ID do campo idField
-            controller.setIdItemDependente(idItemDependente);
-
-            // Passar uma expressão lambda que define a ação a ser executada quando a dependência for salva
-            controller.setOnDependenciaSalva(item -> {
-                dependencia2Field.setText(item.getNome());
-            });
-
-            Stage stage = new Stage();
-            stage.setTitle("Adicionar Dependência");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/icon.png")));
-            stage.showAndWait();
-            // Fazer os campos e botão aparecerem
-            dependencia2Field.visibleProperty().setValue(true);
-            dependencia2Field.managedProperty().setValue(true);
-            dependencia2Label.visibleProperty().setValue(true);
-            dependencia2Label.managedProperty().setValue(true);
-            adicionarDependencia3Button.visibleProperty().setValue(true);
-            adicionarDependencia3Button.managedProperty().setValue(true);
-            // Fazer o botão desaparecer
-            botaoAdicionarDependencia.setVisible(false);
-            botaoAdicionarDependencia.setManaged(false);
-        } catch (IOException e) {
-            AlertHelper.showError("Erro ao abrir a janela de adição de dependência.", e.getMessage());
+        if (cadastrandoServico) {
+            abrirAdicionarDependenciaParaServico(event, 2);
+        } else {
+            abrirAdicionarDependenciaParaItem(event, 2);
         }
     }
 
     @FXML
     private void abrirAdicionarDependencia3(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdicionarDependencia.fxml"));
-            Parent root = loader.load();
-            Button botaoAdicionarDependencia = (Button) event.getSource();
-
-            AdicionarDependenciaController controller = loader.getController();
-            // Passe o ID do item dependente para o controller da janela AdicionarDependencia
-            int idItemDependente = Integer.parseInt(idField.getText().trim()); // Obtenha o ID do campo idField
-            controller.setIdItemDependente(idItemDependente);
-
-            // Passar uma expressão lambda que define a ação a ser executada quando a dependência for salva
-            controller.setOnDependenciaSalva(item -> {
-                dependencia3Field.setText(item.getNome());
-            });
-
-            Stage stage = new Stage();
-            stage.setTitle("Adicionar Dependência");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/icon.png")));
-            stage.showAndWait();
-            // Fazer os campos e botão aparecerem
-            dependencia3Field.visibleProperty().setValue(true);
-            dependencia3Field.managedProperty().setValue(true);
-            dependencia3Label.visibleProperty().setValue(true);
-            dependencia3Label.managedProperty().setValue(true);
-            adicionarDependencia4Button.visibleProperty().setValue(true);
-            adicionarDependencia4Button.managedProperty().setValue(true);
-            // Fazer o botão desaparecer
-            botaoAdicionarDependencia.setVisible(false);
-            botaoAdicionarDependencia.setManaged(false);
-        } catch (IOException e) {
-            AlertHelper.showError("Erro ao abrir a janela de adição de dependência.", e.getMessage());
+        if (cadastrandoServico) {
+            abrirAdicionarDependenciaParaServico(event, 3);
+        } else {
+            abrirAdicionarDependenciaParaItem(event, 3);
         }
     }
 
     @FXML
     private void abrirAdicionarDependencia4(ActionEvent event) {
+        if (cadastrandoServico) {
+            abrirAdicionarDependenciaParaServico(event, 4);
+        } else {
+            abrirAdicionarDependenciaParaItem(event, 4);
+        }
+    }
+
+    private void abrirAdicionarDependenciaParaItem(ActionEvent event, int numeroDependencia) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdicionarDependencia.fxml"));
             Parent root = loader.load();
             Button botaoAdicionarDependencia = (Button) event.getSource();
 
             AdicionarDependenciaController controller = loader.getController();
-            // Passe o ID do item dependente para o controller da janela AdicionarDependencia
-            int idItemDependente = Integer.parseInt(idField.getText().trim()); // Obtenha o ID do campo idField
-            controller.setIdItemDependente(idItemDependente);
+            int idProdutoDependente = Integer.parseInt(idField.getText().trim());
+            controller.setIdItemDependente(idProdutoDependente);
 
-            // Passar uma expressão lambda que define a ação a ser executada quando a dependência for salva
             controller.setOnDependenciaSalva(item -> {
-                dependencia4Field.setText(item.getNome());
+                switch (numeroDependencia) {
+                    case 1:
+                        dependencia1Field.setText(item.getNome());
+                        break;
+                    case 2:
+                        dependencia2Field.setText(item.getNome());
+                        break;
+                    case 3:
+                        dependencia3Field.setText(item.getNome());
+                        break;
+                    case 4:
+                        dependencia4Field.setText(item.getNome());
+                        break;
+                }
             });
 
             Stage stage = new Stage();
@@ -421,12 +405,115 @@ public class CadastrarItemController implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/icon.png")));
             stage.showAndWait();
-            // Fazer os campos e botão aparecerem
-            dependencia4Field.visibleProperty().setValue(true);
-            dependencia4Field.managedProperty().setValue(true);
-            dependencia4Label.visibleProperty().setValue(true);
-            dependencia4Label.managedProperty().setValue(true);
-            // Fazer o botão desaparecer
+
+            switch (numeroDependencia) {
+                case 1:
+                    dependencia1Field.setVisible(true);
+                    dependencia1Field.setManaged(true);
+                    dependencia1Label.setVisible(true);
+                    dependencia1Label.setManaged(true);
+                    adicionarDependencia2Button.setVisible(true);
+                    adicionarDependencia2Button.setManaged(true);
+                    break;
+                case 2:
+                    dependencia2Field.setVisible(true);
+                    dependencia2Field.setManaged(true);
+                    dependencia2Label.setVisible(true);
+                    dependencia2Label.setManaged(true);
+                    adicionarDependencia3Button.setVisible(true);
+                    adicionarDependencia3Button.setManaged(true);
+                    break;
+                case 3:
+                    dependencia3Field.setVisible(true);
+                    dependencia3Field.setManaged(true);
+                    dependencia3Label.setVisible(true);
+                    dependencia3Label.setManaged(true);
+                    adicionarDependencia4Button.setVisible(true);
+                    adicionarDependencia4Button.setManaged(true);
+                    break;
+                case 4:
+                    dependencia4Field.setVisible(true);
+                    dependencia4Field.setManaged(true);
+                    dependencia4Label.setVisible(true);
+                    dependencia4Label.setManaged(true);
+                    break;
+            }
+
+            botaoAdicionarDependencia.setVisible(false);
+            botaoAdicionarDependencia.setManaged(false);
+
+        } catch (IOException e) {
+            AlertHelper.showError("Erro ao abrir a janela de adição de dependência.", e.getMessage());
+        }
+    }
+
+    private void abrirAdicionarDependenciaParaServico(ActionEvent event, int numeroDependencia) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AdicionarDependencia.fxml"));
+            Parent root = loader.load();
+            Button botaoAdicionarDependencia = (Button) event.getSource();
+
+            AdicionarDependenciaController controller = loader.getController();
+            int idServicoDependente = Integer.parseInt(idField.getText().trim());
+            controller.setIdItemDependente(idServicoDependente);
+
+            controller.setOnDependenciaSalva(item -> {
+                switch (numeroDependencia) {
+                    case 1:
+                        dependencia1Field.setText(item.getNome());
+                        break;
+                    case 2:
+                        dependencia2Field.setText(item.getNome());
+                        break;
+                    case 3:
+                        dependencia3Field.setText(item.getNome());
+                        break;
+                    case 4:
+                        dependencia4Field.setText(item.getNome());
+                        break;
+                }
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Adicionar Dependência");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/icon.png")));
+            stage.showAndWait();
+
+            switch (numeroDependencia) {
+                case 1:
+                    dependencia1Field.setVisible(true);
+                    dependencia1Field.setManaged(true);
+                    dependencia1Label.setVisible(true);
+                    dependencia1Label.setManaged(true);
+                    adicionarDependencia2Button.setVisible(true);
+                    adicionarDependencia2Button.setManaged(true);
+                    break;
+                case 2:
+                    dependencia2Field.setVisible(true);
+                    dependencia2Field.setManaged(true);
+                    dependencia2Label.setVisible(true);
+                    dependencia2Label.setManaged(true);
+                    adicionarDependencia3Button.setVisible(true);
+                    adicionarDependencia3Button.setManaged(true);
+                    break;
+                case 3:
+                    dependencia3Field.setVisible(true);
+                    dependencia3Field.setManaged(true);
+                    dependencia3Label.setVisible(true);
+                    dependencia3Label.setManaged(true);
+                    adicionarDependencia4Button.setVisible(true);
+                    adicionarDependencia4Button.setManaged(true);
+                    break;
+                case 4:
+                    dependencia4Field.setVisible(true);
+                    dependencia4Field.setManaged(true);
+                    dependencia4Label.setVisible(true);
+                    dependencia4Label.setManaged(true);
+                    break;
+            }
+
             botaoAdicionarDependencia.setVisible(false);
             botaoAdicionarDependencia.setManaged(false);
 

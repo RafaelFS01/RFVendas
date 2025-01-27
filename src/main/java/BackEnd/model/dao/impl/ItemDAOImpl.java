@@ -1,12 +1,9 @@
-// Em src/main/java/seuprojeto/model/dao/impl/ItemDAOImpl.java
-
 package BackEnd.model.dao.impl;
 
 import BackEnd.model.dao.interfaces.ItemDAO;
-import BackEnd.model.dao.interfaces.CategoriaDAO;
 import BackEnd.model.entity.Item;
 import BackEnd.model.entity.Categoria;
-import BackEnd.util.ConnectionFactory; // Sua classe de conexão
+import BackEnd.util.ConnectionFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,18 +11,12 @@ import java.util.List;
 
 public class ItemDAOImpl implements ItemDAO {
 
-    private final CategoriaDAO categoriaDAO;
-
-    public ItemDAOImpl() {
-        this.categoriaDAO = new CategoriaDAOImpl();
-    }
-
     @Override
     public void salvarItem(Item item) throws Exception {
         String sql = "INSERT INTO itens (id, nome, descricao, preco_venda, preco_custo, unidade_medida, " +
                 "quantidade_estoque, quantidade_minima, quantidade_atual, " +
-                "categoria_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "categoria_id, tipo_produto) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -41,6 +32,7 @@ public class ItemDAOImpl implements ItemDAO {
             stmt.setDouble(8, item.getQuantidadeMinima());
             stmt.setDouble(9, item.getQuantidadeAtual());
             stmt.setInt(10, item.getCategoria().getId());
+            stmt.setString(11, item.getTipoProduto()); // Define o tipo_produto
 
             stmt.executeUpdate();
             conn.commit();
@@ -52,7 +44,9 @@ public class ItemDAOImpl implements ItemDAO {
 
     @Override
     public void atualizar(Item item) throws Exception {
-        String sql = "UPDATE itens SET nome = ?, descricao = ?, preco_venda = ?, preco_custo = ?, unidade_medida = ?, quantidade_estoque = ?, quantidade_minima = ?, quantidade_atual = ?, categoria_id = ? WHERE id = ?";
+        String sql = "UPDATE itens SET nome = ?, descricao = ?, preco_venda = ?, preco_custo = ?, unidade_medida = ?, " +
+                "quantidade_estoque = ?, quantidade_minima = ?, quantidade_atual = ?, categoria_id = ?, tipo_produto = ? " +
+                "WHERE id = ?";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -65,7 +59,8 @@ public class ItemDAOImpl implements ItemDAO {
             stmt.setDouble(7, item.getQuantidadeMinima());
             stmt.setDouble(8, item.getQuantidadeAtual());
             stmt.setInt(9, item.getCategoria().getId());
-            stmt.setInt(10, item.getId());
+            stmt.setString(10, item.getTipoProduto()); // Atualiza o tipo_produto
+            stmt.setInt(11, item.getId());
 
             stmt.executeUpdate();
 
@@ -76,7 +71,7 @@ public class ItemDAOImpl implements ItemDAO {
 
     @Override
     public boolean buscarItemPorNome(String nome) throws Exception {
-        String sql = "SELECT 1 FROM itens WHERE nome = ?";
+        String sql = "SELECT 1 FROM itens WHERE nome = ? AND tipo_produto = 'ITEM'";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -139,15 +134,14 @@ public class ItemDAOImpl implements ItemDAO {
         String sql = "SELECT i.*, c.nome AS categoria_nome, c.descricao AS categoria_descricao " +
                 "FROM itens i " +
                 "LEFT JOIN categorias c ON i.categoria_id = c.id " +
-                "WHERE i.categoria_id = ?";
+                "WHERE i.categoria_id = ? AND i.tipo_produto = 'ITEM'";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, idCategoria);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Item item = mapearResultSetParaItem(rs);
-                    itens.add(item);
+                    itens.add(mapearResultSetParaItem(rs));
                 }
             }
 
@@ -163,7 +157,7 @@ public class ItemDAOImpl implements ItemDAO {
         String sql = "SELECT i.*, c.nome as categoria_nome, c.descricao as categoria_descricao " +
                 "FROM itens i " +
                 "LEFT JOIN categorias c ON i.categoria_id = c.id " +
-                "WHERE i.quantidade_atual < i.quantidade_minima " +
+                "WHERE i.quantidade_atual < i.quantidade_minima AND i.tipo_produto = 'ITEM' " +
                 "ORDER BY i.nome";
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -204,6 +198,7 @@ public class ItemDAOImpl implements ItemDAO {
         item.setQuantidadeEstoque(rs.getDouble("quantidade_estoque"));
         item.setQuantidadeMinima(rs.getDouble("quantidade_minima"));
         item.setQuantidadeAtual(rs.getDouble("quantidade_atual"));
+        item.setTipoProduto(rs.getString("tipo_produto"));
 
         Categoria categoria = new Categoria();
         categoria.setId(rs.getInt("categoria_id"));

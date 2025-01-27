@@ -2,7 +2,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 
 <StackPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" styleClass="form-container"
            fx:controller="BackEnd.controller.CadastrarItemController">
@@ -11,8 +10,8 @@
     <VBox alignment="CENTER" spacing="1" maxWidth="800">
         <!-- Cabeçalho -->
         <VBox styleClass="form-header" alignment="CENTER">
-            <Label text="Cadastrar Novo Item" styleClass="form-title"/>
-            <Label text="Preencha os dados do novo item" styleClass="form-subtitle"/>
+            <Label text="Cadastrar Novo Produto" styleClass="form-title"/>
+            <Label text="Preencha os dados do novo produto" styleClass="form-subtitle"/>
         </VBox>
 
         <!-- Container do formulário -->
@@ -24,50 +23,56 @@
             <!-- Grid do formulário -->
             <GridPane hgap="10" vgap="15" alignment="CENTER">
 
+                <!-- Tipo de Produto -->
+                <Label text="Tipo de Produto:" styleClass="form-label"
+                       GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="cbTipoProduto" promptText="Selecione o tipo" styleClass="form-combo"
+                          GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
                 <!-- ID -->
                 <Label text="Código:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <TextField fx:id="idField" promptText="Digite o código do item" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                       GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <TextField fx:id="idField" promptText="Digite o código do produto" styleClass="form-field"
+                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
                 <!-- Nome -->
                 <Label text="Nome:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <TextField fx:id="nomeField" promptText="Digite o nome do item" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                       GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <TextField fx:id="nomeField" promptText="Digite o nome do produto" styleClass="form-field"
+                           GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
                 <!-- Descrição -->
                 <Label text="Descrição:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                       GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                 <TextField fx:id="descricaoField" promptText="Digite a descrição" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                           GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
                 <!-- Preço de Venda -->
                 <Label text="Preço de Venda:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                       GridPane.columnIndex="0" GridPane.rowIndex="4"/>
                 <TextField fx:id="precoVendaField" promptText="Digite o preço de venda" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                           GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
                 <!-- Preço de Custo -->
                 <Label text="Preço de Custo:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-                <TextField fx:id="precoCustoField" promptText="Digite o preço de custo" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-
-                <!-- Unidade de Medida -->
-                <Label text="Unidade de Medida:" styleClass="form-label"
                        GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-                <TextField fx:id="unidadeMedidaField" promptText="Digite a unidade de medida" styleClass="form-field"
+                <TextField fx:id="precoCustoField" promptText="Digite o preço de custo" styleClass="form-field"
                            GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-                <!-- Quantidade de Estoque -->
-                <Label text="Quantidade de Estoque:" styleClass="form-label"
+                <!-- Unidade de Medida (controlar visibilidade) -->
+                <Label fx:id="unidadeMedidaLabel" text="Unidade de Medida:" styleClass="form-label"
+                       GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                <TextField fx:id="unidadeMedidaField" promptText="Digite a unidade de medida" styleClass="form-field"
+                           GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+                <!-- Quantidade de Estoque (controlar visibilidade) -->
+                <Label fx:id="quantidadeEstoqueLabel" text="Quantidade de Estoque:" styleClass="form-label"
                        GridPane.columnIndex="2" GridPane.rowIndex="0"/>
                 <TextField fx:id="quantidadeEstoqueField" promptText="Digite a quantidade em estoque" styleClass="form-field"
                            GridPane.columnIndex="3" GridPane.rowIndex="0"/>
 
-                <!-- Quantidade Mínima -->
-                <Label text="Quantidade Mínima:" styleClass="form-label"
+                <!-- Quantidade Mínima (controlar visibilidade) -->
+                <Label fx:id="quantidadeMinimaLabel" text="Quantidade Mínima:" styleClass="form-label"
                        GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                 <TextField fx:id="quantidadeMinimaField" promptText="Digite a quantidade mínima" styleClass="form-field"
                            GridPane.columnIndex="3" GridPane.rowIndex="1"/>
@@ -80,6 +85,7 @@
                     <Button text="+" onAction="#abrirCadastroCategoria" styleClass="btn-add" />
                 </HBox>
 
+                <!-- Campos de Dependência -->
                 <Label fx:id="dependencia1Label" text="Dependência 1:" styleClass="form-label"
                        visible="false" managed="false"
                        GridPane.columnIndex="2" GridPane.rowIndex="3"/>
