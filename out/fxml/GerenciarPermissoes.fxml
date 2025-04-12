@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" styleClass="form-container" xmlns="http://javafx.com/javafx/19"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="BackEnd.controller.GerenciamentoPermissoesController">
+
+    <!-- Cabeçalho -->
+    <VBox styleClass="form-header" alignment="CENTER">
+        <Label text="Gerenciamento de Usuários e Permissões" styleClass="form-title"/>
+        <Label text="Gerencie os usuários do sistema e suas permissões" styleClass="form-subtitle"/>
+    </VBox>
+
+    <!-- Barra de Ferramentas -->
+    <HBox spacing="10" styleClass="toolbar-container" alignment="CENTER_LEFT">
+        <TextField fx:id="campoBusca" promptText="Buscar por nome, usuário ou email..."
+                   styleClass="search-field"/>
+        <Button text="Novo Usuário" onAction="#novoUsuario" styleClass="btn-primary"/>
+        <Button text="Atualizar Lista" onAction="#atualizarLista" styleClass="btn-secondary"/>
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+    </HBox>
+
+    <!-- Tabela de Usuários -->
+    <TableView fx:id="tabelaUsuarios" VBox.vgrow="ALWAYS">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+        <columns>
+            <TableColumn fx:id="colunaUsername" text="Usuário"/>
+            <TableColumn fx:id="colunaNome" text="Nome"/>
+            <TableColumn fx:id="colunaEmail" text="E-mail"/>
+            <TableColumn fx:id="colunaNivel" text="Nível de Acesso"/>
+            <TableColumn fx:id="colunaStatus" text="Status"/>
+            <TableColumn fx:id="colunaAcoes" text="Ações"/>
+        </columns>
+        <placeholder>
+            <Label text="Nenhum usuário encontrado." style="-fx-font-size: 26;"/>
+        </placeholder>
+    </TableView>
+
+    <!-- Barra de Status -->
+    <HBox spacing="10" styleClass="status-bar" alignment="CENTER_RIGHT">
+        <Label fx:id="statusLabel" styleClass="status-label"/>
+        <padding>
+            <Insets top="5" right="10" bottom="5" left="10"/>
+        </padding>
+    </HBox>
+</VBox>

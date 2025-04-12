@@ -4,7 +4,6 @@ import BackEnd.model.dao.interfaces.ItemDAO;
 import BackEnd.model.dao.interfaces.ItemPedidoDAO;
 import BackEnd.model.entity.Item;
 import BackEnd.model.entity.ItemPedido;
-import BackEnd.model.entity.Pedido;
 import BackEnd.util.ConnectionFactory;
 
 import java.sql.Connection;
@@ -50,7 +49,7 @@ public class ItemPedidoDAOImpl implements ItemPedidoDAO {
                 while (rs.next()) {
                     ItemPedido itemPedido = new ItemPedido();
                     itemPedido.setId(rs.getInt("id"));
-                    // Buscar Pedido (pode ser otimizado para evitar buscar o mesmo pedido v√°rias vezes)
+                    // Buscar Pedido (pode ser otimizado para evitar buscar o mesmo pedido v·rias vezes)
                     // itemPedido.setPedido(pedidoDAO.buscarPorId(rs.getInt("pedido_id")));
                     // Buscar Item
                     Item item = itemDAO.buscarItemPorId(rs.getInt("item_id"));

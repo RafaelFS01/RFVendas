@@ -58,14 +58,14 @@ public class ListarItensController implements Initializable {
     private void configurarFiltros() {
         filtroTipo.setItems(FXCollections.observableArrayList(
                 "Todos",
-                "Emprest√°veis",
-                "Consum√≠veis"
+                "Emprest·veis",
+                "ConsumÌveis"
         ));
         filtroTipo.setValue("Todos");
 
         filtroStatus.setItems(FXCollections.observableArrayList(
                 "Todos",
-                "Dispon√≠vel",
+                "DisponÌvel",
                 "Em uso",
                 "Estoque baixo"
         ));
@@ -119,14 +119,14 @@ public class ListarItensController implements Initializable {
             if (eq.getQuantidadeAtual() < eq.getQuantidadeMinima()) {
                 status = "Estoque baixo";
             } else if (eq.getQuantidadeAtual() == eq.getQuantidadeEstoque()) {
-                status = "Dispon√≠vel";
+                status = "DisponÌvel";
             } else {
                 status = "Em uso";
             }
             return new javafx.beans.property.SimpleStringProperty(status);
         });
 
-        // Configurar coluna de a√ß√µes
+        // Configurar coluna de aÁıes
         colunaAcoes.setCellFactory(column -> new TableCell<>() {
             private final Button btnEditar = new Button("Editar");
             private final Button btnDeletar = new Button("Deletar");
@@ -161,7 +161,7 @@ public class ListarItensController implements Initializable {
                 } else {
                     setText(item);
                     switch (item) {
-                        case "Dispon√≠vel":
+                        case "DisponÌvel":
                             setStyle("-fx-text-fill: #2e7d32;"); // Verde
                             break;
                         case "Em uso":
@@ -188,7 +188,6 @@ public class ListarItensController implements Initializable {
 
         FilteredList<Item> dadosFiltrados = new FilteredList<>(items);
         String textoBusca = campoBusca.getText().toLowerCase();
-        String tipoSelecionado = filtroTipo.getValue();
         String statusSelecionado = filtroStatus.getValue();
 
         dadosFiltrados.setPredicate(equipamento -> {
@@ -201,7 +200,7 @@ public class ListarItensController implements Initializable {
             if (equipamento.getQuantidadeAtual() < equipamento.getQuantidadeMinima()) {
                 status = "Estoque baixo";
             } else if (equipamento.getQuantidadeAtual() == equipamento.getQuantidadeEstoque()) {
-                status = "Dispon√≠vel";
+                status = "DisponÌvel";
             } else {
                 status = "Em uso";
             }
@@ -234,9 +233,9 @@ public class ListarItensController implements Initializable {
 
 
             Optional<ButtonType> result = AlertHelper.showConfirmation(
-                    "Confirmar Exclus√£o",
+                    "Confirmar Exclus„o",
                     "Deseja realmente excluir o equipamento?",
-                    "Esta a√ß√£o n√£o poder√° ser desfeita."
+                    "Esta aÁ„o n„o poder· ser desfeita."
             );
 
             if (result.isPresent() && result.get() == ButtonType.YES) {
@@ -244,7 +243,7 @@ public class ListarItensController implements Initializable {
                 itemService.deletar(item.getId());
                 ConnectionFactory.exportarBancoDeDados("BACKUP.2024");
                 carregarItens();
-                AlertHelper.showSuccess("Equipamento exclu√≠do com sucesso!");
+                AlertHelper.showSuccess("Equipamento excluÌdo com sucesso!");
             }
         } catch (Exception e) {
             AlertHelper.showError("Erro ao excluir equipamento", e.getMessage());
@@ -254,7 +253,7 @@ public class ListarItensController implements Initializable {
     @FXML
     private void exportarLista() {
         AlertHelper.showWarning("Em desenvolvimento",
-                "A funcionalidade de exporta√ß√£o ser√° implementada em breve.");
+                "A funcionalidade de exportaÁ„o ser· implementada em breve.");
     }
 
     private void atualizarStatusLabel() {
@@ -271,7 +270,7 @@ public class ListarItensController implements Initializable {
                 .count();
 
         statusLabel.setText(String.format(
-                "Total: %d | Dispon√≠veis: %d | Em uso: %d | Estoque baixo: %d",
+                "Total: %d | DisponÌveis: %d | Em uso: %d | Estoque baixo: %d",
                 total, disponiveis, emUso, estoqueBaixo
         ));
     }

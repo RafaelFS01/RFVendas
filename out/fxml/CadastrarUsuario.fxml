@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox spacing="0.1" styleClass="form-container"
+      xmlns="http://javafx.com/javafx/19"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="BackEnd.controller.CadastrarUsuarioController">
+
+    <!-- Cabeçalho -->
+    <VBox styleClass="form-header" alignment="CENTER">
+        <Label text="Cadastrar Novo Usuário" fx:id="tituloLabel" styleClass="form-title"/>
+        <Label text="Preencha os dados do usuário" fx:id="subtituloLabel" styleClass="form-subtitle"/>
+    </VBox>
+
+    <!-- Formulário -->
+    <GridPane hgap="15" vgap="15" alignment="CENTER" styleClass="form-content-container">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <!-- Username -->
+        <Label text="Username:" styleClass="form-label"
+               GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="usernameField" promptText="Digite o nome de usuário..." styleClass="form-field"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <!-- Senha -->
+        <Label text="Senha:" styleClass="form-label"
+               GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <PasswordField fx:id="passwordField" promptText="Digite a senha..." styleClass="form-field"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <!-- Nome -->
+        <Label text="Nome:" styleClass="form-label"
+               GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextField fx:id="nomeField" promptText="Digite o nome completo..." styleClass="form-field"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <!-- Email -->
+        <Label text="Email:" styleClass="form-label"
+               GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <TextField fx:id="emailField" promptText="Digite o email..." styleClass="form-field"
+                   GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+        <!-- Nível de Acesso -->
+        <Label text="Nível de Acesso:" styleClass="form-label"
+               GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <ComboBox fx:id="nivelAcessoCombo" promptText="Selecione o nível de acesso..." styleClass="form-combo"
+                  GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+    </GridPane>
+
+    <!-- Mensagem de Erro -->
+    <Label fx:id="mensagemErro" styleClass="error-label"
+           visible="false" wrapText="true" maxWidth="Infinity"/>
+
+    <!-- Botões -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Salvar" onAction="#salvar" styleClass="btn-primary"/>
+        <Button text="Cancelar" onAction="#cancelar" styleClass="btn-secondary"/>
+    </HBox>
+
+</VBox>

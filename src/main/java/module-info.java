@@ -1,10 +1,10 @@
 module BackEnd {
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires java.sql;
+    requires transitive javafx.controls;
+    requires transitive javafx.fxml;
+    requires transitive javafx.graphics;
+    requires transitive javafx.base;
+    requires transitive java.sql;
     requires mysql.connector.j;
-    requires javafx.graphics;
-    requires javafx.base;
 
     opens BackEnd to javafx.fxml;
     opens BackEnd.controller to javafx.fxml;
@@ -20,5 +20,6 @@ module BackEnd {
     exports BackEnd.model.entity;
     exports BackEnd.model.dao.interfaces;
     exports BackEnd.model.dao.impl;
+    exports BackEnd.model.service;
     exports BackEnd.util;
 }

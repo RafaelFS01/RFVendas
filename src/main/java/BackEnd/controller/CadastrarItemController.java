@@ -4,7 +4,6 @@ import BackEnd.Main;
 import BackEnd.model.entity.Categoria;
 import BackEnd.model.entity.Item;
 import BackEnd.model.service.CategoriaService;
-import BackEnd.model.service.DependenciaService;
 import BackEnd.model.service.ItemService;
 import BackEnd.util.AlertHelper;
 import javafx.collections.FXCollections;
@@ -58,7 +57,6 @@ public class CadastrarItemController implements Initializable {
 
     private final ItemService itemService = new ItemService();
     private final CategoriaService categoriaService = new CategoriaService();
-    private final DependenciaService dependenciaService = new DependenciaService();
 
     private static int idItemAtual;
     private boolean cadastrandoServico = false;
@@ -79,14 +77,14 @@ public class CadastrarItemController implements Initializable {
     }
 
     private void configurarTipoProduto() {
-        cbTipoProduto.getItems().addAll("Item", "Serviço");
+        cbTipoProduto.getItems().addAll("Item", "Servi?o");
         cbTipoProduto.valueProperty().addListener((observable, oldValue, newValue) -> {
             configurarCamposTipoProduto(newValue);
         });
     }
 
     private void configurarCamposTipoProduto(String tipoProduto) {
-        boolean isServico = "Serviço".equals(tipoProduto);
+        boolean isServico = "Servi?o".equals(tipoProduto);
         cadastrandoServico = isServico;
 
         // Ajustar visibilidade com base no tipo de produto
@@ -97,20 +95,20 @@ public class CadastrarItemController implements Initializable {
         quantidadeMinimaLabel.setVisible(!isServico);
         quantidadeMinimaField.setVisible(!isServico);
 
-        // Limpar campos que não são aplicáveis a serviços
+        // Limpar campos que n?o s?o aplic?veis a servi?os
         if (isServico) {
             unidadeMedidaField.clear();
             quantidadeEstoqueField.clear();
             quantidadeMinimaField.clear();
         }
 
-        // Ajustar prompt text e outros comportamentos específicos, se necessário
+        // Ajustar prompt text e outros comportamentos espec?ficos, se necess?rio
         if (isServico) {
-            idField.setPromptText("Digite o código do serviço");
-            nomeField.setPromptText("Digite o nome do serviço");
-            // ... outros ajustes para campos de serviço
+            idField.setPromptText("Digite o c?digo do servi?o");
+            nomeField.setPromptText("Digite o nome do servi?o");
+            // ... outros ajustes para campos de servi?o
         } else {
-            idField.setPromptText("Digite o código do item");
+            idField.setPromptText("Digite o c?digo do item");
             nomeField.setPromptText("Digite o nome do item");
             // ... outros ajustes para campos de item
         }
@@ -171,15 +169,15 @@ public class CadastrarItemController implements Initializable {
                 Item servico = criarServico();
                 itemService.salvarServico(servico);
                 setIdItemAtual(servico.getId());
-                AlertHelper.showSuccess("Serviço salvo com sucesso!");
+                AlertHelper.showSuccess("Servi?o salvo com sucesso!");
             } else {
                 Item item = criarItem();
                 itemService.salvarItem(item);
                 setIdItemAtual(item.getId());
                 Optional<ButtonType> result = AlertHelper.showConfirmation(
                         "Item salvo com sucesso!!!",
-                        "Deseja adicionar dependências ao produto?",
-                        "Serão itens que serão necessários para confecção do produto."
+                        "Deseja adicionar depend?ncias ao produto?",
+                        "Ser?o itens que ser?o necess?rios para confec??o do produto."
                 );
 
                 if (result.isPresent() && result.get() == ButtonType.YES) {
@@ -206,11 +204,11 @@ public class CadastrarItemController implements Initializable {
     @FXML
     private void salvarDependencia(ActionEvent event) {
         try {
-            AlertHelper.showSuccess("Dependências salvas com sucesso!!!");
+            AlertHelper.showSuccess("Depend?ncias salvas com sucesso!!!");
             limparCampos();
             configurarBind();
         } catch (Exception e) {
-            AlertHelper.showError("Erro ao salvar dependências", e.getMessage());
+            AlertHelper.showError("Erro ao salvar depend?ncias", e.getMessage());
         }
     }
 
@@ -263,7 +261,7 @@ public class CadastrarItemController implements Initializable {
         quantidadeMinimaField.setDisable(false);
         categoriaComboBox.setDisable(false);
 
-        idField.setPromptText("Digite o código do item");
+        idField.setPromptText("Digite o c?digo do item");
         nomeField.setPromptText("Digite o nome do item");
 
         unidadeMedidaLabel.setVisible(true);
@@ -400,7 +398,7 @@ public class CadastrarItemController implements Initializable {
             });
 
             Stage stage = new Stage();
-            stage.setTitle("Adicionar Dependência");
+            stage.setTitle("Adicionar Depend?ncia");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/icon.png")));
@@ -443,7 +441,7 @@ public class CadastrarItemController implements Initializable {
             botaoAdicionarDependencia.setManaged(false);
 
         } catch (IOException e) {
-            AlertHelper.showError("Erro ao abrir a janela de adição de dependência.", e.getMessage());
+            AlertHelper.showError("Erro ao abrir a janela de adi??o de depend?ncia.", e.getMessage());
         }
     }
 
@@ -475,7 +473,7 @@ public class CadastrarItemController implements Initializable {
             });
 
             Stage stage = new Stage();
-            stage.setTitle("Adicionar Dependência");
+            stage.setTitle("Adicionar Depend?ncia");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/icon.png")));
@@ -518,7 +516,7 @@ public class CadastrarItemController implements Initializable {
             botaoAdicionarDependencia.setManaged(false);
 
         } catch (IOException e) {
-            AlertHelper.showError("Erro ao abrir a janela de adição de dependência.", e.getMessage());
+            AlertHelper.showError("Erro ao abrir a janela de adi??o de depend?ncia.", e.getMessage());
         }
     }
 }

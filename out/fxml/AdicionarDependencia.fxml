@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<?import java.net.URL?>
+<VBox spacing="5" styleClass="form-container" style="-fx-padding: 10px; -fx-spacing: 5px;" maxHeight="700" maxWidth="700"
+      xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="BackEnd.controller.AdicionarDependenciaController">
+
+    <!-- Cabeçalho -->
+    <VBox styleClass="form-header" style="-fx-padding: 0px 0px 5px 0px" alignment="CENTER">
+        <Label text="Adicionar Dependência" styleClass="form-title"/>
+        <Label text="Preencha os dados da dependência." styleClass="form-subtitle"/>
+    </VBox>
+
+    <!-- Container principal -->
+    <VBox styleClass="form-content-container" style="-fx-padding: 50px 20px 50px 20px; -fx-spacing: 10px;">
+        <!-- Grid para campos -->
+        <GridPane hgap="15" vgap="10" alignment="CENTER" style="-fx-padding: 0px 10px 0px 10px;">
+            <!-- Nome -->
+            <Label text="Categoria:" styleClass="form-label"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <ComboBox fx:id="categoriaComboBox" promptText="Selecione a categoria"
+                       styleClass="form-field"
+                       GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <!-- Descrição -->
+            <Label text="Dependência:" styleClass="form-label"
+                   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <ComboBox fx:id="dependenciaComboBox" promptText="Selecione a dependência"
+                       styleClass="form-field"
+                       GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Quantidade:" styleClass="form-label"
+                   GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="quantidadeField" promptText="Digite a quantidade atrelada ao dependente"
+                      styleClass="form-field"
+                      GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+
+        <!-- Botões -->
+        <HBox spacing="15" alignment="CENTER" styleClass="button-container" style="-fx-padding: 0px 0px 75px 0px">
+            <Button text="Salvar" onAction="#salvarDependencia"
+                    styleClass="btn-primary"/>
+            <Button text="Cancelar" onAction="#fecharModal"
+                    styleClass="btn-secondary"/>
+        </HBox>
+    </VBox>
+
+    <!-- Estilos CSS específicos -->
+    <stylesheets>
+        <URL value="@../styles/styles.css"/>
+    </stylesheets>
+</VBox>

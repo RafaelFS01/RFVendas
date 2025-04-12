@@ -4,14 +4,13 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import BackEnd.util.ConnectionFactory;
 
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Carrega o Ã­cone
+        // Carrega o ícone
 
 
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));

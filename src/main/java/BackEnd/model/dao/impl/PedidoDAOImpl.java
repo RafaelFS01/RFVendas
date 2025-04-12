@@ -1,7 +1,6 @@
 package BackEnd.model.dao.impl;
 
 import BackEnd.model.dao.interfaces.ClienteDAO;
-import BackEnd.model.dao.interfaces.ItemDAO;
 import BackEnd.model.dao.interfaces.ItemPedidoDAO;
 import BackEnd.model.dao.interfaces.PedidoDAO;
 import BackEnd.model.entity.*;
@@ -17,12 +16,10 @@ public class PedidoDAOImpl implements PedidoDAO {
     private final ClienteDAO clienteDAO;
     private final ItemPedidoDAO itemPedidoDAO;
 
-    private final ItemDAO itemDAO;
 
     public PedidoDAOImpl() {
         this.clienteDAO = new ClienteDAOImpl();
         this.itemPedidoDAO = new ItemPedidoDAOImpl();
-        this.itemDAO = new ItemDAOImpl();
     }
 
     @Override
@@ -35,7 +32,7 @@ public class PedidoDAOImpl implements PedidoDAO {
         for (int retryCount = 0; retryCount < maxRetries; retryCount++) {
             try {
                 conn = ConnectionFactory.getConnection();
-                conn.setAutoCommit(false); // Inicia a transação
+                conn.setAutoCommit(false); // Inicia a transa??o
 
                 try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                     stmt.setString(1, pedido.getCliente().getId());
@@ -55,15 +52,15 @@ public class PedidoDAOImpl implements PedidoDAO {
                     }
                 }
 
-                conn.commit(); // Commita a transação
+                conn.commit(); // Commita a transa??o
                 ConnectionFactory.exportarBancoDeDados("BACKUP.2024");
-                return; // Sai do loop se a operação for bem-sucedida
+                return; // Sai do loop se a opera??o for bem-sucedida
             } catch (Exception e) {
                 if (conn != null) {
                     try {
                         conn.rollback();
                         if (e.getCause() instanceof com.mysql.cj.jdbc.exceptions.MySQLTransactionRollbackException &&
-                                e.getMessage().contains("Lock wait timeout exceeded")) { // Adapte para a exceção específica do seu driver JDBC
+                                e.getMessage().contains("Lock wait timeout exceeded")) { // Adapte para a exce??o espec?fica do seu driver JDBC
 
                             if (retryCount < maxRetries - 1) {
                                 AlertHelper.showWarning("Erro ao salvar pedido", "Ocorreu um erro de timeout. Tentando novamente... (Tentativa " + (retryCount + 2) + " de " + maxRetries + ")");
@@ -84,7 +81,7 @@ public class PedidoDAOImpl implements PedidoDAO {
                         conn.close();
                     } catch (SQLException e) {
                         e.printStackTrace();
-                        AlertHelper.showError("Erro ao fechar conexão", e.getMessage());
+                        AlertHelper.showError("Erro ao fechar conex?o", e.getMessage());
                     }
                 }
             }
@@ -167,14 +164,14 @@ public class PedidoDAOImpl implements PedidoDAO {
             throw new Exception("Erro ao atualizar status do pedido: " + e.getMessage(), e);
         } finally {
             if (localConnection) {
-                // Fecha a conexão apenas se foi aberta localmente
+                // Fecha a conex?o apenas se foi aberta localmente
                 try {
                     if (conn != null) {
                         conn.close();
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    AlertHelper.showError("Erro ao fechar conexão", e.getMessage());
+                    AlertHelper.showError("Erro ao fechar conex?o", e.getMessage());
                 }
             }
         }

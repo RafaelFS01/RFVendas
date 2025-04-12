@@ -132,7 +132,7 @@ public class VisualizarPedidosController {
             cbFiltroCategoria.setItems(FXCollections.observableArrayList(nomesCategorias));
         } catch (Exception e) {
             e.printStackTrace();
-            // Tratar a exce√ß√£o (e.g., mostrar mensagem de erro)
+            // Tratar a exceÁ„o (e.g., mostrar mensagem de erro)
         }
     }
 
@@ -154,7 +154,7 @@ public class VisualizarPedidosController {
                     Item itemDependente = itemService.buscarItemPorId(dependencia.getIdItemDependente());
                     Item itemNecessario = itemService.buscarItemPorId(dependencia.getIdItemNecessario());
 
-                    // Verifica se a categoria do item NECESS√ÅRIO corresponde √† categoria selecionada
+                    // Verifica se a categoria do item NECESS¡RIO corresponde ‡ categoria selecionada
                     if (categoria.equals("Todas as Categorias") || itemNecessario.getCategoria().getNome().equals(categoria)) {
                         DependenciaResumo depResumo = dependenciasMap.computeIfAbsent(dependencia.getId(),
                                 id -> new DependenciaResumo(dependencia, itemDependente, itemNecessario));
@@ -166,7 +166,7 @@ public class VisualizarPedidosController {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                // Tratar a exce√ß√£o
+                // Tratar a exceÁ„o
             }
         }
 
@@ -219,7 +219,7 @@ public class VisualizarPedidosController {
             }
         }
 
-        // Filtrar itens onde a quantidade (soma das quantidades dos pedidos) √© maior que a quantidade em estoque
+        // Filtrar itens onde a quantidade (soma das quantidades dos pedidos) È maior que a quantidade em estoque
         return itensAgrupados.values().stream()
                 .filter(itemResumo -> itemResumo.getQuantidade() > itemResumo.getQtdEstoque())
                 .map(ItemFaltanteResumo::new)
@@ -255,6 +255,7 @@ public class VisualizarPedidosController {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void configurarColunasTabelaPedido(TableView<ItemPedido> tabelaPedido) {
         TableColumn<ItemPedido, Integer> colunaId = new TableColumn<>("ID");
         colunaId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getItem().getId()).asObject());
@@ -262,7 +263,7 @@ public class VisualizarPedidosController {
         TableColumn<ItemPedido, String> colunaNome = new TableColumn<>("Nome");
         colunaNome.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getNome()));
 
-        TableColumn<ItemPedido, Double> colunaPrecoVenda = new TableColumn<>("Pre√ßo de Venda");
+        TableColumn<ItemPedido, Double> colunaPrecoVenda = new TableColumn<>("PreÁo de Venda");
         colunaPrecoVenda.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPrecoVenda()).asObject());
 
         TableColumn<ItemPedido, String> colunaUnidadeMedida = new TableColumn<>("Unid. de Medida");
@@ -285,7 +286,7 @@ public class VisualizarPedidosController {
     }
 
     private void preencherTabelasPedidosIndividuais() {
-        // J√° preenchidas em criarTabelasPedidosIndividuais()
+        // J· preenchidas em criarTabelasPedidosIndividuais()
     }
 
     private void calcularTotais() {
@@ -482,14 +483,14 @@ public class VisualizarPedidosController {
     public static class ItemFaltanteResumo {
         private int id;
         private String nome;
-        private double quantidade; // Agora representa a diferen√ßa
+        private double quantidade; // Agora representa a diferenÁa
         private String unidadeMedida;
         private String categoria;
 
         public ItemFaltanteResumo(ItemResumo itemResumo) {
             this.id = itemResumo.getId();
             this.nome = itemResumo.getNome();
-            // Calcula a diferen√ßa (absoluta) entre a quantidade e a quantidade em estoque
+            // Calcula a diferenÁa (absoluta) entre a quantidade e a quantidade em estoque
             this.quantidade = Math.abs(itemResumo.getQuantidade() - itemResumo.getQtdEstoque());
             this.unidadeMedida = itemResumo.getUnidadeMedida();
             this.categoria = itemResumo.getCategoria();

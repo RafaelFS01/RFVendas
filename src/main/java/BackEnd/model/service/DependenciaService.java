@@ -20,7 +20,7 @@ public class DependenciaService {
         this.itemDAO = new ItemDAOImpl();
     }
 
-    // Construtor para InjeÃ§Ã£o de DependÃªncia (Opcional)
+    // Construtor para Injeção de Dependência (Opcional)
     public DependenciaService(DependenciaDAO dependenciaDAO, ItemDAO itemDAO) {
         this.dependenciaDAO = dependenciaDAO;
         this.itemDAO = itemDAO;
@@ -53,12 +53,12 @@ public class DependenciaService {
     }
 
     private void validarDependencia(Dependencia dependencia) throws Exception {
-        // Adicionar validaÃ§Ãµes para Dependencia, se necessÃ¡rio
+        // Adicionar validações para Dependencia, se necessário
         if (dependencia.getIdItemDependente() <= 0) {
-            throw new Exception("O ID do produto dependente Ã© obrigatÃ³rio.");
+            throw new Exception("O ID do produto dependente é obrigatório.");
         }
         if (dependencia.getIdItemNecessario() <= 0) {
-            throw new Exception("O ID do produto necessÃ¡rio Ã© obrigatÃ³rio.");
+            throw new Exception("O ID do produto necessário é obrigatório.");
         }
         if (dependencia.getQuantidade() <= 0) {
             throw new Exception("A quantidade deve ser maior que zero.");
@@ -81,12 +81,30 @@ public class DependenciaService {
                     itemDAO.atualizar(produtoNecessario);
                 }
             } else if ("SERVICO".equals(produtoNecessario.getTipoProduto())) {
-                // LÃ³gica para quando a dependÃªncia for um serviÃ§o (se aplicÃ¡vel)
+                // Lógica para quando a dependência for um serviço (se aplicável)
             } else {
-                erros.add("Tipo de produto invÃ¡lido na dependÃªncia para o produto: " + produtoNecessario.getNome());
+                erros.add("Tipo de produto inválido na dependência para o produto: " + produtoNecessario.getNome());
             }
         }
 
         return erros;
+    }
+
+    // Métodos adicionados para compatibilidade com controllers e services
+
+    public List<Dependencia> buscarPorIdItemDependente(int id) throws Exception {
+        try {
+            return dependenciaDAO.buscarPorIdProdutoDependente(id);
+        } catch (Exception e) {
+            throw new Exception("Erro ao buscar dependências do item dependente: " + id, e);
+        }
+    }
+
+    public void excluirItem(int id) throws Exception {
+        try {
+            dependenciaDAO.excluirProduto(id);
+        } catch (Exception e) {
+            throw new Exception("Erro ao excluir dependências do item: " + id, e);
+        }
     }
 }

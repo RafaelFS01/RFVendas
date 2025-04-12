@@ -2,7 +2,6 @@ package BackEnd.controller;
 
 import BackEnd.model.entity.*;
 import BackEnd.model.service.ClienteService;
-import BackEnd.model.service.ItemService;
 import BackEnd.model.service.PedidoService;
 import BackEnd.util.AlertHelper;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -51,7 +50,6 @@ public class RegistrarPedidoController {
 
     private PedidoService pedidoService;
     private ClienteService clienteService;
-    private ItemService itemService;
     private ObservableList<Cliente> clientes;
     private ObservableList<ItemPedido> itensPedido = FXCollections.observableArrayList();
 
@@ -61,7 +59,6 @@ public class RegistrarPedidoController {
     public RegistrarPedidoController() {
         this.pedidoService = new PedidoService();
         this.clienteService = new ClienteService();
-        this.itemService = new ItemService();
     }
 
     @FXML
@@ -112,7 +109,7 @@ public class RegistrarPedidoController {
         colunaQtdEstoque.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getItem().getQuantidadeEstoque()).asObject());
         colunaCategoria.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getCategoria().getNome()));
 
-        // Tornando as colunas de Preço de Venda e Quantidade editáveis
+        // Tornando as colunas de Pre?o de Venda e Quantidade edit?veis
         colunaPrecoVenda.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         colunaPrecoVenda.setOnEditCommit(event -> {
             ItemPedido itemPedido = event.getRowValue();
@@ -130,7 +127,7 @@ public class RegistrarPedidoController {
         tvItensPedido.setItems(itensPedido);
         tvItensPedido.setEditable(true);
 
-        // Configurando a coluna de ações
+        // Configurando a coluna de a??es
         colunaAcoes.setCellFactory(col -> new TableCell<>() {
             private final Button btnRemover = new Button("Remover");
 
@@ -139,7 +136,7 @@ public class RegistrarPedidoController {
                     ItemPedido itemPedido = getTableView().getItems().get(getIndex());
                     removerItemPedido(itemPedido);
                 });
-                btnRemover.getStyleClass().add("btn-delete"); // Adiciona a classe CSS para estilização
+                btnRemover.getStyleClass().add("btn-delete"); // Adiciona a classe CSS para estiliza??o
             }
 
             @Override
@@ -162,7 +159,7 @@ public class RegistrarPedidoController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SelecionarItens.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Seleção de Itens");
+            stage.setTitle("Sele??o de Itens");
             stage.initModality(Modality.APPLICATION_MODAL);
 
             SelecionarItensController controller = loader.getController();
@@ -170,13 +167,13 @@ public class RegistrarPedidoController {
 
             stage.showAndWait();
         } catch (IOException e) {
-            AlertHelper.showError("Erro ao abrir janela de seleção de itens", e.getMessage());
+            AlertHelper.showError("Erro ao abrir janela de sele??o de itens", e.getMessage());
         }
     }
 
     public void adicionarItensAoPedido(List<Item> itensSelecionados) {
         for (Item item : itensSelecionados) {
-            // Verifica se o item já está na lista
+            // Verifica se o item j? est? na lista
             boolean jaExiste = itensPedido.stream()
                     .anyMatch(ip -> ip.getItem().getId() == item.getId());
 
@@ -187,8 +184,8 @@ public class RegistrarPedidoController {
                 itemPedido.setPrecoVenda(item.getPrecoVenda());
                 itensPedido.add(itemPedido);
             } else {
-                // Exibe um aviso se o item já estiver na lista
-                AlertHelper.showWarning("Item já adicionado", "O item '" + item.getNome() + "' já foi adicionado ao pedido.");
+                // Exibe um aviso se o item j? estiver na lista
+                AlertHelper.showWarning("Item j? adicionado", "O item '" + item.getNome() + "' j? foi adicionado ao pedido.");
             }
         }
         atualizarTotais();
@@ -215,24 +212,24 @@ public class RegistrarPedidoController {
     private void salvarPedido() {
         try {
             if (cbCliente.getValue() == null || cbTipoVenda.getValue() == null || dpDataPedido.getValue() == null) {
-                AlertHelper.showWarning("Campos obrigatórios", "Preencha todos os campos obrigatórios.");
+                AlertHelper.showWarning("Campos obrigat?rios", "Preencha todos os campos obrigat?rios.");
                 return;
             }
             if (itensPedido.isEmpty()) {
                 AlertHelper.showWarning("Nenhum item adicionado", "Adicione pelo menos um item ao pedido.");
                 return;
             }
-            // Verifica se há estoque disponível para cada item
+            // Verifica se h? estoque dispon?vel para cada item
             for (ItemPedido itemPedido : itensPedido) {
                 if (cbTipoVenda.getValue() == TipoVenda.NOTA_FISCAL || cbTipoVenda.getValue() == TipoVenda.VENDA_NORMAL) {
                     if (itemPedido.getQuantidade() > itemPedido.getItem().getQuantidadeEstoque()) {
-                        AlertHelper.showError("Estoque insuficiente", "Não há estoque suficiente para o item: " + itemPedido.getItem().getNome());
+                        AlertHelper.showError("Estoque insuficiente", "N?o h? estoque suficiente para o item: " + itemPedido.getItem().getNome());
                         return;
                     }
                 }
             }
 
-            // Se pedidoSendoEditado não for nulo, atualiza o pedido existente
+            // Se pedidoSendoEditado n?o for nulo, atualiza o pedido existente
             if (pedidoSendoEditado != null) {
                 pedidoSendoEditado.setCliente(cbCliente.getValue());
                 pedidoSendoEditado.setTipoVenda(cbTipoVenda.getValue());
@@ -251,7 +248,7 @@ public class RegistrarPedidoController {
 
                 AlertHelper.showSuccess("Pedido atualizado com sucesso!");
             } else {
-                // Caso contrário, cria um novo pedido
+                // Caso contr?rio, cria um novo pedido
                 Pedido pedido = new Pedido();
                 pedido.setCliente(cbCliente.getValue());
                 pedido.setTipoVenda(cbTipoVenda.getValue());
@@ -295,7 +292,7 @@ public class RegistrarPedidoController {
         pedidoSendoEditado = null;
     }
 
-    // Método para preencher os dados do pedido na tela quando for editar
+    // M?todo para preencher os dados do pedido na tela quando for editar
     public void preencherDadosPedido(Pedido pedido) {
         pedidoSendoEditado = pedido;
         // Preenche os campos com os dados do pedido

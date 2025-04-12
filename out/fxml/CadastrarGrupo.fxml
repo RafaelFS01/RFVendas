@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.net.URL?>
+
+<VBox alignment="TOP_CENTER" styleClass="form-container"
+      xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="BackEnd.controller.CadastrarGrupoController">
+
+    <VBox alignment="CENTER" spacing="5">
+        <Label text="Cadastrar Novo Grupo" styleClass="form-title">
+            <font>
+                <Font name="Segoe UI Bold" size="18"/>
+            </font>
+        </Label>
+        <Label text="Digite o nome do novo grupo" styleClass="form-subtitle">
+            <font>
+                <Font name="Segoe UI" size="12"/>
+            </font>
+        </Label>
+    </VBox>
+
+    <VBox styleClass="form-content-container" alignment="CENTER"  maxWidth="500">
+        <GridPane hgap="10" vgap="15" alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="10" left="20"/>
+            </padding>
+
+            <Label styleClass="form-label" text="Nome do Grupo:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="nomeGrupoField" promptText="Digite o nome do grupo" styleClass="form-field"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+        </GridPane>
+
+        <HBox alignment="CENTER" spacing="15" styleClass="form-button-container">
+            <Button text="Salvar" onAction="#salvarGrupo" styleClass="btn-primary"/>
+            <Button text="Cancelar" onAction="#cancelarGrupo" styleClass="btn-secondary"/>
+        </HBox>
+    </VBox>
+    <stylesheets>
+        <URL value="@../styles/styles.css"/>
+    </stylesheets>
+</VBox>

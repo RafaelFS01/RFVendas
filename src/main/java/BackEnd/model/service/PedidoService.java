@@ -7,11 +7,7 @@ import BackEnd.model.dao.interfaces.PedidoDAO;
 import BackEnd.model.dao.impl.ItemPedidoDAOImpl;
 import BackEnd.model.dao.impl.PedidoDAOImpl;
 import BackEnd.model.entity.*;
-import BackEnd.util.AlertHelper;
-import BackEnd.util.ConnectionFactory;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class PedidoService {
@@ -61,13 +57,13 @@ public class PedidoService {
     public void cancelarPedido(int id) throws Exception {
         Pedido pedido = pedidoDAO.buscarPorId(id);
         if (pedido == null){
-            throw new Exception("Pedido com a ID: " + id + " n√£o foi encontrado");
+            throw new Exception("Pedido com a ID: " + id + " n„o foi encontrado");
         }
         if (pedido.getStatus() == StatusPedido.CANCELADO) {
-            throw new Exception("Pedido j√° est√° cancelado.");
+            throw new Exception("Pedido j· est· cancelado.");
         }
         if (pedido.getStatus() == StatusPedido.CONCLUIDO) {
-            throw new Exception("N√£o √© poss√≠vel cancelar um pedido j√° conclu√≠do.");
+            throw new Exception("N„o È possÌvel cancelar um pedido j· concluÌdo.");
         }
 
         pedidoDAO.atualizarStatus(id, StatusPedido.CANCELADO, null);
@@ -76,10 +72,10 @@ public class PedidoService {
     public void atualizarTipoVenda(int pedidoId, TipoVenda tipoVenda) throws Exception {
         Pedido pedido = pedidoDAO.buscarPorId(pedidoId);
         if (pedido == null) {
-            throw new Exception("Pedido n√£o encontrado.");
+            throw new Exception("Pedido n„o encontrado.");
         }
         if (pedido.getStatus() == StatusPedido.CANCELADO) {
-            throw new Exception("N√£o √© poss√≠vel alterar o tipo de venda de um pedido cancelado.");
+            throw new Exception("N„o È possÌvel alterar o tipo de venda de um pedido cancelado.");
         }
 
         if (tipoVenda == TipoVenda.VENDA_NORMAL || tipoVenda == TipoVenda.NOTA_FISCAL) {
@@ -105,13 +101,13 @@ public class PedidoService {
 
     public void validarPedido(Pedido pedido) throws Exception {
         if (pedido.getCliente() == null) {
-            throw new Exception("Cliente n√£o selecionado.");
+            throw new Exception("Cliente n„o selecionado.");
         }
         if (pedido.getTipoVenda() == null) {
-            throw new Exception("Tipo de venda n√£o selecionado.");
+            throw new Exception("Tipo de venda n„o selecionado.");
         }
         if (pedido.getDataPedido() == null) {
-            throw new Exception("Data do pedido n√£o selecionada.");
+            throw new Exception("Data do pedido n„o selecionada.");
         }
         if (pedido.getItens() == null || pedido.getItens().isEmpty()) {
             throw new Exception("Nenhum item adicionado ao pedido.");
@@ -121,9 +117,9 @@ public class PedidoService {
                 throw new Exception("Quantidade do item '" + itemPedido.getItem().getNome() + "' deve ser maior que zero.");
             }
             if (itemPedido.getPrecoVenda() <= 0){
-                throw new Exception("O pre√ßo do item '" + itemPedido.getItem().getNome() + "' deve ser maior que zero.");
+                throw new Exception("O preÁo do item '" + itemPedido.getItem().getNome() + "' deve ser maior que zero.");
             }
-            // Adicione outras valida√ß√µes necess√°rias, como verificar se h√° estoque suficiente, etc.
+            // Adicione outras validaÁıes necess·rias, como verificar se h· estoque suficiente, etc.
         }
     }
 
@@ -142,7 +138,7 @@ public class PedidoService {
         // 1. Excluir os itens antigos do pedido
         List<ItemPedido> itensAntigos = itemPedidoDAO.buscarPorIdPedido(pedido.getId());
         for (ItemPedido itemAntigo : itensAntigos) {
-            itemPedidoDAO.excluir(itemAntigo.getId()); // Voc√™ precisar√° criar este m√©todo em ItemPedidoDAO
+            itemPedidoDAO.excluir(itemAntigo.getId()); // VocÍ precisar· criar este mÈtodo em ItemPedidoDAO
         }
 
         // 2. Salvar os novos itens do pedido e atualizar itens
@@ -152,7 +148,7 @@ public class PedidoService {
 
             Item item = itemDAO.buscarItemPorId(itemPedido.getItem().getId());
             if (item != null) {
-                // Atualiza as quantidades com base no tipo de venda (se necess√°rio)
+                // Atualiza as quantidades com base no tipo de venda (se necess·rio)
                 if (pedido.getTipoVenda() == TipoVenda.NOTA_FISCAL || pedido.getTipoVenda() == TipoVenda.VENDA_NORMAL) {
                     item.setQuantidadeEstoque(item.getQuantidadeEstoque() - itemPedido.getQuantidade());
                 }

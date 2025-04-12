@@ -1,7 +1,6 @@
 package BackEnd.controller;
 
 import BackEnd.model.entity.Cliente;
-import BackEnd.model.service.GrupoService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -163,8 +162,8 @@ public class ListarClientesController implements Initializable {
 
     @FXML
     private void pesquisar() {
-        // A pesquisa j√° √© feita pelo listener do TextField
-        // Este m√©todo existe para responder ao bot√£o de pesquisa
+        // A pesquisa j· È feita pelo listener do TextField
+        // Este mÈtodo existe para responder ao bot„o de pesquisa
     }
 
     @FXML
@@ -209,7 +208,7 @@ public class ListarClientesController implements Initializable {
 
                 carregarClientes();
             } catch (IOException e) {
-                AlertHelper.showError("Erro", "Erro ao abrir formul√°rio de edi√ß√£o: " + e.getMessage());
+                AlertHelper.showError("Erro", "Erro ao abrir formul·rio de ediÁ„o: " + e.getMessage());
             }
         }
     }
@@ -218,10 +217,10 @@ public class ListarClientesController implements Initializable {
         if (cliente != null) {
             try {
                 Optional<ButtonType> result = AlertHelper.showConfirmation(
-                        "Confirmar Exclus√£o",
+                        "Confirmar Exclus„o",
                         "Deseja realmente excluir o cliente?",
-                        String.format("Cliente: %s%nC√≥digo: %s%n%n" +
-                                        "Esta a√ß√£o n√£o poder√° ser desfeita.",
+                        String.format("Cliente: %s%nCÛdigo: %s%n%n" +
+                                        "Esta aÁ„o n„o poder· ser desfeita.",
                                 cliente.getNome(), cliente.getId())
                 );
 
@@ -229,7 +228,7 @@ public class ListarClientesController implements Initializable {
                     clienteService.deletar(cliente.getId());
                     ConnectionFactory.exportarBancoDeDados("BACKUP.2024");
                     carregarClientes();
-                    AlertHelper.showSuccess("Cliente exclu√≠do com sucesso!");
+                    AlertHelper.showSuccess("Cliente excluÌdo com sucesso!");
                 }
             } catch (Exception e) {
                 AlertHelper.showError("Erro",

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="30" styleClass="form-container"
+      xmlns="http://javafx.com/javafx/19"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="BackEnd.controller.ListarItensController"
+      VBox.vgrow="ALWAYS">
+
+    <!-- Cabeçalho -->
+    <VBox styleClass="form-header" alignment="CENTER">
+        <Label text="Lista de Itens" styleClass="form-title"/>
+        <Label text="Visualize e gerencie os itens do sistema" styleClass="form-subtitle"/>
+    </VBox>
+
+    <!-- Barra de Ferramentas -->
+    <HBox spacing="15" styleClass="toolbar-container" alignment="CENTER_LEFT">
+        <!-- Campo de Busca -->
+        <TextField fx:id="campoBusca" promptText="Buscar item..." styleClass="search-field"/>
+
+        <!-- Filtros -->
+        <ComboBox fx:id="filtroTipo" promptText="Tipo" styleClass="form-combo"/>
+        <ComboBox fx:id="filtroStatus" promptText="Status" styleClass="form-combo"/>
+
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+    </HBox>
+
+    <!-- Tabela de Equipamentos -->
+    <TableView fx:id="tabelaItens" VBox.vgrow="ALWAYS">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+        <columns>
+            <TableColumn fx:id="colunaId" text="Código" minWidth="80" maxWidth="100"/>
+            <TableColumn fx:id="colunaNome" text="Nome" minWidth="150" maxWidth="300"/>
+            <TableColumn fx:id="colunaQuantidadeAtual" text="Qtd. Atual" minWidth="125" maxWidth="100"/>
+            <TableColumn fx:id="colunaQuantidadeEstoque" text="Qtd. Total" minWidth="125" maxWidth="100"/>
+            <TableColumn fx:id="colunaQuantidadeMinima" text="Qtd. Mínima" minWidth="125" maxWidth="150"/>
+            <TableColumn fx:id="colunaVenda" text="P. Venda" minWidth="100" maxWidth="100"/>
+            <TableColumn fx:id="colunaCusto" text="P. Custo" minWidth="100" maxWidth="100"/>
+            <TableColumn fx:id="colunaMedida" text="Und. Medida" minWidth="125" maxWidth="150"/>
+            <TableColumn fx:id="colunaCategoria" text="Categoria" minWidth="100" maxWidth="100"/>
+            <TableColumn fx:id="colunaStatus" text="Status" minWidth="100" maxWidth="100"/>
+            <TableColumn fx:id="colunaAcoes" text="Ações" minWidth="220" maxWidth="300"/>
+        </columns>
+        <placeholder>
+            <Label text="Nenhum item encontrado." style="-fx-font-size: 26;"/>
+        </placeholder>
+    </TableView>
+
+    <!-- Barra de Status -->
+    <HBox spacing="10" styleClass="status-bar" alignment="CENTER_RIGHT">
+        <Label fx:id="statusLabel" styleClass="status-label"/>
+        <padding>
+            <Insets top="5" right="10" bottom="5" left="10"/>
+        </padding>
+    </HBox>
+
+</VBox>

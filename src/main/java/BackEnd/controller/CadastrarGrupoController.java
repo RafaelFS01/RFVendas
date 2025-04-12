@@ -1,6 +1,5 @@
 package BackEnd.controller;
 
-import BackEnd.model.entity.Grupo;
 import BackEnd.model.service.ClienteService;
 import BackEnd.util.AlertHelper;
 import javafx.fxml.FXML;
@@ -34,7 +33,7 @@ public class CadastrarGrupoController {
             Stage stage = (Stage) nomeGrupoField.getScene().getWindow();
             stage.close();
         } catch (IllegalArgumentException e) {
-            AlertHelper.showWarning("Erro de ValidaÃ§Ã£o", e.getMessage());
+            AlertHelper.showWarning("Erro de Validação", e.getMessage());
         } catch (Exception e) {
             AlertHelper.showError("Erro", "Erro ao cadastrar grupo: " + e.getMessage());
         }

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane style="-fx-background-color: #0047ab;" xmlns="http://javafx.com/javafx/19"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="BackEnd.controller.MainController">
+    <left>
+        <ScrollPane fitToWidth="true" styleClass="menu-scroll-pane"
+                    style="-fx-background: transparent; -fx-background-color: transparent;">
+            <VBox spacing="5" style="-fx-background-color: #0047ab;
+                  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);" prefWidth="250">
+                <padding>
+                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                </padding>
+
+                <!-- Header -->
+                <VBox alignment="CENTER" spacing="10">
+                    <padding>
+                        <Insets bottom="20.0" />
+                    </padding>
+                    <Button fx:id="btnTrackbug" onAction="#telaPrincipal" styleClass="menu-button" style="-fx-font-size: 36;
+                    -fx-font-family: 'Segoe UI'; -fx-font-weight: bold; -fx-alignment: CENTER;"
+                                   text="RF Vendas" textFill="#ffd700">
+                    </Button>
+                    <Label text="RF Impressões" textFill="#ffd700" style="-fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 1), 3, 0.6, 0, 1);">
+                        <font>
+                            <Font name="Segoe UI" size="20.0" />
+                        </font>
+                    </Label>
+                </VBox>
+
+                <Label fx:id="labelPedidos" styleClass="menu-section" text="PEDIDOS" />
+                <Button fx:id="btnRegistrarPedido" onAction="#mostrarRegistrarPedido" styleClass="menu-button"
+                        text="📦 Registrar Pedido" />
+                <Button fx:id="btnListarPedidos" onAction="#mostrarListarPedidos" styleClass="menu-button"
+                        text="📦 Listar Pedidos" />
+
+                <!-- Menu Items -->
+                <Label fx:id="labelEquipamentos" styleClass="menu-section" text="Itens" />
+                <Button fx:id="btnRegistrarEquip" onAction="#mostrarRegistroEquipamento" styleClass="menu-button"
+                        text="📦 Cadastrar Item" />
+                <Button fx:id="btnLancarItem" onAction="#mostrarLancarItem" styleClass="menu-button"
+                        text="📦 Lançar Item" />
+                <Button fx:id="btnListarEquip" onAction="#mostrarListaEquipamentos" styleClass="menu-button"
+                        text="📋 Listar Itens" />
+                <Button onAction="#mostrarListaCompras" styleClass="menu-button"
+                        text="📋 Listar Compras" />
+
+
+                <Label fx:id="labelFuncionarios" styleClass="menu-section" text="FUNCIONÁRIOS" />
+                <Button fx:id="btnCadastrarFunc" onAction="#mostrarCadastroFuncionario" styleClass="menu-button"
+                        text="👤 Cadastrar Funcionários" />
+                <Button fx:id="btnListarFunc" onAction="#mostrarListaFuncionarios" styleClass="menu-button"
+                        text="👥 Listar Funcionários" />
+
+
+                <Label fx:id="labelAdministracao" styleClass="menu-section" text="ADMINISTRAÇÃO" />
+                <Button fx:id="btnGerenciarUsuarios" onAction="#mostrarGerenciamentoUsuarios" styleClass="menu-button"
+                        text="👥 Gerenciar Usuários" />
+            </VBox>
+        </ScrollPane>
+    </left>
+
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: #f4f4f4;" styleClass="area-principal">
+            <VBox fx:id="areaPrincipal" alignment="CENTER" spacing="20" style="-fx-background-color: white;
+                  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                <VBox alignment="CENTER" spacing="15">
+                    <Label text="Bem-vindo ao Sistema de Gerenciamento de Equipamentos">
+                        <style>
+                            -fx-font-size: 24px;
+                            -fx-font-weight: bold;
+                            -fx-text-fill: #00B393;
+                            -fx-font-family: 'Segoe UI';
+                        </style>
+                    </Label>
+
+                    <Label text="Selecione uma opção no menu lateral para começar">
+                        <style>
+                            -fx-font-size: 16px;
+                            -fx-text-fill: #757575;
+                            -fx-font-family: 'Segoe UI';
+                        </style>
+                    </Label>
+
+                    <!-- Para o nome do usuário, você precisará usar um bind -->
+                    <Label fx:id="usuarioLabel">
+                        <style>
+                            -fx-font-size: 14px;
+                            -fx-text-fill: #424242;
+                            -fx-font-family: 'Segoe UI';
+                        </style>
+                    </Label>
+                </VBox>
+                <padding>
+                    <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                </padding>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

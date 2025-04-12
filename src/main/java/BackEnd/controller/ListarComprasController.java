@@ -1,4 +1,3 @@
-// Em src/main/java/seuprojeto/controller/ListarComprasController.java
 
 package BackEnd.controller;
 
@@ -72,7 +71,7 @@ public class ListarComprasController {
                 containerItensCompra.getChildren().addAll(nomeItemLabel, quantidadeLabel);
             }
         } catch (Exception e) {
-            AlertHelper.showError("Erro ao calcular sugest√µes de compra", e.getMessage());
+            AlertHelper.showError("Erro ao calcular sugestıes de compra", e.getMessage());
         }
     }
 }

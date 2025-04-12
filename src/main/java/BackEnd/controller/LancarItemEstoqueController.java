@@ -5,7 +5,6 @@ import BackEnd.model.entity.Categoria;
 import BackEnd.model.entity.LancamentoItem;
 import BackEnd.model.service.ItemService;
 import BackEnd.model.service.CategoriaService;
-import BackEnd.model.service.DependenciaService;
 import BackEnd.util.AlertHelper;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -53,7 +52,6 @@ public class LancarItemEstoqueController {
 
     private CategoriaService categoriaService;
     private ItemService itemService;
-    private DependenciaService dependenciaService;
 
     // ObservableList para a TableView
     private ObservableList<ItemLancamento> itensLancamento = FXCollections.observableArrayList();
@@ -61,14 +59,13 @@ public class LancarItemEstoqueController {
     public void initialize() {
         categoriaService = new CategoriaService();
         itemService = new ItemService();
-        dependenciaService = new DependenciaService();
 
-        // Configuração das colunas da TableView
+        // Configura??o das colunas da TableView
         columnProduto.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItem().getNome()));
         columnQuantidade.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getQuantidade()).asObject());
         columnCusto.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getQuantidade()).asObject());
 
-        // Torna a coluna de quantidade editável
+        // Torna a coluna de quantidade edit?vel
         columnQuantidade.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         columnQuantidade.setOnEditCommit(this::handleEditarQuantidade);
         columnCusto.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
@@ -77,7 +74,7 @@ public class LancarItemEstoqueController {
         configurarColunaAcoes();
 
         tableViewItens.setItems(itensLancamento);
-        tableViewItens.setEditable(true); // Torna a TableView editável
+        tableViewItens.setEditable(true); // Torna a TableView edit?vel
 
 
         // Carrega as categorias no ComboBox
@@ -103,8 +100,8 @@ public class LancarItemEstoqueController {
             }
         });
 
-        // Tornar o ComboBox editável
-        comboBoxProduto.setEditable(true); // Importante para que o usuário possa digitar
+        // Tornar o ComboBox edit?vel
+        comboBoxProduto.setEditable(true); // Importante para que o usu?rio possa digitar
 
         // Configurar o comportamento do ComboBox para filtragem
         comboBoxProduto.getEditor().textProperty().addListener((obs, oldText, newText) -> {
@@ -121,7 +118,7 @@ public class LancarItemEstoqueController {
                         .collect(Collectors.toList());
                 comboBoxProduto.setItems(FXCollections.observableArrayList(filteredList));
                 if (!filteredList.isEmpty() && !comboBoxProduto.isShowing()) {
-                    comboBoxProduto.show(); // Mostrar o dropdown se não estiver vazio
+                    comboBoxProduto.show(); // Mostrar o dropdown se n?o estiver vazio
                 }
             }
         });
@@ -134,7 +131,7 @@ public class LancarItemEstoqueController {
             }
         });
 
-        // Adiciona listeners para habilitar/desabilitar botões
+        // Adiciona listeners para habilitar/desabilitar bot?es
         comboBoxProduto.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             buttonAdicionar.setDisable(newVal == null || textFieldQuantidade.getText().trim().isEmpty());
         });
@@ -172,7 +169,7 @@ public class LancarItemEstoqueController {
                 return;
             }
             if (itensLancamento.stream().anyMatch(il -> il.getItem().getId() == itemSelecionado.getId())) {
-                AlertHelper.showError("Erro", "Este item já foi adicionado ao lançamento.");
+                AlertHelper.showError("Erro", "Este item j? foi adicionado ao lan?amento.");
                 return;
             }
 
@@ -182,11 +179,11 @@ public class LancarItemEstoqueController {
             textFieldCusto.clear();
             buttonAdicionar.setDisable(true);
         } catch (NumberFormatException e) {
-            AlertHelper.showError("Erro", "Por favor, insira um número válido.");
+            AlertHelper.showError("Erro", "Por favor, insira um n?mero v?lido.");
         }
     }
 
-    // Manipula a edição da quantidade na TableView
+    // Manipula a edi??o da quantidade na TableView
     @FXML
     private void handleEditarQuantidade(TableColumn.CellEditEvent<ItemLancamento, Double> event) {
         ItemLancamento itemLancamento = event.getRowValue();
@@ -194,22 +191,22 @@ public class LancarItemEstoqueController {
 
         if (novaQuantidade <= 0) {
             AlertHelper.showError("Erro", "A quantidade deve ser maior que zero.");
-            tableViewItens.refresh(); // Atualiza a TableView para reverter a edição
+            tableViewItens.refresh(); // Atualiza a TableView para reverter a edi??o
             return;
         }
 
         itemLancamento.setQuantidade(novaQuantidade);
     }
 
-    // Manipula a edição do preço de custo na TableView
+    // Manipula a edi??o do pre?o de custo na TableView
     @FXML
     private void handleEditarCusto(TableColumn.CellEditEvent<ItemLancamento, Double> event) {
         ItemLancamento itemLancamento = event.getRowValue();
         double novoCusto = event.getNewValue();
 
         if (novoCusto <= 0) {
-            AlertHelper.showError("Erro", "O preço de custo deve ser maior que zero.");
-            tableViewItens.refresh(); // Atualiza a TableView para reverter a edição
+            AlertHelper.showError("Erro", "O pre?o de custo deve ser maior que zero.");
+            tableViewItens.refresh(); // Atualiza a TableView para reverter a edi??o
             return;
         }
 
@@ -243,12 +240,12 @@ public class LancarItemEstoqueController {
     @FXML
     private void handleLancar(ActionEvent event) {
         if (itensLancamento.isEmpty()) {
-            AlertHelper.showWarning("Aviso", "Adicione itens ao lançamento antes de prosseguir.");
+            AlertHelper.showWarning("Aviso", "Adicione itens ao lan?amento antes de prosseguir.");
             return;
         }
 
-        // Confirmação do usuário
-        Optional<ButtonType> result = AlertHelper.showConfirmation("Lançar Itens", "Confirmação", "Tem certeza que deseja lançar os itens no estoque?");
+        // Confirma??o do usu?rio
+        Optional<ButtonType> result = AlertHelper.showConfirmation("Lan?ar Itens", "Confirma??o", "Tem certeza que deseja lan?ar os itens no estoque?");
         if (result.isPresent() && result.get() == ButtonType.YES) {
             // Mapa para armazenar ItemId e um objeto LancamentoItem
             Map<Integer, LancamentoItem> itemQuantidadeMap = new HashMap<>();
@@ -258,11 +255,11 @@ public class LancarItemEstoqueController {
             }
 
             try {
-                // Chama o método do serviço para lançar os itens com tratamento de dependências
+                // Chama o m?todo do servi?o para lan?ar os itens com tratamento de depend?ncias
                 List<String> erros = itemService.lancarItensNoEstoqueComDependencias(itemQuantidadeMap);
 
                 if (erros.isEmpty()) {
-                    AlertHelper.showSuccess("Os itens foram lançados com sucesso no estoque.");
+                    AlertHelper.showSuccess("Os itens foram lan?ados com sucesso no estoque.");
                     itensLancamento.clear(); // Limpa a TableView
                 } else {
                     String mensagemErros = erros.stream().collect(Collectors.joining("\n"));
@@ -271,7 +268,7 @@ public class LancarItemEstoqueController {
                 }
 
             } catch (Exception e) {
-                AlertHelper.showError("Erro", "Ocorreu um erro ao lançar os itens no estoque: " + e.getMessage());
+                AlertHelper.showError("Erro", "Ocorreu um erro ao lan?ar os itens no estoque: " + e.getMessage());
             }
         }
     }
@@ -287,8 +284,8 @@ public class LancarItemEstoqueController {
         itensLancamento.clear();
         buttonAdicionar.setDisable(true);
 
-        // Fecha a tela (ou redireciona para outra tela, se aplicável)
-        // ... (código para fechar a janela) ...
+        // Fecha a tela (ou redireciona para outra tela, se aplic?vel)
+        // ... (c?digo para fechar a janela) ...
     }
 
     private void carregarCategorias() {
@@ -296,7 +293,7 @@ public class LancarItemEstoqueController {
             List<Categoria> categorias = categoriaService.listarCategorias();
             comboBoxCategoria.setItems(FXCollections.observableArrayList(categorias));
         } catch (Exception e) {
-            AlertHelper.showError("Erro", "Não foi possível carregar as categorias: " + e.getMessage());
+            AlertHelper.showError("Erro", "N?o foi poss?vel carregar as categorias: " + e.getMessage());
         }
     }
 
@@ -307,7 +304,7 @@ public class LancarItemEstoqueController {
             comboBoxProduto.getSelectionModel().clearSelection();
             comboBoxProduto.getEditor().clear();
         } catch (Exception e) {
-            AlertHelper.showError("Erro", "Não foi possível carregar os itens da categoria selecionada: " + e.getMessage());
+            AlertHelper.showError("Erro", "N?o foi poss?vel carregar os itens da categoria selecionada: " + e.getMessage());
         }
     }
 

@@ -3,7 +3,6 @@
 package BackEnd.model.dao.interfaces;
 
 import BackEnd.model.entity.Categoria;
-import BackEnd.model.entity.Item;
 
 import java.util.List;
 

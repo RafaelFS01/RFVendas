@@ -3,7 +3,6 @@ package BackEnd.controller;
 import BackEnd.model.entity.Item;
 import BackEnd.model.service.ItemService;
 import BackEnd.util.AlertHelper;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +14,6 @@ import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class SelecionarItensController {
 
@@ -73,7 +71,7 @@ public class SelecionarItensController {
             if (item.getQuantidadeAtual() < item.getQuantidadeMinima()) {
                 status = "Estoque baixo";
             } else if (item.getQuantidadeAtual() == item.getQuantidadeEstoque()) {
-                status = "DisponÃ­vel";
+                status = "Disponível";
             } else {
                 status = "Em uso";
             }
@@ -92,7 +90,7 @@ public class SelecionarItensController {
                     Item currentItem = currentRow.getItem();
 
                     if (currentItem != null) {
-                        // Verifica se o item atual estÃ¡ na lista de itens selecionados
+                        // Verifica se o item atual está na lista de itens selecionados
                         boolean isSelected = itensSelecionados.contains(currentItem);
                         checkBox.setSelected(isSelected);
 
@@ -152,7 +150,7 @@ public class SelecionarItensController {
                     if (item.getQuantidadeAtual() < item.getQuantidadeMinima()) {
                         status = "Estoque baixo";
                     } else if (item.getQuantidadeAtual() == item.getQuantidadeEstoque()) {
-                        status = "DisponÃ­vel";
+                        status = "Disponível";
                     } else {
                         status = "Em uso";
                     }
@@ -161,11 +159,11 @@ public class SelecionarItensController {
                     }
                 }
 
-                return false; // NÃ£o corresponde ao filtro
+                return false; // Não corresponde ao filtro
             });
         });
 
-        // Adiciona os dados filtrados Ã  tabela
+        // Adiciona os dados filtrados à tabela
         tabelaItens.setItems(filteredData);
     }
 

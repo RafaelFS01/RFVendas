@@ -13,9 +13,7 @@ import javafx.stage.Stage;
 import BackEnd.model.entity.Categoria;
 import BackEnd.model.service.CategoriaService;
 import BackEnd.util.AlertHelper;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 
 import java.net.URL;
@@ -41,7 +39,7 @@ public class AdicionarDependenciaController implements Initializable {
         this.onDependenciaSalva = onDependenciaSalva;
     }
 
-    // Método para definir o ID do item dependente
+    // M?todo para definir o ID do item dependente
     public void setIdItemDependente(int idItemDependente) {
         this.idItemDependente = idItemDependente;
     }
@@ -85,7 +83,7 @@ public class AdicionarDependenciaController implements Initializable {
                 try {
                     carregarDependencias(newVal.getId());
                 } catch (Exception e) {
-                    AlertHelper.showError("Erro", "Falha ao carregar dependências: " + e.getMessage());
+                    AlertHelper.showError("Erro", "Falha ao carregar depend?ncias: " + e.getMessage());
                     e.printStackTrace();
                 }
             } else {
@@ -129,7 +127,7 @@ public class AdicionarDependenciaController implements Initializable {
                         .collect(Collectors.toList());
                 dependenciaComboBox.setItems(FXCollections.observableArrayList(filteredList));
                 if (!filteredList.isEmpty() && !dependenciaComboBox.isShowing()) {
-                    dependenciaComboBox.show(); // Mostrar o dropdown se não estiver vazio
+                    dependenciaComboBox.show(); // Mostrar o dropdown se n?o estiver vazio
                 }
             }
         });
@@ -144,24 +142,6 @@ public class AdicionarDependenciaController implements Initializable {
 
     }
 
-    private void filterItems(String filter) {
-        Categoria categoriaSelecionada = categoriaComboBox.getValue();
-        if (categoriaSelecionada == null) return;
-
-        try {
-            List<Item> itensFiltrados = itemService.listarItensPorCategoria(categoriaSelecionada.getId())
-                    .stream()
-                    .filter(item -> item.getNome().toLowerCase().contains(filter.toLowerCase()))
-                    .collect(Collectors.toList());
-
-            Platform.runLater(() -> {
-                dependenciaComboBox.setItems(FXCollections.observableArrayList(itensFiltrados));
-                dependenciaComboBox.show();
-            });
-        } catch (Exception e) {
-            AlertHelper.showError("Erro", "Não foi possível filtrar os itens: " + e.getMessage());
-        }
-    }
 
     private void carregarDependencias(int idCategoria) {
         try {
@@ -170,7 +150,7 @@ public class AdicionarDependenciaController implements Initializable {
             dependenciaComboBox.getSelectionModel().clearSelection();
             dependenciaComboBox.getEditor().clear();
         } catch (Exception e) {
-            AlertHelper.showError("Erro", "Não foi possível carregar os itens da categoria selecionada: " + e.getMessage());
+            AlertHelper.showError("Erro", "N?o foi poss?vel carregar os itens da categoria selecionada: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -187,7 +167,7 @@ public class AdicionarDependenciaController implements Initializable {
     private void salvarDependencia(ActionEvent event) {
         try {
             if (categoriaComboBox.getValue() == null || dependenciaComboBox.getValue() == null || quantidadeField.getText().isEmpty()) {
-                AlertHelper.showError("Erro ao salvar", "Preencha todos os campos obrigatórios.");
+                AlertHelper.showError("Erro ao salvar", "Preencha todos os campos obrigat?rios.");
                 return;
             }
 
@@ -207,14 +187,14 @@ public class AdicionarDependenciaController implements Initializable {
                 onDependenciaSalva.accept(itemSelecionado);
             }
 
-            AlertHelper.showSuccess("Dependência salva com sucesso!");
+            AlertHelper.showSuccess("Depend?ncia salva com sucesso!");
             limparCampos();
             fecharModal(event);
 
         } catch (NumberFormatException e) {
-            AlertHelper.showError("Erro ao salvar", "Quantidade inválida.");
+            AlertHelper.showError("Erro ao salvar", "Quantidade inv?lida.");
         } catch (Exception e) {
-            AlertHelper.showError("Erro ao salvar", "Ocorreu um erro ao salvar a dependência: " + e.getMessage());
+            AlertHelper.showError("Erro ao salvar", "Ocorreu um erro ao salvar a depend?ncia: " + e.getMessage());
             e.printStackTrace();
         }
     }

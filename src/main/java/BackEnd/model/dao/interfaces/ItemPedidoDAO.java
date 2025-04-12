@@ -2,7 +2,6 @@ package BackEnd.model.dao.interfaces;
 
 import BackEnd.model.entity.ItemPedido;
 
-import java.sql.Connection;
 import java.util.List;
 
 public interface ItemPedidoDAO {
