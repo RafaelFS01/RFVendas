@@ -88,12 +88,25 @@ public class MainController {
 
     @FXML
     private void mostrarListaEquipamentos() {
-        carregarFXML("/fxml/ListarItens.fxml");
-    }
+        try {
+            ConnectionFactory.importarBancoDeDados("BACKUP.2024"); // Mantido do original
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListarItens.fxml"));
+            Parent root = loader.load();
 
-    @FXML
-    private void mostrarListaCompras() {
-        carregarFXML("/fxml/ListarCompras.fxml");
+            // *** OBTÉM O CONTROLLER E INJETA A REFERÊNCIA ***
+            ListarItensController listarController = loader.getController();
+            listarController.setMainController(this); // Passa a instância atual do MainController
+
+            // Define o conteúdo na área principal
+            setAreaPrincipal(root); // Usa o método helper
+
+        } catch (Exception e) {
+            // Adicionar printStackTrace para diagnóstico detalhado!
+            System.err.println("Erro ao carregar FXML: /fxml/ListarItens.fxml");
+            e.printStackTrace(); // ESSENCIAL PARA DEBUG
+            AlertHelper.showError("Erro ao carregar tela",
+                    "Não foi possível carregar a tela de Listagem de Itens: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -103,9 +116,25 @@ public class MainController {
 
     @FXML
     private void mostrarListaFuncionarios() {
-        carregarFXML("/fxml/ListarClientes.fxml");
-    }
+        try {
+            ConnectionFactory.importarBancoDeDados("BACKUP.2024"); // Se mantiver
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListarClientes.fxml"));
+            Parent root = loader.load();
 
+            // Obtém o controller e injeta a referência 'this' (MainController)
+            ListarClientesController listarController = loader.getController();
+            listarController.setMainController(this);
+
+            setAreaPrincipal(root); // Exibe na área principal
+
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar FXML: /fxml/ListarClientes.fxml");
+            e.printStackTrace(); // Adiciona printStackTrace
+            AlertHelper.showError("Erro ao carregar tela",
+                    "Não foi possível carregar a tela de Listagem de Clientes: " + e.getMessage());
+        }
+        // carregarFXML("/fxml/ListarClientes.fxml"); // Método antigo substituído
+    }
     @FXML
     private void mostrarGerenciamentoUsuarios() {
         carregarFXML("/fxml/GerenciarPermissoes.fxml");

@@ -38,14 +38,12 @@
             <TableColumn fx:id="colunaId" text="Código" minWidth="80" maxWidth="100"/>
             <TableColumn fx:id="colunaNome" text="Nome" minWidth="150" maxWidth="300"/>
             <TableColumn fx:id="colunaQuantidadeAtual" text="Qtd. Atual" minWidth="125" maxWidth="100"/>
-            <TableColumn fx:id="colunaQuantidadeEstoque" text="Qtd. Total" minWidth="125" maxWidth="100"/>
+            <TableColumn fx:id="colunaQuantidadeEstoque" text="Qtd. Estoque" minWidth="125" maxWidth="100"/>
             <TableColumn fx:id="colunaQuantidadeMinima" text="Qtd. Mínima" minWidth="125" maxWidth="150"/>
             <TableColumn fx:id="colunaVenda" text="P. Venda" minWidth="100" maxWidth="100"/>
-            <TableColumn fx:id="colunaCusto" text="P. Custo" minWidth="100" maxWidth="100"/>
-            <TableColumn fx:id="colunaMedida" text="Und. Medida" minWidth="125" maxWidth="150"/>
             <TableColumn fx:id="colunaCategoria" text="Categoria" minWidth="100" maxWidth="100"/>
             <TableColumn fx:id="colunaStatus" text="Status" minWidth="100" maxWidth="100"/>
-            <TableColumn fx:id="colunaAcoes" text="Ações" minWidth="220" maxWidth="300"/>
+            <TableColumn fx:id="colunaAcoes" text="Ações" minWidth="300" maxWidth="300"/>
         </columns>
         <placeholder>
             <Label text="Nenhum item encontrado." style="-fx-font-size: 26;"/>

@@ -5,6 +5,7 @@ import BackEnd.model.service.GrupoService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -64,6 +65,11 @@ public class ListarClientesController implements Initializable {
 
     private final ClienteService clienteService;
     private ObservableList<Cliente> clientes;
+    private MainController mainController;
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     public ListarClientesController() {
         this.clienteService = new ClienteService();
@@ -187,30 +193,28 @@ public class ListarClientesController implements Initializable {
     }
 
     private void editarCliente(Cliente cliente) {
-        if (cliente != null) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/BackEnd/view/CadastrarCliente.fxml"));
-                VBox dialogContent = loader.load();
+        if (cliente == null) return;
+        if (mainController == null) { // Verifica se MainController foi injetado
+            AlertHelper.showError("Erro de Navegação", "MainController não definido.");
+            return;
+        }
 
-                CadastrarClienteController controller = loader.getController();
-                controller.carregarGrupos();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CadastrarCliente.fxml")); // Ajuste o caminho se necessário
+            Parent root = loader.load();
 
-                Stage dialogStage = new Stage();
-                dialogStage.setTitle("Editar Cliente");
-                dialogStage.initModality(Modality.APPLICATION_MODAL);
-                dialogStage.initStyle(StageStyle.DECORATED);
-                dialogStage.setResizable(false);
+            CadastrarClienteController cadastrarController = loader.getController();
+            // Chama um NOVO método no CadastrarClienteController para carregar dados
+            cadastrarController.carregarClienteParaEdicao(cliente.getId());
 
-                Scene scene = new Scene(dialogContent);
-                scene.getStylesheets().add(getClass().getResource("/BackEnd/styles/styles.css").toExternalForm());
+            mainController.setAreaPrincipal(root); // Usa MainController para exibir
 
-                dialogStage.setScene(scene);
-                dialogStage.showAndWait();
-
-                carregarClientes();
-            } catch (IOException e) {
-                AlertHelper.showError("Erro", "Erro ao abrir formulário de edição: " + e.getMessage());
-            }
+        } catch (IOException e) {
+            AlertHelper.showError("Erro ao Abrir Edição", "Não foi possível carregar '/fxml/CadastrarCliente.fxml': " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            AlertHelper.showError("Erro Inesperado", "Ocorreu um erro ao tentar editar o cliente: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

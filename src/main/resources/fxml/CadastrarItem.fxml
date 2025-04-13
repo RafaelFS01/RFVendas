@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.ImageView?> <!-- Import necessário -->
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
 <StackPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" styleClass="form-container"
            fx:controller="BackEnd.controller.CadastrarItemController">
 
     <!-- Container principal centralizado -->
-    <VBox alignment="CENTER" spacing="1" maxWidth="800">
+    <VBox alignment="CENTER" spacing="10" maxWidth="900">
         <!-- Cabeçalho -->
         <VBox styleClass="form-header" alignment="CENTER">
             <Label text="Cadastrar Novo Item" styleClass="form-title"/>
@@ -16,129 +27,128 @@
         </VBox>
 
         <!-- Container do formulário -->
-        <VBox styleClass="form-content-container" alignment="CENTER" minWidth="1100" maxWidth="1100">
+        <VBox styleClass="form-content-container" alignment="CENTER" minWidth="-Infinity" maxWidth="-Infinity">
             <padding>
-                <Insets top="20" right="5" bottom="20" left="1"/>
+                <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
 
             <!-- Grid do formulário -->
-            <GridPane hgap="10" vgap="15" alignment="CENTER">
+            <GridPane hgap="15" vgap="10" alignment="CENTER">
 
-                <!-- ID -->
-                <Label text="Código:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <TextField fx:id="idField" promptText="Digite o código do item" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <!-- Coluna 0 & 1: Dados Principais -->
+                <Label text="Código:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="idField" promptText="Digite o código" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-                <!-- Nome -->
-                <Label text="Nome:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <TextField fx:id="nomeField" promptText="Digite o nome do item" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label text="Nome:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <TextField fx:id="nomeField" promptText="Nome do item" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-                <!-- Descrição -->
-                <Label text="Descrição:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                <TextField fx:id="descricaoField" promptText="Digite a descrição" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <Label text="Descrição:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <TextField fx:id="descricaoField" promptText="Descrição detalhada" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-                <!-- Preço de Venda -->
-                <Label text="Preço de Venda:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                <TextField fx:id="precoVendaField" promptText="Digite o preço de venda" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                <Label text="Preço Venda:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                <TextField fx:id="precoVendaField" promptText="0.00" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-                <!-- Preço de Custo -->
-                <Label text="Preço de Custo:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-                <TextField fx:id="precoCustoField" promptText="Digite o preço de custo" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                <Label text="Preço Custo:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                <TextField fx:id="precoCustoField" promptText="0.00" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
-                <!-- Unidade de Medida -->
-                <Label text="Unidade de Medida:" styleClass="form-label"
-                       GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-                <TextField fx:id="unidadeMedidaField" promptText="Digite a unidade de medida" styleClass="form-field"
-                           GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                <Label text="Unidade Medida:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                <TextField fx:id="unidadeMedidaField" promptText="Ex: UN, KG, M" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-                <!-- Quantidade de Estoque -->
-                <Label text="Quantidade de Estoque:" styleClass="form-label"
-                       GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                <TextField fx:id="quantidadeEstoqueField" promptText="Digite a quantidade em estoque" styleClass="form-field"
-                           GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                <!-- Coluna 2 & 3: Estoque, Categoria, Dependências -->
+                <Label text="Qtd. Estoque:" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                <TextField fx:id="quantidadeEstoqueField" promptText="0" styleClass="form-field" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
 
-                <!-- Quantidade Mínima -->
-                <Label text="Quantidade Mínima:" styleClass="form-label"
-                       GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                <TextField fx:id="quantidadeMinimaField" promptText="Digite a quantidade mínima" styleClass="form-field"
-                           GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                <Label text="Qtd. Mínima:" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                <TextField fx:id="quantidadeMinimaField" promptText="0" styleClass="form-field" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
 
-                <!-- Categoria -->
-                <Label text="Categoria:" styleClass="form-label"
-                       GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                <Label text="Categoria:" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
                 <HBox alignment="CENTER_LEFT" spacing="5" GridPane.columnIndex="3" GridPane.rowIndex="2">
-                    <ComboBox fx:id="categoriaComboBox" promptText="Selecione a categoria" styleClass="form-combo" HBox.hgrow="ALWAYS"/>
-                    <Button text="+" onAction="#abrirCadastroCategoria" styleClass="btn-add" />
+                    <ComboBox fx:id="categoriaComboBox" promptText="Selecione" styleClass="form-combo" HBox.hgrow="ALWAYS"/>
+                    <Button text="+" onAction="#abrirCadastroCategoria" styleClass="btn-add">
+                        <tooltip>
+                            <Tooltip text="Cadastrar nova categoria"/>
+                        </tooltip>
+                    </Button>
                 </HBox>
 
-                <Label fx:id="dependencia1Label" text="Dependência 1:" styleClass="form-label"
-                       visible="false" managed="false"
-                       GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-                <TextField fx:id="dependencia1Field" styleClass="form-field"
-                           visible="false" managed="false" editable="false"
-                           GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+                <!-- Seção Dependências -->
+                <Label fx:id="dependencia1Label" text="Dependência 1:" styleClass="form-label" visible="false" managed="false" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                <TextField fx:id="dependencia1Field" styleClass="form-field" visible="false" managed="false" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+                <Button fx:id="adicionarDependencia1Button" text="Adicionar Dependência 1" onAction="#abrirAdicionarDependencia1" visible="false" managed="false" styleClass="btn-add" GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
 
-                <Label fx:id="dependencia2Label" text="Dependência 2:" styleClass="form-label"
-                       visible="false" managed="false"
-                       GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-                <TextField fx:id="dependencia2Field" styleClass="form-field"
-                           visible="false" managed="false" editable="false"
-                           GridPane.columnIndex="3" GridPane.rowIndex="4"/>
+                <Label fx:id="dependencia2Label" text="Dependência 2:" styleClass="form-label" visible="false" managed="false" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+                <TextField fx:id="dependencia2Field" styleClass="form-field" visible="false" managed="false" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="4"/>
+                <Button fx:id="adicionarDependencia2Button" text="Adicionar Dependência 2" onAction="#abrirAdicionarDependencia2" visible="false" managed="false" styleClass="btn-add" GridPane.columnIndex="2" GridPane.rowIndex="4" GridPane.columnSpan="2"/>
 
-                <Label fx:id="dependencia3Label" text="Dependência 3:" styleClass="form-label"
-                       visible="false" managed="false"
-                       GridPane.columnIndex="2" GridPane.rowIndex="5"/>
-                <TextField fx:id="dependencia3Field" styleClass="form-field"
-                           visible="false" managed="false" editable="false"
-                           GridPane.columnIndex="3" GridPane.rowIndex="5"/>
+                <Label fx:id="dependencia3Label" text="Dependência 3:" styleClass="form-label" visible="false" managed="false" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+                <TextField fx:id="dependencia3Field" styleClass="form-field" visible="false" managed="false" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="5"/>
+                <Button fx:id="adicionarDependencia3Button" text="Adicionar Dependência 3" onAction="#abrirAdicionarDependencia3" visible="false" managed="false" styleClass="btn-add" GridPane.columnIndex="2" GridPane.rowIndex="5" GridPane.columnSpan="2"/>
 
-                <Label fx:id="dependencia4Label" text="Dependência 4:" styleClass="form-label"
-                       visible="false" managed="false"
-                       GridPane.columnIndex="2" GridPane.rowIndex="6"/>
-                <TextField fx:id="dependencia4Field" styleClass="form-field"
-                           visible="false" managed="false" editable="false"
-                           GridPane.columnIndex="3" GridPane.rowIndex="6"/>
+                <Label fx:id="dependencia4Label" text="Dependência 4:" styleClass="form-label" visible="false" managed="false" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+                <TextField fx:id="dependencia4Field" styleClass="form-field" visible="false" managed="false" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="6"/>
+                <Button fx:id="adicionarDependencia4Button" text="Adicionar Dependência 4" onAction="#abrirAdicionarDependencia4" visible="false" managed="false" styleClass="btn-add" GridPane.columnIndex="2" GridPane.rowIndex="6" GridPane.columnSpan="2"/>
 
-                <Button fx:id="adicionarDependencia1Button" text="Adicionar Dependência 1" onAction="#abrirAdicionarDependencia1"
-                        visible="false" managed="false" styleClass="btn-add"
-                        GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-                <Button fx:id="adicionarDependencia2Button" text="Adicionar Dependência 2" onAction="#abrirAdicionarDependencia2"
-                        visible="false" managed="false" styleClass="btn-add"
-                        GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-                <Button fx:id="adicionarDependencia3Button" text="Adicionar Dependência 3" onAction="#abrirAdicionarDependencia3"
-                        visible="false" managed="false" styleClass="btn-add"
-                        GridPane.columnIndex="2" GridPane.rowIndex="5"/>
-                <Button fx:id="adicionarDependencia4Button" text="Adicionar Dependência 4" onAction="#abrirAdicionarDependencia4"
-                        visible="false" managed="false" styleClass="btn-add"
-                        GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+                <!-- Definição das Colunas do GridPane -->
+                <columnConstraints>
+                    <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="120.0"/> <!-- Label Col 0 -->
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="200.0"/>              <!-- Field Col 1 -->
+                    <ColumnConstraints hgrow="NEVER" minWidth="120.0" prefWidth="140.0"/> <!-- Label Col 2 -->
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="200.0"/>              <!-- Field Col 3 -->
+                </columnConstraints>
 
-            </GridPane>
+            </GridPane> <!-- Fim do GridPane -->
 
-            <!-- Botões -->
+            <!-- Seção de Upload de Imagem -->
+            <HBox spacing="20" alignment="CENTER_LEFT" styleClass="image-upload-section">
+                <VBox.margin>
+                    <Insets top="25.0" bottom="10.0"/>
+                </VBox.margin>
+                <padding>
+                    <Insets left="10.0"/>
+                </padding>
+
+                <!-- Preview da Imagem -->
+                <VBox alignment="CENTER" spacing="5">
+                    <Label text="Imagem do Item:" styleClass="form-label"/>
+                    <!-- Verifique se fx:id="imageViewItem" corresponde ao @FXML -->
+                    <ImageView fx:id="imageViewItem" fitHeight="120.0" fitWidth="120.0" preserveRatio="true" style="-fx-border-color: lightgrey; -fx-border-width: 1; -fx-background-color: #f8f8f8;"/>
+                    <!-- Verifique se fx:id="lblCaminhoImagem" corresponde ao @FXML -->
+                    <Label fx:id="lblCaminhoImagem" text="Nenhuma imagem" style="-fx-font-size: 10px; -fx-text-fill: grey;" alignment="CENTER" maxWidth="120.0" wrapText="true"/>
+                </VBox>
+
+                <!-- Botão de Seleção -->
+                <!-- Verifique se fx:id="btnSelecionarImagem" corresponde ao @FXML -->
+                <Button fx:id="btnSelecionarImagem" text="Selecionar Imagem..." onAction="#selecionarImagem" styleClass="btn-secondary" alignment="CENTER_LEFT">
+                    <HBox.margin>
+                        <Insets top="40.0"/>
+                    </HBox.margin>
+                </Button>
+            </HBox>
+            <!-- Fim da Seção de Upload -->
+
+
+            <!-- Botões de Ação (Salvar/Limpar) -->
             <HBox spacing="10" alignment="CENTER">
                 <padding>
                     <Insets top="20"/>
                 </padding>
-                <Button fx:id="salvarItem" text="Salvar" onAction="#salvarItem" styleClass="btn-primary"/>
-                <Button fx:id="salvarDependencia" text="Finalizar" onAction="#salvarDependencia" styleClass="btn-primary"
-                        visible="false" managed="false"/>
-                <Button text="Limpar" onAction="#limparCampos" styleClass="btn-secondary"/>
+                <!-- Verifique os fx:id destes botões -->
+                <Button fx:id="salvarItem" text="Salvar Item" onAction="#salvarItem" styleClass="btn-primary" prefWidth="120.0"/>
+                <Button fx:id="salvarDependencia" text="Finalizar Dependências" onAction="#salvarDependencia" styleClass="btn-success" visible="false" managed="false" prefWidth="180.0"/>
+                <Button text="Limpar Campos" onAction="#limparCampos" styleClass="btn-secondary" prefWidth="150.0"/> <!-- Este botão não precisa de fx:id se não for referenciado no controller -->
             </HBox>
-        </VBox>
-    </VBox>
 
-    <!-- Margem externa -->
+        </VBox> <!-- Fim do form-content-container -->
+    </VBox> <!-- Fim do VBox principal -->
+
+    <!-- Margem externa geral -->
     <padding>
-        <Insets top="20" right="5" bottom="20" left="5"/>
+        <Insets top="20" right="20" bottom="20" left="20"/> <!-- Ajustado padding geral -->
     </padding>
+
+    <!-- Folha de Estilo -->
+    <stylesheets>
+        <URL value="@../styles/styles.css"/> <!-- Verifique se este caminho está correto -->
+    </stylesheets>
 
 </StackPane>

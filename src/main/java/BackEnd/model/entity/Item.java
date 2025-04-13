@@ -13,6 +13,8 @@ public class Item {
     private Double quantidadeMinima;
     private Double quantidadeAtual;
     private Categoria categoria; // Categoria principal
+    private String imagemPath; // Ou imagemNome
+
 
     // Getters e Setters
 
@@ -95,4 +97,14 @@ public class Item {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
+
+    // Adicionar Getter e Setter correspondente
+    public String getImagemPath() {
+        return imagemPath;
+    }
+
+    public void setImagemPath(String imagemPath) {
+        this.imagemPath = imagemPath;
+    }
+
 }

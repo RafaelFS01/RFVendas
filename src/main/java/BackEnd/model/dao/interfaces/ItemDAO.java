@@ -1,10 +1,9 @@
-// Em src/main/java/seuprojeto/model/dao/interfaces/ItemDAO.java
-
 package BackEnd.model.dao.interfaces;
 
 import BackEnd.model.entity.Item;
 import java.util.List;
 
+// NENHUMA ALTERAÇÃO NECESSÁRIA AQUI
 public interface ItemDAO {
     void salvarItem(Item item) throws Exception;
     void atualizar(Item item) throws Exception;

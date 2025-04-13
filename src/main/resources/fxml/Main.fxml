@@ -36,7 +36,7 @@
                 <Button fx:id="btnRegistrarPedido" onAction="#mostrarRegistrarPedido" styleClass="menu-button"
                         text="📦 Registrar Pedido" />
                 <Button fx:id="btnListarPedidos" onAction="#mostrarListarPedidos" styleClass="menu-button"
-                        text="📦 Listar Pedidos" />
+                        text="📋 Listar Pedidos" />
 
                 <!-- Menu Items -->
                 <Label fx:id="labelEquipamentos" styleClass="menu-section" text="Itens" />
@@ -46,15 +46,13 @@
                         text="📦 Lançar Item" />
                 <Button fx:id="btnListarEquip" onAction="#mostrarListaEquipamentos" styleClass="menu-button"
                         text="📋 Listar Itens" />
-                <Button onAction="#mostrarListaCompras" styleClass="menu-button"
-                        text="📋 Listar Compras" />
 
 
-                <Label fx:id="labelFuncionarios" styleClass="menu-section" text="FUNCIONÁRIOS" />
+                <Label fx:id="labelFuncionarios" styleClass="menu-section" text="CLIENTES" />
                 <Button fx:id="btnCadastrarFunc" onAction="#mostrarCadastroFuncionario" styleClass="menu-button"
-                        text="👤 Cadastrar Funcionários" />
+                        text="👤 Cadastrar Clientes" />
                 <Button fx:id="btnListarFunc" onAction="#mostrarListaFuncionarios" styleClass="menu-button"
-                        text="👥 Listar Funcionários" />
+                        text="👥 Listar Clientes" />
 
 
                 <Label fx:id="labelAdministracao" styleClass="menu-section" text="ADMINISTRAÇÃO" />

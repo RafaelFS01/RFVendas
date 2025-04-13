@@ -13,6 +13,10 @@ import BackEnd.model.entity.Item;
 import BackEnd.model.service.ItemService;
 import BackEnd.util.AlertHelper;
 import BackEnd.util.ConnectionFactory;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+// (Outros imports existentes)
+import java.io.IOException;
 
 import java.net.URL;
 import java.util.Optional;
@@ -30,8 +34,6 @@ public class ListarItensController implements Initializable {
     @FXML private TableColumn<Item, Double> colunaQuantidadeEstoque;
     @FXML private TableColumn<Item, Double> colunaQuantidadeMinima;
     @FXML private TableColumn<Item, Double> colunaVenda;
-    @FXML private TableColumn<Item, Double> colunaCusto;
-    @FXML private TableColumn<Item, String> colunaMedida;
     @FXML private TableColumn<Item, String> colunaCategoria;
     @FXML private TableColumn<Item, String> colunaStatus;
     @FXML private TableColumn<Item, Void> colunaAcoes;
@@ -40,6 +42,11 @@ public class ListarItensController implements Initializable {
     private final ItemService itemService;
     private final DependenciaService dependenciaService;
     private ObservableList<Item> items;
+    private MainController mainController;
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     public ListarItensController() {
         this.itemService = new ItemService();
@@ -100,14 +107,6 @@ public class ListarItensController implements Initializable {
                 new SimpleDoubleProperty(data.getValue().getPrecoVenda()).asObject()
         );
 
-        colunaCusto.setCellValueFactory(data ->
-                new SimpleDoubleProperty(data.getValue().getPrecoCusto()).asObject()
-        );
-
-        colunaMedida.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(data.getValue().getUnidadeMedida())
-        );
-
         colunaCategoria.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getCategoria().getNome())
         );
@@ -139,6 +138,14 @@ public class ListarItensController implements Initializable {
                 btnAvaria.getStyleClass().add("btn-avaria");
 
                 btnDeletar.setOnAction(e -> deletarEquipamento(getTableRow().getItem()));
+
+                // *** ADICIONAR AÇÃO PARA O BOTÃO EDITAR ***
+                btnEditar.setOnAction(e -> {
+                    Item itemSelecionado = getTableRow().getItem();
+                    if (itemSelecionado != null) {
+                        editarItemAction(itemSelecionado); // Chama o novo método
+                    }
+                });
 
                 box.getChildren().addAll(btnEditar, btnDeletar, btnAvaria);
             }
@@ -248,6 +255,44 @@ public class ListarItensController implements Initializable {
             }
         } catch (Exception e) {
             AlertHelper.showError("Erro ao excluir equipamento", e.getMessage());
+        }
+    }
+
+    /**
+     * Carrega a tela de edição para o item selecionado na área principal.
+     * @param item O item a ser editado.
+     */
+    private void editarItemAction(Item item) {
+        if (item == null) {
+            AlertHelper.showWarning("Seleção Inválida", "Nenhum item selecionado para editar.");
+            return;
+        }
+        if (mainController == null) {
+            AlertHelper.showError("Erro de Configuração", "MainController não está definido. Não é possível navegar para a edição.");
+            System.err.println("MainController não injetado em ListarItensController.");
+            return;
+        }
+
+        try {
+            // Carrega o FXML da tela de cadastro/edição
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CadastrarItem.fxml"));
+            Parent root = loader.load(); // Carrega o nó raiz
+
+            // Obtém o controller da tela carregada
+            CadastrarItemController cadastrarController = loader.getController();
+
+            // Chama o método no CadastrarItemController para carregar os dados do item
+            cadastrarController.carregarItemParaEdicao(item.getId());
+
+            // Usa o MainController para exibir a tela carregada na área principal
+            mainController.setAreaPrincipal(root);
+
+        } catch (IOException e) {
+            AlertHelper.showError("Erro ao Carregar Tela", "Não foi possível carregar '/fxml/CadastrarItem.fxml': " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            AlertHelper.showError("Erro ao Abrir Edição", "Ocorreu um erro inesperado: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

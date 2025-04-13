@@ -137,4 +137,42 @@ public class ClienteService {
     public void deletar(String id) throws Exception{
         clienteDAO.deletar(id);
     }
+
+    // Em ClienteService.java
+    public Cliente buscarPorId(String id) throws Exception {
+        try {
+            return clienteDAO.buscarPorId(id);
+        } catch (Exception e) {
+            throw new Exception("Erro ao buscar cliente por ID: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Atualiza os dados de um cliente existente.
+     * @param cliente O Cliente com os dados atualizados.
+     * @throws Exception Se ocorrer erro de validação ou no DAO.
+     */
+    public void atualizarCliente(Cliente cliente) throws Exception {
+        // Realiza validações básicas (as mesmas do cadastro por enquanto)
+        validarCliente(cliente);
+
+        // Validação específica de atualização: CPF/CNPJ (não pode mudar, ou se mudar não pode colidir com outro)
+        // Como desabilitamos no controller, não precisamos validar colisão aqui.
+
+        // Verifica se o cliente realmente existe para atualizar
+        if (!existePorId(cliente.getId())) {
+            throw new Exception("Cliente com ID " + cliente.getId() + " não encontrado para atualização.");
+        }
+
+        // Verifica se o grupo informado existe, caso não seja nulo
+        if (cliente.getGrupo() != null && !grupoDAO.existePorId(cliente.getGrupo().getId())) {
+            throw new IllegalArgumentException("O grupo informado não existe.");
+        }
+
+        try {
+            clienteDAO.atualizar(cliente); // Chama o DAO
+        } catch (Exception e) {
+            throw new Exception("Erro ao atualizar cliente: " + e.getMessage(), e);
+        }
+    }
 }

@@ -30,7 +30,7 @@
         </columnResizePolicy>
         <columns>
             <TableColumn fx:id="colunaId" text="Código" minWidth="70"/>
-            <TableColumn fx:id="colunaNome" text="Nome" minWidth="150"/>
+            <TableColumn fx:id="colunaNome" text="Nome" minWidth="220"/>
             <TableColumn fx:id="colunaCpfCnpj" text="CPF/CNPJ" minWidth="120"/>
             <TableColumn fx:id="colunaLogradouro" text="Logradouro" minWidth="200"/>
             <TableColumn fx:id="colunaBairro" text="Bairro" minWidth="120"/>
@@ -40,9 +40,9 @@
             <TableColumn fx:id="colunaTelefone" text="Telefone" minWidth="120"/>
             <TableColumn fx:id="colunaEmail" text="Email" minWidth="150"/>
             <TableColumn fx:id="colunaComprador" text="Comprador" minWidth="120"/>
-            <TableColumn fx:id="colunaTipoCliente" text="Tipo de Cliente" minWidth="120"/>
+            <TableColumn fx:id="colunaTipoCliente" text="Tipo de Cliente" minWidth="135"/>
             <TableColumn fx:id="colunaGrupo" text="Grupo" minWidth="120"/>
-            <TableColumn fx:id="colunaAcoes" text="Ações" minWidth="140"/>
+            <TableColumn fx:id="colunaAcoes" text="Ações" minWidth="200"/>
         </columns>
         <placeholder>
             <Label text="Nenhum cliente encontrado." style="-fx-font-size: 26;"/>

@@ -6,6 +6,34 @@
   <component name="ChangeListManager">
     <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Estilos readaptados.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarClienteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarClienteController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarClientesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarClientesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarComprasController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarItensController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarItensController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarPedidosController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarPedidosController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/RegistrarPedidoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/RegistrarPedidoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/ItemDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/ItemDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/PedidoDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/PedidoDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/ItemDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/ItemDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/PedidoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/PedidoDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Item.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Pedido.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Pedido.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/TipoVenda.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ClienteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ClienteService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/CompraService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ItemService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/PedidoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/PedidoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/CadastrarItem.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/CadastrarItem.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarClientes.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ListarClientes.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarCompras.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarItens.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ListarItens.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarPedidos.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ListarPedidos.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/Main.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/Main.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/RegistrarPedido.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/RegistrarPedido.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/styles/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,8 +59,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/RafaelFS01/Flux.git&quot;,
-    &quot;accountId&quot;: &quot;4f01e433-accc-4d88-a2af-0ab5b05e0276&quot;
+    &quot;url&quot;: &quot;https://github.com/RafaelFS01/RFVendas.git&quot;,
+    &quot;accountId&quot;: &quot;a2bd3db2-fa13-45e7-a22f-e1ca12786f1a&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -116,6 +144,17 @@
     </task>
     <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Função de listagem de pedidos implementada.&#10;Ações de cancelamento e finalização de pedido funcionando perfeitamente.&#10;Ação de visualização de pedidos ainda não implementada.&#10;Ação de edição de pedidos provavelmente será alterada." />

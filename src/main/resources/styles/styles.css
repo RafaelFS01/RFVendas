@@ -481,7 +481,7 @@ tela-principal{
 
     .form-subtitle {
         -fx-font-size: 14px;
-        -fx-text-fill: black;
+        -fx-text-fill: white;
         -fx-font-family: 'Segoe UI';
     }
 

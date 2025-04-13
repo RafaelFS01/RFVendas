@@ -2,7 +2,7 @@ package BackEnd.controller;
 
 import BackEnd.model.entity.Pedido;
 import BackEnd.model.entity.StatusPedido;
-import BackEnd.model.entity.TipoVenda;
+// TipoVenda não é mais usado
 import BackEnd.model.service.PedidoService;
 import BackEnd.util.AlertHelper;
 import javafx.beans.property.SimpleObjectProperty;
@@ -15,19 +15,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class ListarPedidosController {
 
+    // --- FXML Elementos ---
     @FXML private TextField campoBusca;
-    @FXML private ComboBox<TipoVenda> filtroTipo;
     @FXML private ComboBox<StatusPedido> filtroStatus;
     @FXML private DatePicker dataInicial;
     @FXML private DatePicker dataFinal;
@@ -35,18 +36,20 @@ public class ListarPedidosController {
     @FXML private TableColumn<Pedido, Boolean> colunaSelecao;
     @FXML private TableColumn<Pedido, Integer> colunaId;
     @FXML private TableColumn<Pedido, String> colunaCliente;
-    @FXML private TableColumn<Pedido, TipoVenda> colunaTipo;
     @FXML private TableColumn<Pedido, LocalDate> colunaData;
+    @FXML private TableColumn<Pedido, LocalDate> colunaDataRetorno;
     @FXML private TableColumn<Pedido, Double> colunaValor;
     @FXML private TableColumn<Pedido, StatusPedido> colunaStatus;
     @FXML private TableColumn<Pedido, Void> colunaAcoes;
     @FXML private Button btnVisualizarPedido;
 
+    // --- Serviços e Dados ---
     private PedidoService pedidoService;
     private ObservableList<Pedido> pedidos;
     private ObservableList<Pedido> pedidosSelecionados = FXCollections.observableArrayList();
     private FilteredList<Pedido> filteredData;
     private MainController mainController;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
@@ -59,258 +62,318 @@ public class ListarPedidosController {
     @FXML
     private void initialize() {
         try {
-            pedidos = FXCollections.observableArrayList(pedidoService.listarPedidos());
+            pedidos = FXCollections.observableArrayList();
             filteredData = new FilteredList<>(pedidos, p -> true);
             tabelaPedidos.setItems(filteredData);
+
+            configurarFiltros();
+            configurarColunas();
+            carregarPedidos();
         } catch (Exception e) {
-            AlertHelper.showError("Erro ao carregar pedidos", e.getMessage());
+            AlertHelper.showError("Erro Fatal na Inicialização", "Não foi possível iniciar a tela de listagem de pedidos: " + e.getMessage());
+            e.printStackTrace();
         }
-        configurarFiltros();
-        configurarColunas();
-        configurarBusca();
-        carregarPedidos();
     }
 
     private void configurarFiltros() {
-        filtroTipo.setItems(FXCollections.observableArrayList(TipoVenda.values()));
-        filtroTipo.getItems().add(0, null);
-        filtroTipo.setConverter(new javafx.util.StringConverter<TipoVenda>() {
-            @Override
-            public String toString(TipoVenda tipoVenda) {
-                return tipoVenda == null ? "Todos" : tipoVenda.name();
-            }
-
-            @Override
-            public TipoVenda fromString(String string) {
-                return "Todos".equals(string) ? null : TipoVenda.valueOf(string);
-            }
-        });
-        filtroTipo.setValue(null);
-
+        // Configuração do Filtro de Status
         filtroStatus.setItems(FXCollections.observableArrayList(StatusPedido.values()));
         filtroStatus.getItems().add(0, null);
         filtroStatus.setConverter(new javafx.util.StringConverter<StatusPedido>() {
-            @Override
-            public String toString(StatusPedido statusPedido) {
-                return statusPedido == null ? "Todos" : statusPedido.name();
-            }
-
-            @Override
-            public StatusPedido fromString(String string) {
-                return "Todos".equals(string) ? null : StatusPedido.valueOf(string);
+            @Override public String toString(StatusPedido status) { return status == null ? "Todos" : formatarStatus(status); }
+            @Override public StatusPedido fromString(String string) {
+                if ("Todos".equals(string) || string == null) return null;
+                for (StatusPedido sp : StatusPedido.values()) { if (formatarStatus(sp).equals(string)) return sp; }
+                return null;
             }
         });
         filtroStatus.setValue(null);
 
-        campoBusca.textProperty().addListener((obs, old, newV) -> aplicarFiltros());
-        filtroTipo.valueProperty().addListener((obs, old, newV) -> aplicarFiltros());
-        filtroStatus.valueProperty().addListener((obs, old, newV) -> aplicarFiltros());
-        dataInicial.valueProperty().addListener((obs, old, newV) -> aplicarFiltros());
-        dataFinal.valueProperty().addListener((obs, old, newV) -> aplicarFiltros());
+        // Listeners para Reaplicar Filtros
+        campoBusca.textProperty().addListener((obs, oldVal, newVal) -> aplicarFiltros());
+        filtroStatus.valueProperty().addListener((obs, oldVal, newVal) -> aplicarFiltros());
+        dataInicial.valueProperty().addListener((obs, oldVal, newVal) -> aplicarFiltros());
+        dataFinal.valueProperty().addListener((obs, oldVal, newVal) -> aplicarFiltros());
+    }
+
+    private String formatarStatus(StatusPedido status) {
+        if (status == null) return "";
+        switch (status) {
+            case EM_ANDAMENTO: return "Em Andamento";
+            case CONCLUIDO: return "Concluído";
+            case CANCELADO: return "Cancelado";
+            default: return status.name();
+        }
     }
 
     private void configurarColunas() {
         colunaId.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getId()));
-        colunaCliente.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCliente().getNome()));
-        colunaTipo.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getTipoVenda()));
+        colunaCliente.setCellValueFactory(cellData -> new SimpleStringProperty(
+                cellData.getValue().getCliente() != null ? cellData.getValue().getCliente().getNome() : "<Inválido>"
+        ));
         colunaData.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDataPedido()));
+        colunaData.setCellFactory(formatarDataCellFactory());
+
+        colunaDataRetorno.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDataRetorno()));
+        colunaDataRetorno.setCellFactory(formatarDataCellFactory());
+
         colunaValor.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getValorTotal()));
+        colunaValor.setCellFactory(formatarMoedaCellFactory());
+
         colunaStatus.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatus()));
+        colunaStatus.setCellFactory(formatarStatusCellFactory());
 
-        colunaSelecao.setCellFactory(tc -> new CheckBoxTableCell<Pedido, Boolean>() {
-            private CheckBox checkBox;
+        colunaAcoes.setCellFactory(createActionCellFactory()); // Modificado para incluir "Concluir"
 
+        tabelaPedidos.setEditable(true);
+    }
+
+    private Callback<TableColumn<Pedido, LocalDate>, TableCell<Pedido, LocalDate>> formatarDataCellFactory() {
+        return column -> new TableCell<>() {
             @Override
-            public void updateItem(Boolean item, boolean empty) {
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.format(dateFormatter));
+            }
+        };
+    }
+
+    private Callback<TableColumn<Pedido, Double>, TableCell<Pedido, Double>> formatarMoedaCellFactory() {
+        return tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double price, boolean empty) {
+                super.updateItem(price, empty);
+                setText(empty || price == null ? null : String.format("R$ %.2f", price));
+            }
+        };
+    }
+
+    private Callback<TableColumn<Pedido, StatusPedido>, TableCell<Pedido, StatusPedido>> formatarStatusCellFactory() {
+        return tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(StatusPedido status, boolean empty) {
+                super.updateItem(status, empty);
+                if (empty || status == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(formatarStatus(status));
+                    String style = "-fx-font-weight: bold; ";
+                    switch (status) {
+                        case EM_ANDAMENTO: style += "-fx-text-fill: #e67e22;"; break;
+                        case CONCLUIDO:    style += "-fx-text-fill: #2ecc71;"; break;
+                        case CANCELADO:    style += "-fx-text-fill: #e74c3c;"; break;
+                        default:           style = ""; break;
+                    }
+                    setStyle(style);
+                }
+            }
+        };
+    }
+
+    /**
+     * Cria um CellFactory para a coluna de Ações (botões).
+     * Inclui agora o botão "Concluir".
+     * @return Callback para o CellFactory.
+     */
+    private Callback<TableColumn<Pedido, Void>, TableCell<Pedido, Void>> createActionCellFactory() {
+        return param -> new TableCell<>() {
+            // Botões de ação
+            private final Button btnCancelar = new Button("Cancelar");
+            private final Button btnEditar = new Button("Editar");
+            private final Button btnConcluir = new Button("Concluir"); // NOVO BOTÃO
+            private final HBox pane = new HBox(5); // Espaçamento 5
+
+            { // Bloco de inicialização
+                // Adiciona estilos CSS
+                btnCancelar.getStyleClass().addAll("btn-delete", "action-button");
+                btnEditar.getStyleClass().addAll("btn-edit", "action-button");
+                btnConcluir.getStyleClass().addAll("btn-avaria", "action-button"); // Estilo para concluir
+
+                // Define as ações usando a referência de método da classe externa correta
+                btnCancelar.setOnAction(event -> handleAction(ListarPedidosController.this::cancelarPedido));
+                btnEditar.setOnAction(event -> handleAction(ListarPedidosController.this::editarPedido));
+                btnConcluir.setOnAction(event -> handleAction(ListarPedidosController.this::chamarConcluirPedido)); // Ação para concluir
+
+                // Adiciona os botões ao HBox (incluindo o novo)
+                pane.getChildren().addAll(btnCancelar, btnEditar, btnConcluir);
+                pane.setAlignment(javafx.geometry.Pos.CENTER);
+            }
+
+            // Método auxiliar para obter o pedido e chamar a ação
+            private void handleAction(java.util.function.Consumer<Pedido> action) {
+                Pedido pedido = getTableView().getItems().get(getIndex());
+                if (pedido != null) {
+                    action.accept(pedido);
+                }
+            }
+
+            // Atualiza a célula (habilita/desabilita botões)
+            @Override
+            protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    if (checkBox == null) {
-                        checkBox = new CheckBox();
-                        checkBox.setOnAction(event -> {
-                            Pedido pedido = getTableView().getItems().get(getIndex());
-                            if (checkBox.isSelected()) {
-                                pedidosSelecionados.add(pedido);
-                            } else {
-                                pedidosSelecionados.remove(pedido);
-                            }
-                        });
+                    Pedido pedido = getTableView().getItems().get(getIndex());
+                    if (pedido != null) {
+                        boolean isConcluido = pedido.getStatus() == StatusPedido.CONCLUIDO;
+                        boolean isCancelado = pedido.getStatus() == StatusPedido.CANCELADO;
+                        boolean isEmAndamento = pedido.getStatus() == StatusPedido.EM_ANDAMENTO;
+
+                        btnEditar.setDisable(isConcluido || isCancelado); // Não edita concluído ou cancelado
+                        btnCancelar.setDisable(isConcluido || isCancelado); // Não cancela concluído ou cancelado
+                        btnConcluir.setDisable(!isEmAndamento); // SÓ habilita concluir se estiver Em Andamento
+
+                        setGraphic(pane);
+                    } else {
+                        setGraphic(null);
                     }
-                    // Atualiza o estado do CheckBox com base na lista de pedidos selecionados
-                    checkBox.setSelected(pedidosSelecionados.contains(getTableView().getItems().get(getIndex())));
-                    setGraphic(checkBox);
                 }
             }
-        });
-
-        colunaAcoes.setCellFactory(configurarColunaAcoes());
-    }
-
-    private void configurarBusca() {
-        // Já configurado no listener do campoBusca em configurarFiltros()
+        };
     }
 
     private void carregarPedidos() {
         try {
-            // Atualiza o ObservableList 'pedidos' e reconfigura o filtro
+            pedidosSelecionados.clear();
             pedidos.setAll(pedidoService.listarPedidos());
-            aplicarFiltros();
+            tabelaPedidos.sort();
         } catch (Exception e) {
-            AlertHelper.showError("Erro ao carregar pedidos", e.getMessage());
+            AlertHelper.showError("Erro ao Carregar Pedidos", "Falha ao buscar dados: " + e.getMessage());
+            e.printStackTrace();
+            pedidos.clear();
         }
     }
 
     private void aplicarFiltros() {
-        // Usa o filteredData já criado no initialize para aplicar os filtros
         filteredData.setPredicate(pedido -> {
-            String textoBusca = campoBusca.getText().toLowerCase();
-            boolean matchBusca = (pedido.getCliente().getNome().toLowerCase().contains(textoBusca)
-                    || String.valueOf(pedido.getId()).toLowerCase().contains(textoBusca));
+            if (pedido == null) return false;
 
-            TipoVenda tipo = filtroTipo.getValue();
-            boolean matchTipo = (tipo == null || pedido.getTipoVenda().equals(tipo));
+            String textoBusca = campoBusca.getText() == null ? "" : campoBusca.getText().toLowerCase().trim();
+            boolean matchBusca = textoBusca.isEmpty() ||
+                    (pedido.getCliente() != null && pedido.getCliente().getNome().toLowerCase().contains(textoBusca)) ||
+                    String.valueOf(pedido.getId()).contains(textoBusca);
 
             StatusPedido status = filtroStatus.getValue();
             boolean matchStatus = (status == null || pedido.getStatus().equals(status));
 
             boolean matchData = true;
-            if (dataInicial.getValue() != null && dataFinal.getValue() != null) {
-                LocalDate dataIni = dataInicial.getValue();
-                LocalDate dataFim = dataFinal.getValue();
-                matchData = !pedido.getDataPedido().isBefore(dataIni) && !pedido.getDataPedido().isAfter(dataFim);
+            LocalDate dataPed = pedido.getDataPedido();
+            LocalDate dataIni = dataInicial.getValue();
+            LocalDate dataFim = dataFinal.getValue();
+            if (dataPed != null) {
+                if (dataIni != null && dataPed.isBefore(dataIni)) matchData = false;
+                if (matchData && dataFim != null && dataPed.isAfter(dataFim)) matchData = false;
+            } else {
+                matchData = (dataIni == null && dataFim == null);
             }
 
-            return matchBusca && matchTipo && matchStatus && matchData;
+            return matchBusca && matchStatus && matchData;
         });
-    }
-
-    private Callback<TableColumn<Pedido, Void>, TableCell<Pedido, Void>> configurarColunaAcoes() {
-        return new Callback<>() {
-            @Override
-            public TableCell<Pedido, Void> call(final TableColumn<Pedido, Void> param) {
-                return new TableCell<>() {
-                    private final Button btnCancelar = new Button("Cancelar");
-                    private final Button btnEditar = new Button("Editar");
-                    private final Button btnFinalizar = new Button("Finalizar");
-                    private final HBox pane = new HBox(5);
-
-                    {
-                        btnCancelar.setOnAction(event -> {
-                            Pedido pedido = getTableView().getItems().get(getIndex());
-                            cancelarPedido(pedido);
-                        });
-                        btnCancelar.getStyleClass().add("btn-delete");
-
-                        btnEditar.setOnAction(event -> {
-                            Pedido pedido = getTableView().getItems().get(getIndex());
-                            editarPedido(pedido);
-                        });
-                        btnEditar.getStyleClass().add("btn-edit");
-
-                        btnFinalizar.setOnAction(event -> {
-                            Pedido pedido = getTableView().getItems().get(getIndex());
-                            finalizarPedido(pedido);
-                        });
-                        btnFinalizar.getStyleClass().add("btn-avaria");
-                        pane.getChildren().addAll(btnCancelar, btnEditar, btnFinalizar);
-                    }
-
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            Pedido pedido = getTableView().getItems().get(getIndex());
-                            // Desabilita o botão Editar se o status for CONCLUIDO
-                            btnEditar.setDisable(pedido.getStatus() == StatusPedido.CONCLUIDO);
-                            setGraphic(pane);
-                        }
-                    }
-                };
-            }
-        };
+        pedidosSelecionados.clear();
+        tabelaPedidos.refresh();
     }
 
     private void cancelarPedido(Pedido pedido) {
-        try {
-            Optional<ButtonType> result = AlertHelper.showConfirmation("Cancelar Pedido",
-                    "Tem certeza que deseja cancelar o pedido?",
-                    "O status do pedido será alterado para 'Cancelado'.");
-            if (result.isPresent() && result.get() == ButtonType.YES) {
+        if (pedido.getStatus() == StatusPedido.CONCLUIDO || pedido.getStatus() == StatusPedido.CANCELADO) {
+            AlertHelper.showWarning("Ação Inválida", "Pedido Concluído ou Cancelado não pode ser cancelado novamente.");
+            return;
+        }
+        Optional<ButtonType> result = AlertHelper.showConfirmation("Confirmar Cancelamento",
+                "Deseja realmente cancelar o Pedido ID " + pedido.getId() + "?",
+                "Atenção: O estoque NÃO será devolvido automaticamente.");
+        if (result.isPresent() && (result.get() == ButtonType.OK || result.get() == ButtonType.YES)) {
+            try {
                 pedidoService.cancelarPedido(pedido.getId());
-                AlertHelper.showSuccess("Pedido cancelado com sucesso!"); // Exibe a mensagem de sucesso
-                carregarPedidos(); // Recarrega os pedidos DEPOIS de exibir a mensagem
+                AlertHelper.showSuccess( "Pedido ID " + pedido.getId() + " foi cancelado.");
+                carregarPedidos();
+            } catch (Exception e) {
+                AlertHelper.showError("Erro ao Cancelar", "Falha: " + e.getMessage());
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            AlertHelper.showError("Erro ao cancelar pedido", e.getMessage());
         }
     }
 
     private void editarPedido(Pedido pedido) {
+        if (pedido.getStatus() == StatusPedido.CONCLUIDO || pedido.getStatus() == StatusPedido.CANCELADO) {
+            AlertHelper.showWarning("Ação Inválida", "Pedido Concluído ou Cancelado não pode ser editado.");
+            return;
+        }
+        if (mainController == null) {
+            AlertHelper.showError("Erro de Configuração", "MainController não definido.");
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegistrarPedido.fxml"));
-            Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Editar Pedido");
-            stage.initModality(Modality.APPLICATION_MODAL);
-
+            Parent root = loader.load();
             RegistrarPedidoController controller = loader.getController();
-            controller.preencherDadosPedido(pedido);
-
-            stage.showAndWait();
-            carregarPedidos();
-        } catch (IOException e) {
-            AlertHelper.showError("Erro ao abrir janela de edição de pedido", e.getMessage());
-        }
-    }
-
-    private void finalizarPedido(Pedido pedido) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Finalizar Pedido");
-        alert.setHeaderText("Selecione o tipo de venda para finalizar o pedido:");
-        alert.initModality(Modality.APPLICATION_MODAL);
-
-        ButtonType btnVenda = new ButtonType("Venda");
-        ButtonType btnNotaFiscal = new ButtonType("Nota Fiscal");
-        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        alert.getButtonTypes().setAll(btnVenda, btnNotaFiscal, btnCancelar);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent()) {
-            try {
-                if (result.get() == btnVenda) {
-                    pedidoService.atualizarTipoVenda(pedido.getId(), TipoVenda.VENDA_NORMAL);
-                } else if (result.get() == btnNotaFiscal) {
-                    pedidoService.atualizarTipoVenda(pedido.getId(), TipoVenda.NOTA_FISCAL);
-                }
-            } catch (Exception e) {
-                AlertHelper.showError("Erro ao finalizar pedido", e.getMessage());
+            Pedido pedidoAtualizado = pedidoService.buscarPedidoPorId(pedido.getId());
+            if (pedidoAtualizado == null) {
+                AlertHelper.showError("Erro", "Pedido ID " + pedido.getId() + " não encontrado.");
+                carregarPedidos();
+                return;
             }
-            carregarPedidos();
+            controller.preencherDadosPedido(pedidoAtualizado);
+            mainController.setAreaPrincipal(root); // Abre na área principal
+        } catch (Exception e) {
+            AlertHelper.showError("Erro ao Abrir Edição", e.getMessage());
+            e.printStackTrace();
         }
     }
+
+    /**
+     * Método chamado pela ação do botão "Concluir".
+     * Pede confirmação e chama o serviço para concluir o pedido.
+     * @param pedido O pedido selecionado na linha.
+     */
+    private void chamarConcluirPedido(Pedido pedido) {
+        // Não precisa verificar status aqui, pois o botão já deve estar desabilitado se não for EM_ANDAMENTO
+        Optional<ButtonType> result = AlertHelper.showConfirmation(
+                "Confirmar Conclusão",
+                "Deseja marcar o Pedido ID " + pedido.getId() + " como Concluído?",
+                "O status será alterado para 'CONCLUIDO' e a data de retorno será definida como hoje."
+        );
+
+        if (result.isPresent() && (result.get() == ButtonType.OK || result.get() == ButtonType.YES)) {
+            try {
+                // Chama o novo método no serviço
+                pedidoService.concluirPedido(pedido.getId());
+                AlertHelper.showSuccess("Pedido ID " + pedido.getId() + " marcado como Concluído.");
+                carregarPedidos(); // Atualiza a tabela para refletir a mudança
+            } catch (Exception e) {
+                AlertHelper.showError("Erro ao Concluir", "Não foi possível concluir o pedido: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     @FXML
     private void visualizarPedidos() {
         if (pedidosSelecionados.isEmpty()) {
-            AlertHelper.showWarning("Nenhum Pedido Selecionado", "Por favor, selecione ao menos um pedido para visualizar.");
+            AlertHelper.showWarning("Nenhum Pedido Selecionado", "Selecione um ou mais pedidos na tabela.");
             return;
         }
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/VisualizarPedidos.fxml"));
             Parent root = loader.load();
+            VisualizarPedidosController visualizarController = loader.getController();
+            visualizarController.setPedidos(FXCollections.observableArrayList(pedidosSelecionados));
 
-            VisualizarPedidosController visualizarPedidosController = loader.getController();
-            visualizarPedidosController.setPedidos(pedidosSelecionados);
-
-            mainController.setAreaPrincipal(root); // Chama o método no MainController para atualizar a área principal
-
-        } catch (IOException e) {
-            AlertHelper.showError("Erro ao carregar a tela de Visualização de Pedidos", e.getMessage());
+            if (mainController != null) {
+                mainController.setAreaPrincipal(root);
+            } else {
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.setTitle("Visualização de " + pedidosSelecionados.size() + " Pedido(s)");
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+            }
+            pedidosSelecionados.clear();
+            tabelaPedidos.refresh();
+        } catch (Exception e) {
+            AlertHelper.showError("Erro ao Visualizar Pedidos", e.getMessage());
             e.printStackTrace();
         }
     }
