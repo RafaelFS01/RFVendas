@@ -10,14 +10,17 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>17</java.version>
         <javafx.version>19</javafx.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
+        <main.class>BackEnd.Main</main.class>
+        <icon.dir>${project.basedir}/src/main/resources/icons</icon.dir>
+        <icon.name>icon.ico</icon.name>
+        <installer.app.version>1.0.0</installer.app.version>
     </properties>
 
     <dependencies>
-        <!-- JavaFX Dependencies -->
+        <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -28,57 +31,43 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
 
         <!-- MySQL Connector -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.1.0</version>
         </dependency>
 
-        <!-- BCrypt for Password Hashing -->
+        <!-- BCrypt -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
 
-        <!-- JUnit for Testing -->
+        <!-- JUnit 5 (Teste) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.2</version>
-            <scope>test</scope>
+            <version>5.10.2</version>
+            <scope>test</scope> <!-- JUnit continua com scope test -->
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.2</version>
-            <scope>test</scope>
+            <version>5.10.2</version>
+            <scope>test</scope> <!-- JUnit continua com scope test -->
         </dependency>
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.fxml</include>
-                    <include>**/*.css</include>
-                    <include>**/*.png</include>
-                    <include>**/*.jpg</include>
-                    <include>**/*.properties</include>
-                </includes>
+                <filtering>false</filtering>
             </resource>
         </resources>
 
@@ -89,49 +78,137 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
 
-            <!-- JavaFX Maven Plugin -->
+            <!-- Plugin do JavaFX (para javafx:run) -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>BackEnd.Main</mainClass>
+                    <mainClass>${main.class}</mainClass>
+                    <launcher>RFVendasLauncher</launcher>
+                    <addModules>
+                        <module>javafx.controls</module>
+                        <module>javafx.fxml</module>
+                    </addModules>
                 </configuration>
             </plugin>
 
-            <!-- Maven Shade Plugin for creating executable jar -->
+            <!-- Maven Resources Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+            </plugin>
+
+            <!-- Maven Dependency Plugin (Copia dependências) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>copy-dependencies</goal></goals>
                         <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>BackEnd.Main</mainClass>
-                                </transformer>
-                            </transformers>
+                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <!-- CORREÇÃO: Incluir apenas dependências de runtime (e compile) -->
+                            <includeScope>runtime</includeScope>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!-- Maven Surefire Plugin for running tests -->
+            <!-- Maven JAR Plugin (Cria o JAR executável com Class-Path) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>libs/</classpathPrefix>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Maven AntRun Plugin - Chama o jpackage -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>jpackage</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${project.build.directory}/installer"/>
+                                <exec executable="jpackage" failonerror="true">
+                                    <arg value="--type"/>
+                                    <arg value="exe"/>
+                                    <arg value="--name"/>
+                                    <arg value="RFVendas"/>
+                                    <arg value="--app-version"/>
+                                    <arg value="${installer.app.version}"/>
+                                    <arg value="--vendor"/>
+                                    <arg value="RF Soluções"/>
+                                    <arg value="--copyright"/>
+                                    <arg value="Copyright (c) 2024 RF Soluções"/>
+                                    <arg value="--icon"/>
+                                    <arg value="${icon.dir}/${icon.name}"/>
+                                    <arg value="--dest"/>
+                                    <arg value="${project.build.directory}/installer"/>
+                                    <arg value="--input"/>
+                                    <arg value="${project.build.directory}"/>
+                                    <arg value="--main-jar"/>
+                                    <arg value="${project.build.finalName}.jar"/>
+                                    <arg value="--main-class"/>
+                                    <arg value="${main.class}"/>
+                                    <!-- MODIFIQUE A LINHA ABAIXO -->
+                                    <arg value="--add-modules"/>
+                                    <arg value="javafx.controls,javafx.fxml,java.sql,java.naming"/>
+                                    <!-- FIM DA MODIFICAÇÃO -->
+                                    <arg value="--module-path"/>
+                                    <arg value="${project.build.directory}/libs"/>
+                                    <arg value="--win-shortcut"/>
+                                    <arg value="--win-menu"/>
+                                    <!-- Mantenha esta linha por enquanto, remova depois -->
+                                    <arg value="--win-console"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Maven Surefire Plugin (Testes) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.2.5</version>
             </plugin>
+
+            <!-- Maven Clean Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.3.2</version>
+            </plugin>
+
         </plugins>
     </build>
 </project>

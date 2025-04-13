@@ -24,14 +24,24 @@
         <configuration>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
+          <release>17</release>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
-        <version>${javafx.maven.plugin.version}</version>
+        <version>0.0.8</version>
         <configuration>
           <mainClass>BackEnd.Main</mainClass>
+          <launcher>RFVendasLauncher</launcher>
+          <compress>2</compress>
+          <noHeaderFiles>true</noHeaderFiles>
+          <noManPages>true</noManPages>
+          <stripDebug>true</stripDebug>
+          <addModules>
+            <module>javafx.controls</module>
+            <module>javafx.fxml</module>
+          </addModules>
         </configuration>
       </plugin>
       <plugin>
@@ -63,7 +73,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.33</version>
+      <version>9.1.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

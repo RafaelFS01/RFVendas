@@ -30,10 +30,8 @@ public class LoginController {
     public void initialize() {
         try {
             // Carrega a imagem
-            Image iconImage = new Image(getClass().getResourceAsStream("/images/icon.png"));
 
             // Define a imagem para ambos os ImageViews
-            iconPicImage.setImage(iconImage);
         } catch (Exception e) {
             System.out.println("Erro ao carregar a imagem: " + e.getMessage());
             e.printStackTrace();

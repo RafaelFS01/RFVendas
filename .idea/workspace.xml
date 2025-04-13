@@ -4,36 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Estilos readaptados.">
+    <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Alugueis básicos atualizados.">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/config.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarClienteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarClienteController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarItemController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarClientesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarClientesController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarComprasController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarItensController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarItensController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarPedidosController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarPedidosController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/RegistrarPedidoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/RegistrarPedidoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/ItemDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/ItemDAOImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/PedidoDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/PedidoDAOImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/ItemDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/ItemDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/PedidoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/interfaces/PedidoDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Item.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Pedido.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Pedido.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/TipoVenda.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ClienteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ClienteService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/CompraService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ItemService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/PedidoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/PedidoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/CadastrarItem.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/CadastrarItem.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarClientes.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ListarClientes.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarCompras.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarItens.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ListarItens.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarPedidos.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ListarPedidos.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/Main.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/Main.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/RegistrarPedido.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/RegistrarPedido.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/styles/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/util/ConnectionFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/util/ConnectionFactory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +26,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -72,24 +54,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/rafaf/IdeaProjects/RFVendas/lib/javafx-sdk-22.0.2/lib/javafx.web.jar&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.Unnamed.executor": "Run",
+    "Downloaded.Files.Path.Enabled": "false",
+    "Maven.RFVendas [install].executor": "Run",
+    "Maven.RFVendas [org.apache.maven.plugins:maven-install-plugin:3.1.2:install-file].executor": "Run",
+    "Maven.RFVendas [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor": "Run",
+    "Maven.RFVendas [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Aluguel",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/rafaf/IdeaProjects/RFVendas/lib/javafx-sdk-22.0.2/lib/javafx.web.jar",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\rafaf\IdeaProjects\RFVendas\.idea" />
@@ -142,7 +128,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736967598243</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Alugueis básicos atualizados.">
+      <option name="closed" value="true" />
+      <created>1744504617138</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744504617138</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -160,6 +154,7 @@
     <MESSAGE value="Função de listagem de pedidos implementada.&#10;Ações de cancelamento e finalização de pedido funcionando perfeitamente.&#10;Ação de visualização de pedidos ainda não implementada.&#10;Ação de edição de pedidos provavelmente será alterada." />
     <MESSAGE value="Início do Projeto." />
     <MESSAGE value="Estilos readaptados." />
-    <option name="LAST_COMMIT_MESSAGE" value="Estilos readaptados." />
+    <MESSAGE value="Alugueis básicos atualizados." />
+    <option name="LAST_COMMIT_MESSAGE" value="Alugueis básicos atualizados." />
   </component>
 </project>
