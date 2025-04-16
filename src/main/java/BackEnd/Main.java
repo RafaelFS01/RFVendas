@@ -30,7 +30,6 @@ public class Main extends Application {
 
     public static void carregarTelaPrincipal(Stage stage) {
         try {
-            ConnectionFactory.importarBancoDeDados("BACKUP.2024");
             Parent root = FXMLLoader.load(Main.class.getResource("/fxml/Main.fxml"));
             Scene scene = new Scene(root, 1200, 800);
 

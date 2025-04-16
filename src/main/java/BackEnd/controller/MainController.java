@@ -38,7 +38,6 @@ public class MainController {
 
     private void carregarFXML(String fxmlPath) {
         try {
-            ConnectionFactory.importarBancoDeDados("BACKUP.2024");
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             areaPrincipal.getChildren().clear();
             areaPrincipal.getChildren().add(loader.load());
@@ -89,7 +88,6 @@ public class MainController {
     @FXML
     private void mostrarListaEquipamentos() {
         try {
-            ConnectionFactory.importarBancoDeDados("BACKUP.2024"); // Mantido do original
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListarItens.fxml"));
             Parent root = loader.load();
 
@@ -117,7 +115,6 @@ public class MainController {
     @FXML
     private void mostrarListaFuncionarios() {
         try {
-            ConnectionFactory.importarBancoDeDados("BACKUP.2024"); // Se mantiver
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListarClientes.fxml"));
             Parent root = loader.load();
 

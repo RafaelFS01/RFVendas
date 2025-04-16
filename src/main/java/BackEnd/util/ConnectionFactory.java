@@ -1,179 +1,189 @@
 package BackEnd.util;
 
-// Importe BCrypt para hashing de senha
-
-// Imports necessários para as funções originais e novas
 import java.io.*;
 import java.sql.*;
-import java.util.Properties;
 import java.util.List;
+import java.util.Properties;
+
+// Importe a exceção customizada que deve estar em BackEnd.exception.BackupRestoreException
+import BackEnd.exception.BackupRestoreException;
 
 public class ConnectionFactory {
 
     // --- Configuração ---
     private static final String CONFIG_FILE = "config.properties"; // Nome do arquivo em src/main/resources
     private static final String DEFAULT_ADMIN_USERNAME = "admin";
-    // Senha padrão que será HASHADA antes de salvar no banco
-    private static final String DEFAULT_ADMIN_PASSWORD_PLAINTEXT = "1234";
+    private static final String DEFAULT_ADMIN_PASSWORD_PLAINTEXT = "1234"; // SENHA EM TEXTO CLARO - INSEGURO!
     // -----------------------------------------------------------------------
 
     public static Properties props = new Properties();
-    private static String databaseSpecificUrl; // Armazena a URL final do banco (ex: jdbc:mysql://host:port/rfvendas?params...)
-    private static boolean initializationOk = false; // Flag para indicar se a inicialização deu certo
+    private static String databaseSpecificUrl;
+    private static String mysqlDumpPath; // Caminho para o mysqldump lido do config
+    private static String mysqlCliPath;  // Caminho para o mysql lido do config
+    private static boolean initializationOk = false;
 
-    // Bloco estático: Executado UMA VEZ quando a classe é carregada pela JVM.
-    // Responsável por carregar propriedades e inicializar o banco/tabelas/usuário admin.
     static {
         System.out.println("[DB Setup] Iniciando configuração completa do banco de dados...");
         try {
-            loadProperties(); // 1. Carrega as propriedades do config.properties
-            initializeDatabaseSchema(); // 2. Tenta criar o banco e todas as tabelas
-            ensureDefaultAdminUserExists(); // 3. Garante que o usuário admin padrão exista
-            initializationOk = true; // Marca que tudo correu bem
+            loadProperties();
+            initializeDatabaseSchema();
+            ensureDefaultAdminUserExists();
+            initializationOk = true;
             System.out.println("[DB Setup] Configuração do banco de dados e usuário admin concluída com sucesso.");
 
-        } catch (Exception e) { // Captura qualquer erro durante o setup (IO, SQL, etc.)
-            initializationOk = false; // Marca que a inicialização falhou
+        } catch (Exception e) {
+            initializationOk = false;
             System.err.println("*****************************************************");
-            System.err.println("ERRO FATAL DURANTE A INICIALIZAÇÃO DO BANCO DE DADOS OU USUÁRIO ADMIN!");
+            System.err.println("ERRO FATAL DURANTE A INICIALIZAÇÃO DO BANCO DE DADOS, USUÁRIO ADMIN OU CONFIGURAÇÃO!");
             System.err.println("A aplicação pode não funcionar corretamente.");
-            // (Mensagens de erro detalhadas omitidas para brevidade, veja versões anteriores se necessário)
-            e.printStackTrace(); // Imprime o stack trace do erro original
+            System.err.println("Causa: " + e.getMessage());
+            e.printStackTrace();
             System.err.println("*****************************************************");
-            // Considerar lançar RuntimeException para parar a aplicação
             // throw new RuntimeException("Falha crítica na inicialização do banco de dados.", e);
         }
     }
 
-    /**
-     * Carrega as propriedades do arquivo config.properties localizado no classpath.
-     * Valida as propriedades essenciais e constrói a URL específica do banco.
-     * @throws IOException Se o arquivo não for encontrado, não puder ser lido, ou faltarem propriedades essenciais.
-     */
     private static void loadProperties() throws IOException {
         try (InputStream input = ConnectionFactory.class.getResourceAsStream("/" + CONFIG_FILE)) {
             if (input == null) {
                 System.err.println("[DB Setup] ERRO CRÍTICO: Arquivo '" + CONFIG_FILE + "' não encontrado no classpath.");
                 setDefaultPropertiesOnError();
                 throw new IOException("Arquivo de configuração '" + CONFIG_FILE + "' não encontrado no classpath.");
-            } else {
-                props.load(input);
-                System.out.println("[DB Setup] Arquivo de configuração '" + CONFIG_FILE + "' carregado.");
-
-                // Validar propriedades carregadas
-                String serverUrl = props.getProperty("db.server.url");
-                String dbName = props.getProperty("db.name");
-                String user = props.getProperty("db.user");
-                // String password = props.getProperty("db.password"); // Não precisa validar aqui
-
-                if (serverUrl == null || serverUrl.trim().isEmpty() ||
-                        dbName == null || dbName.trim().isEmpty() ||
-                        user == null || user.trim().isEmpty() ) {
-                    throw new IOException("Propriedades essenciais ('db.server.url', 'db.name', 'db.user') estão vazias ou não encontradas no config.");
-                }
-                serverUrl = serverUrl.trim();
-                dbName = dbName.trim();
-
-                // ----- CORREÇÃO NA CONSTRUÇÃO DA URL -----
-                // 1. Garante que a URL base do servidor termine com /
-                if (!serverUrl.endsWith("/")) {
-                    serverUrl += "/";
-                }
-
-                // 2. Constrói a URL base + nome do banco
-                String baseUrlWithDb = serverUrl + dbName; // Ex: jdbc:mysql://localhost:3306/rfvendas
-
-                // 3. Adiciona parâmetros à URL já com o nome do banco
-                String urlParams = "";
-                String separator = "?"; // Começa com ?
-                if (!baseUrlWithDb.matches(".*[?&]useSSL=.*")) { urlParams += separator + "useSSL=false"; separator = "&"; }
-                if (!baseUrlWithDb.matches(".*[?&]serverTimezone=.*")) { urlParams += separator + "serverTimezone=UTC"; separator = "&"; }
-                if (!baseUrlWithDb.matches(".*[?&]allowPublicKeyRetrieval=.*")) { urlParams += separator + "allowPublicKeyRetrieval=true"; separator = "&"; }
-                if (!baseUrlWithDb.matches(".*[?&]createDatabaseIfNotExist=.*")) { urlParams += separator + "createDatabaseIfNotExist=true"; /*separator = "&";*/ } // Já existia no driver
-
-                // 4. Define a URL final
-                databaseSpecificUrl = baseUrlWithDb + urlParams;
-                // ----- FIM DA CORREÇÃO -----
-
-                props.setProperty("db.url", databaseSpecificUrl); // Guarda a URL completa para referência
-                System.out.println("[DB Setup] URL base do servidor configurada: " + serverUrl); // Log da URL base corrigida
-                System.out.println("[DB Setup] Nome do banco de dados: " + dbName);
-                System.out.println("[DB Setup] URL completa do banco definida: " + databaseSpecificUrl.split("\\?")[0] + "..."); // Log sem parâmetros
             }
+
+            props.load(input);
+            System.out.println("[DB Setup] Arquivo de configuração '" + CONFIG_FILE + "' carregado.");
+
+            // Validação de Propriedades Essenciais de Conexão
+            String serverUrl = props.getProperty("db.server.url");
+            String dbName = props.getProperty("db.name");
+            String user = props.getProperty("db.user");
+
+            if (isNullOrEmpty(serverUrl) || isNullOrEmpty(dbName) || isNullOrEmpty(user)) {
+                throw new IOException("Propriedades essenciais ('db.server.url', 'db.name', 'db.user') estão vazias ou não encontradas no " + CONFIG_FILE);
+            }
+            serverUrl = serverUrl.trim();
+            dbName = dbName.trim();
+
+            // Construção da URL do Banco
+            if (!serverUrl.endsWith("/")) {
+                serverUrl += "/";
+            }
+            String baseUrlWithDb = serverUrl + dbName;
+            String urlParams = buildUrlParameters(baseUrlWithDb);
+            databaseSpecificUrl = baseUrlWithDb + urlParams;
+            props.setProperty("db.url", databaseSpecificUrl);
+
+            System.out.println("[DB Setup] URL base do servidor: " + serverUrl);
+            System.out.println("[DB Setup] Nome do banco: " + dbName);
+            System.out.println("[DB Setup] URL completa: " + databaseSpecificUrl.split("\\?")[0] + "...");
+
+            // Carregar e Validar Caminhos dos Executáveis MySQL
+            mysqlDumpPath = props.getProperty("mysql.dump.path");
+            mysqlCliPath = props.getProperty("mysql.cli.path");
+
+            if (isNullOrEmpty(mysqlDumpPath)) {
+                throw new IOException("Propriedade 'mysql.dump.path' não encontrada ou vazia no " + CONFIG_FILE);
+            }
+            if (isNullOrEmpty(mysqlCliPath)) {
+                throw new IOException("Propriedade 'mysql.cli.path' não encontrada ou vazia no " + CONFIG_FILE);
+            }
+            mysqlDumpPath = mysqlDumpPath.trim();
+            mysqlCliPath = mysqlCliPath.trim();
+
+            File dumpFile = new File(mysqlDumpPath);
+            File cliFile = new File(mysqlCliPath);
+            if (!dumpFile.exists() || !dumpFile.isFile()) {
+                System.err.println("[DB Setup] AVISO: 'mysql.dump.path' não encontrado ou não é arquivo: " + mysqlDumpPath);
+            }
+            if (!cliFile.exists() || !cliFile.isFile()) {
+                System.err.println("[DB Setup] AVISO: 'mysql.cli.path' não encontrado ou não é arquivo: " + mysqlCliPath);
+            }
+
+            System.out.println("[DB Setup] Caminho mysqldump: " + mysqlDumpPath);
+            System.out.println("[DB Setup] Caminho mysql CLI: " + mysqlCliPath);
+
         } catch (IOException e) {
-            System.err.println("[DB Setup] Erro de IO ao ler o arquivo '" + CONFIG_FILE + "'. Verifique permissões e formato.");
+            System.err.println("[DB Setup] Erro de IO ao ler ou validar '" + CONFIG_FILE + "'.");
             setDefaultPropertiesOnError();
             throw e;
         }
     }
 
-    /** Define propriedades padrão mínimas em caso de falha ao carregar o arquivo config. */
+    private static boolean isNullOrEmpty(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+
+    private static String buildUrlParameters(String baseUrl) {
+        String urlParams = "";
+        String separator = baseUrl.contains("?") ? "&" : "?";
+        if (!baseUrl.matches(".*[?&]useSSL=.*")) { urlParams += separator + "useSSL=false"; separator = "&"; }
+        if (!baseUrl.matches(".*[?&]serverTimezone=.*")) { urlParams += separator + "serverTimezone=UTC"; separator = "&"; }
+        if (!baseUrl.matches(".*[?&]allowPublicKeyRetrieval=.*")) { urlParams += separator + "allowPublicKeyRetrieval=true"; separator = "&"; }
+        if (!baseUrl.matches(".*[?&]createDatabaseIfNotExist=.*")) { urlParams += separator + "createDatabaseIfNotExist=true"; }
+        return urlParams;
+    }
+
     private static void setDefaultPropertiesOnError() {
-        // Implementação do setDefaultPropertiesOnError (igual à versão anterior completa)
-        System.err.println("[DB Setup] ATENÇÃO: Usando propriedades padrão de fallback!");
+        System.err.println("[DB Setup] ATENÇÃO: Usando propriedades de fallback para conexão!");
         props.setProperty("db.server.url", "jdbc:mysql://localhost:3306/");
         props.setProperty("db.name", "rfvendas");
         props.setProperty("db.user", "root");
-        props.setProperty("db.password", ""); // Senha vazia como fallback
+        props.setProperty("db.password", "");
         databaseSpecificUrl = "jdbc:mysql://localhost:3306/rfvendas?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true";
         props.setProperty("db.url", databaseSpecificUrl);
+        System.err.println("[DB Setup] ATENÇÃO: Caminhos para 'mysqldump' e 'mysql' não configurados (fallback). Backup/Restore falharão.");
+        mysqlDumpPath = null;
+        mysqlCliPath = null;
     }
 
-    /**
-     * Garante que o banco de dados e todas as tabelas necessárias existam.
-     * @throws SQLException Se ocorrer um erro de SQL durante a criação.
-     */
     private static void initializeDatabaseSchema() throws SQLException {
-        // Implementação do initializeDatabaseSchema (igual à versão anterior completa)
+        // Código igual à versão anterior (criação do banco)
         String serverUrl = props.getProperty("db.server.url");
         String dbName = props.getProperty("db.name");
         String user = props.getProperty("db.user");
         String password = props.getProperty("db.password");
 
-        System.out.println("[DB Setup] Tentando conectar ao servidor MySQL: " + serverUrl.split("\\?")[0] + "...");
+        System.out.println("[DB Setup] Conectando ao servidor: " + serverUrl.split("\\?")[0] + "...");
         try (Connection serverConn = DriverManager.getConnection(serverUrl, user, password);
              Statement stmt = serverConn.createStatement()) {
-            System.out.println("[DB Setup] Conectado ao servidor. Verificando/Criando banco de dados `" + dbName + "`...");
+            System.out.println("[DB Setup] Verificando/Criando banco `" + dbName + "`...");
             stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS `" + dbName + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-            System.out.println("[DB Setup] Banco de dados `" + dbName + "` verificado/criado.");
+            System.out.println("[DB Setup] Banco `" + dbName + "` OK.");
         } catch (SQLException e) {
-            System.err.println("[DB Setup] ERRO ao conectar ao servidor ou criar banco de dados!");
+            System.err.println("[DB Setup] ERRO ao conectar ao servidor ou criar banco!");
             throw e;
         }
 
-        System.out.println("[DB Setup] Tentando conectar ao banco específico: " + databaseSpecificUrl.split("\\?")[0] + "...");
+        System.out.println("[DB Setup] Conectando ao banco específico: " + databaseSpecificUrl.split("\\?")[0] + "...");
         try (Connection dbConn = DriverManager.getConnection(databaseSpecificUrl, user, password)) {
-            System.out.println("[DB Setup] Conectado ao banco `" + dbName + "`. Verificando/Criando tabelas...");
+            System.out.println("[DB Setup] Verificando/Criando tabelas...");
             createTablesIfNotExists(dbConn);
         } catch (SQLException e) {
-            System.err.println("[DB Setup] ERRO ao conectar ao banco `" + dbName + "` ou criar tabelas!");
+            System.err.println("[DB Setup] ERRO ao conectar ao banco específico ou criar tabelas!");
             throw e;
         }
     }
 
-    /**
-     * Executa os comandos CREATE TABLE IF NOT EXISTS para as tabelas da aplicação.
-     * @param conn Uma conexão ativa com o banco de dados específico (`rfvendas`).
-     * @throws SQLException Se ocorrer um erro ao executar algum comando DDL.
-     */
     private static void createTablesIfNotExists(Connection conn) throws SQLException {
-        // Lista dos comandos CREATE TABLE (igual à versão anterior completa)
+        // Código igual à versão anterior (lista de CREATE TABLEs)
         List<String> createTableStatements = List.of(
+                // ... (todos os seus CREATE TABLE statements aqui, omitidos para brevidade) ...
                 """
-                CREATE TABLE IF NOT EXISTS categorias (
-                    id INT NOT NULL AUTO_INCREMENT, nome VARCHAR(255) NOT NULL, descricao TEXT NULL, PRIMARY KEY (id), UNIQUE KEY uk_categorias_nome (nome)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-                """,
+               CREATE TABLE IF NOT EXISTS categorias (
+                   id INT NOT NULL AUTO_INCREMENT, nome VARCHAR(255) NOT NULL, descricao TEXT NULL, PRIMARY KEY (id), UNIQUE KEY uk_categorias_nome (nome)
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+               """,
                 """
                 CREATE TABLE IF NOT EXISTS grupos (
                     id INT NOT NULL AUTO_INCREMENT, nome VARCHAR(255) NOT NULL, PRIMARY KEY (id), UNIQUE KEY uk_grupos_nome (nome)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
                 """,
                 """
-                CREATE TABLE IF NOT EXISTS usuarios (
-                    id INT NOT NULL AUTO_INCREMENT, username VARCHAR(50) NOT NULL, password VARCHAR(255) NOT NULL, nome VARCHAR(100) NOT NULL, email VARCHAR(100) NOT NULL, nivel_acesso INT NOT NULL, ativo TINYINT(1) NULL DEFAULT 1, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id), UNIQUE KEY uk_usuarios_username (username), UNIQUE KEY uk_usuarios_email (email)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-                """,
+               CREATE TABLE IF NOT EXISTS usuarios (
+                   id INT NOT NULL AUTO_INCREMENT, username VARCHAR(50) NOT NULL, password VARCHAR(255) NOT NULL, nome VARCHAR(100) NOT NULL, email VARCHAR(100) NOT NULL, nivel_acesso INT NOT NULL, ativo TINYINT(1) NULL DEFAULT 1, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id), UNIQUE KEY uk_usuarios_username (username), UNIQUE KEY uk_usuarios_email (email)
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+               """,
                 """
                 CREATE TABLE IF NOT EXISTS clientes (
                     id VARCHAR(255) NOT NULL, nome VARCHAR(255) NOT NULL, cpf_cnpj VARCHAR(14) NOT NULL, logradouro VARCHAR(255) NOT NULL, bairro VARCHAR(255) NOT NULL, cidade VARCHAR(255) NOT NULL, numero VARCHAR(20) NOT NULL, complemento VARCHAR(255) NULL, telefone_celular VARCHAR(20) NOT NULL, email VARCHAR(255) NOT NULL, comprador VARCHAR(255) NULL, tipo_cliente ENUM('PESSOA_FISICA','PESSOA_JURIDICA') NOT NULL, id_grupo INT NULL, PRIMARY KEY (id), UNIQUE KEY uk_clientes_cpf_cnpj (cpf_cnpj), INDEX idx_clientes_nome (nome), CONSTRAINT fk_cliente_grupo FOREIGN KEY (id_grupo) REFERENCES grupos(id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -185,10 +195,10 @@ public class ConnectionFactory {
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
                 """,
                 """
-                CREATE TABLE IF NOT EXISTS dependencias (
-                    id INT NOT NULL AUTO_INCREMENT, id_item_dependente INT NOT NULL, id_item_necessario INT NOT NULL, id_categoria INT NOT NULL, quantidade DECIMAL(10,2) NOT NULL, PRIMARY KEY (id), CONSTRAINT fk_dependencia_item_dep FOREIGN KEY (id_item_dependente) REFERENCES itens(id) ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT fk_dependencia_item_nec FOREIGN KEY (id_item_necessario) REFERENCES itens(id) ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT fk_dependencia_categoria FOREIGN KEY (id_categoria) REFERENCES categorias(id) ON DELETE CASCADE ON UPDATE CASCADE
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-                """,
+               CREATE TABLE IF NOT EXISTS dependencias (
+                   id INT NOT NULL AUTO_INCREMENT, id_item_dependente INT NOT NULL, id_item_necessario INT NOT NULL, id_categoria INT NOT NULL, quantidade DECIMAL(10,2) NOT NULL, PRIMARY KEY (id), CONSTRAINT fk_dependencia_item_dep FOREIGN KEY (id_item_dependente) REFERENCES itens(id) ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT fk_dependencia_item_nec FOREIGN KEY (id_item_necessario) REFERENCES itens(id) ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT fk_dependencia_categoria FOREIGN KEY (id_categoria) REFERENCES categorias(id) ON DELETE CASCADE ON UPDATE CASCADE
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+               """,
                 """
                 CREATE TABLE IF NOT EXISTS pedidos (
                     id INT NOT NULL AUTO_INCREMENT, cliente_id VARCHAR(255) NOT NULL, data_pedido DATE NOT NULL, data_retorno DATE NULL, valor_total DECIMAL(10,2) NOT NULL DEFAULT 0.00, status ENUM('CONCLUIDO','EM_ANDAMENTO','CANCELADO') NOT NULL DEFAULT 'EM_ANDAMENTO', observacoes TEXT NULL, PRIMARY KEY (id), CONSTRAINT fk_pedido_cliente FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -204,24 +214,22 @@ public class ConnectionFactory {
             int tableCount = 0;
             for (String sql : createTableStatements) {
                 tableCount++;
-                System.out.println("[DB Setup] Executando SQL Tabela " + tableCount + ": " + sql.substring(0, Math.min(sql.length(), 100)).split("\n")[0].trim() + "...");
+                System.out.println("[DB Setup] Executando SQL Tabela " + tableCount + "...");
                 stmt.executeUpdate(sql);
             }
-            System.out.println("[DB Setup] Todas as " + tableCount + " tabelas verificadas/criadas.");
+            System.out.println("[DB Setup] Todas as " + tableCount + " tabelas OK.");
         }
     }
 
-    /**
-     * Verifica se o usuário administrador padrão existe. Se não, o insere com senha padrão hashada.
-     * @throws SQLException Se ocorrer erro ao interagir com a tabela 'usuarios'.
-     */
     private static void ensureDefaultAdminUserExists() throws SQLException {
-        // Implementação do ensureDefaultAdminUserExists (igual à versão anterior completa)
+        // Código igual à versão anterior (criação do admin com senha insegura)
         System.out.println("[DB Setup] Verificando/Criando usuário admin padrão ('" + DEFAULT_ADMIN_USERNAME + "')...");
         String sqlCheck = "SELECT COUNT(*) FROM usuarios WHERE username = ?";
         String sqlInsert = "INSERT INTO usuarios (username, password, nome, email, nivel_acesso, ativo) VALUES (?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = DriverManager.getConnection(databaseSpecificUrl, props.getProperty("db.user"), props.getProperty("db.password"));
              PreparedStatement pstmtCheck = conn.prepareStatement(sqlCheck)) {
+
             pstmtCheck.setString(1, DEFAULT_ADMIN_USERNAME);
             try (ResultSet rs = pstmtCheck.executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) {
@@ -229,20 +237,21 @@ public class ConnectionFactory {
                     return;
                 }
             }
-            System.out.println("[DB Setup] Usuário admin ('" + DEFAULT_ADMIN_USERNAME + "') não encontrado. Criando...");
+
+            System.out.println("[DB Setup] Usuário admin não encontrado. Criando...");
             try (PreparedStatement pstmtInsert = conn.prepareStatement(sqlInsert)) {
                 pstmtInsert.setString(1, DEFAULT_ADMIN_USERNAME);
-                pstmtInsert.setString(2, "1234");
+                // !!! FALHA DE SEGURANÇA !!!
+                pstmtInsert.setString(2, DEFAULT_ADMIN_PASSWORD_PLAINTEXT);
                 pstmtInsert.setString(3, "Administrador Padrão");
                 pstmtInsert.setString(4, "admin@localhost");
                 pstmtInsert.setInt(5, 1); // Nível Admin
                 pstmtInsert.setBoolean(6, true);
                 int rowsAffected = pstmtInsert.executeUpdate();
+
                 if (rowsAffected > 0) {
                     System.out.println("[DB Setup] Usuário admin criado com sucesso.");
-                    System.out.println(" /!\\ ==================================================================== /!\\");
                     System.out.println(" /!\\ SEGURANÇA: Senha padrão '" + DEFAULT_ADMIN_PASSWORD_PLAINTEXT + "' definida para '" + DEFAULT_ADMIN_USERNAME + "'. Troque-a! /!\\");
-                    System.out.println(" /!\\ ==================================================================== /!\\");
                 } else {
                     System.err.println("[DB Setup] ERRO INESPERADO: Falha ao inserir usuário admin.");
                 }
@@ -253,15 +262,9 @@ public class ConnectionFactory {
         }
     }
 
-    /**
-     * Obtém uma conexão com o banco de dados configurado e inicializado.
-     * @return Uma conexão SQL ativa.
-     * @throws SQLException Se a inicialização falhou ou se não for possível conectar agora.
-     */
     public static Connection getConnection() throws SQLException {
-        // Implementação do getConnection (igual à versão anterior completa)
         if (!initializationOk) {
-            throw new SQLException("A inicialização do banco de dados falhou. Verifique os logs.");
+            throw new SQLException("Inicialização da ConnectionFactory falhou. Não é possível obter conexão.");
         }
         try {
             return DriverManager.getConnection(
@@ -276,145 +279,155 @@ public class ConnectionFactory {
         }
     }
 
-    // --- Métodos Utilitários de Fechamento (Padrão - sem alterações) ---
-    /** Fecha a conexão SQL. */
+    // --- Métodos Utilitários de Fechamento ---
     public static void closeConnection(Connection conn) {
-        // Implementação do closeConnection(conn) (igual à versão anterior completa)
-        if (conn != null) { try { if (!conn.isClosed()) { conn.close(); } } catch (SQLException e) { System.err.println("Erro (ignorado) ao fechar Conexão: " + e.getMessage()); } }
+        if (conn != null) { try { if (!conn.isClosed()) { conn.close(); } } catch (SQLException e) { /* Ignorado */ } }
     }
-
-    /** Fecha o PreparedStatement e a conexão SQL. */
     public static void closeConnection(Connection conn, PreparedStatement stmt) {
-        // Implementação do closeConnection(conn, stmt) (igual à versão anterior completa)
-        if (stmt != null) { try { if (!stmt.isClosed()) { stmt.close(); } } catch (SQLException e) { System.err.println("Erro (ignorado) ao fechar Statement: " + e.getMessage()); } }
+        if (stmt != null) { try { if (!stmt.isClosed()) { stmt.close(); } } catch (SQLException e) { /* Ignorado */ } }
         closeConnection(conn);
     }
-
-    /** Fecha o ResultSet, o PreparedStatement e a conexão SQL. */
     public static void closeConnection(Connection conn, PreparedStatement stmt, ResultSet rs) {
-        // Implementação do closeConnection(conn, stmt, rs) (igual à versão anterior completa)
-        if (rs != null) { try { if (!rs.isClosed()) { rs.close(); } } catch (SQLException e) { System.err.println("Erro (ignorado) ao fechar ResultSet: " + e.getMessage()); } }
+        if (rs != null) { try { if (!rs.isClosed()) { rs.close(); } } catch (SQLException e) { /* Ignorado */ } }
         closeConnection(conn, stmt);
     }
 
-    // --- MÉTODOS DE BACKUP/RESTORE - Mantidos EXATAMENTE como no seu código original ---
+    // --- MÉTODOS DE BACKUP/RESTORE - COM THROWS BackupRestoreException ---
 
-    public static void exportarBancoDeDados(String nomeArquivo) {
-        Connection conn = null; // Declara fora para o finally
-        try {
-            // conn = getConnection(); // Conexão não é estritamente necessária aqui, mas pode pegar props
+    /**
+     * Exporta o banco de dados usando mysqldump.
+     * @param targetFilePath Caminho completo do arquivo de destino.
+     * @throws IOException Erro de I/O.
+     * @throws InterruptedException Thread interrompida.
+     * @throws BackupRestoreException Erro específico de backup/restore (caminho não configurado, processo falhou).
+     */
+    public static void exportarBancoDeDados(String targetFilePath)
+            throws IOException, InterruptedException, BackupRestoreException { // <<< DECLARAÇÃO IMPORTANTE
 
-            String user = props.getProperty("db.user");
-            String senha = props.getProperty("db.password");
-            String nomeBanco = props.getProperty("db.name");
+        if (isNullOrEmpty(mysqlDumpPath)) {
+            throw new BackupRestoreException("Caminho para 'mysqldump' não configurado ('mysql.dump.path').");
+        }
+        if (isNullOrEmpty(targetFilePath)) {
+            throw new IllegalArgumentException("Caminho do arquivo de destino não pode ser nulo/vazio.");
+        }
 
-            // Cria o diretório de backup se não existir (pode falhar por permissão)
-            File backupDir = new File("backup");
-            if (!backupDir.exists()) {
-                backupDir.mkdirs(); // Não verifica sucesso da criação do diretório
+        String user = props.getProperty("db.user");
+        String senha = props.getProperty("db.password", "");
+        String nomeBanco = props.getProperty("db.name");
+        File targetFile = new File(targetFilePath);
+
+        File parentDir = targetFile.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                System.err.println("[Backup] AVISO: Falha ao criar diretório: " + parentDir.getAbsolutePath());
             }
+        }
 
-            // Caminho HARDCODED do seu ambiente original
-            String caminhoCompleto = "C:\\Users\\rafa_\\OneDrive\\Documentos\\OneDrive\\Flux\\" + nomeArquivo;
+        String[] comando = {
+                mysqlDumpPath, "-u", user, "-p" + senha, "--host=localhost", "--port=3306",
+                "--protocol=tcp", "--single-transaction", "--routines", "--triggers",
+                "--events", "--databases", nomeBanco
+        };
 
-            // Caminho HARDCODED do seu ambiente original
-            String[] comando = {
-                    "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump.exe",
-                    "-u", user,
-                    "-p" + senha, // Passar senha assim é um risco
-                    nomeBanco
-            };
+        System.out.println("[Backup] Executando exportação para: " + targetFilePath);
+        ProcessBuilder processBuilder = new ProcessBuilder(comando);
+        processBuilder.redirectOutput(targetFile);
+        processBuilder.redirectErrorStream(false); // Capturar erro separadamente
 
-            ProcessBuilder processBuilder = new ProcessBuilder(comando);
-            // Redireciona a SAÍDA do mysqldump para o arquivo especificado
-            processBuilder.redirectOutput(new File(caminhoCompleto));
+        Process processo = processBuilder.start();
+        StringBuilder erros = readStream(processo.getErrorStream()); // Lê stderr
+        int resultadoProcesso = processo.waitFor();
 
-            Process processo = processBuilder.start();
-
-            // É importante ler o stream de erro para evitar que o processo bloqueie
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(processo.getErrorStream()));
-            String linhaErro;
-            StringBuilder erros = new StringBuilder();
-            while ((linhaErro = errorReader.readLine()) != null) {
-                erros.append(linhaErro).append("\n");
-            }
-            errorReader.close(); // Fechar o reader
-
-            int resultadoProcesso = processo.waitFor(); // Espera o processo terminar
-
-
-            if (resultadoProcesso == 0) {
-                System.out.println("Backup realizado com sucesso em: " + caminhoCompleto);
-            } else {
-                System.err.println("Erro durante o backup (código de saída: " + resultadoProcesso + "):");
-                System.err.print(erros.toString()); // Imprime os erros capturados do stderr
-            }
-        } catch (Exception e) { // Captura IOException, InterruptedException, etc.
-            System.err.println("Erro GERAL ao realizar backup: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // A conexão não foi aberta neste método, então não precisa fechar aqui
-            // closeConnection(conn);
+        if (resultadoProcesso != 0) {
+            String errorMsg = "Erro no backup (mysqldump código: " + resultadoProcesso + ").";
+            if (erros.length() > 0) { errorMsg += " Erros:\n" + erros.toString(); }
+            System.err.println(errorMsg);
+            throw new BackupRestoreException(errorMsg); // <<< LANÇANDO A EXCEÇÃO
+        } else if (!targetFile.exists() || targetFile.length() == 0) {
+            String warnMsg = "Backup finalizou (código 0), mas arquivo está vazio/ausente: " + targetFilePath;
+            System.err.println("[Backup] AVISO: " + warnMsg);
+            // Considerar lançar exceção se isso for um erro crítico para você
+            // throw new BackupRestoreException(warnMsg);
+        } else {
+            System.out.println("[Backup] Backup realizado com sucesso: " + targetFilePath);
         }
     }
 
-    public static void importarBancoDeDados(String nomeArquivo) {
-        Connection conn = null; // Declara fora para o finally
-        try {
-            // conn = getConnection(); // Conexão não é necessária para importar via mysql.exe
+    /**
+     * Importa um banco de dados a partir de um arquivo .sql.
+     * @param sourceFilePath Caminho completo do arquivo de origem.
+     * @throws IOException Erro de I/O.
+     * @throws InterruptedException Thread interrompida.
+     * @throws BackupRestoreException Erro específico de backup/restore (caminho não configurado, arquivo não encontrado, processo falhou).
+     */
+    public static void importarBancoDeDados(String sourceFilePath)
+            throws IOException, InterruptedException, BackupRestoreException { // <<< DECLARAÇÃO IMPORTANTE
 
-            String user = props.getProperty("db.user");
-            String senha = props.getProperty("db.password");
-            String nomeBanco = props.getProperty("db.name");
-            // Caminho HARDCODED do seu ambiente original
-            String caminhoCompleto = "C:\\Users\\rafa_\\OneDrive\\Documentos\\OneDrive\\Flux\\" + nomeArquivo;
+        if (isNullOrEmpty(mysqlCliPath)) {
+            throw new BackupRestoreException("Caminho para 'mysql' não configurado ('mysql.cli.path').");
+        }
+        if (isNullOrEmpty(sourceFilePath)) {
+            throw new IllegalArgumentException("Caminho do arquivo de origem não pode ser nulo/vazio.");
+        }
 
-            // Caminho HARDCODED do seu ambiente original
-            String[] comando = {
-                    "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe", // caminho completo do mysql
-                    "-u", user,
-                    "-p" + senha, // Risco de segurança
-                    nomeBanco
-            };
+        File sourceFile = new File(sourceFilePath);
+        if (!sourceFile.exists() || !sourceFile.isFile()) {
+            throw new BackupRestoreException("Arquivo de origem não encontrado/inválido: " + sourceFilePath);
+        }
+        if (sourceFile.length() == 0) {
+            throw new BackupRestoreException("Arquivo de origem está vazio: " + sourceFilePath);
+        }
 
-            ProcessBuilder processBuilder = new ProcessBuilder(comando);
-            // Redireciona o CONTEÚDO do arquivo SQL para a ENTRADA do mysql.exe
-            processBuilder.redirectInput(new File(caminhoCompleto));
+        String user = props.getProperty("db.user");
+        String senha = props.getProperty("db.password", "");
+        String nomeBanco = props.getProperty("db.name");
 
-            Process processo = processBuilder.start();
+        String[] comando = {
+                mysqlCliPath, "-u", user, "-p" + senha, "--host=localhost", "--port=3306",
+                "--protocol=tcp", nomeBanco
+        };
 
-            // É importante ler o stream de erro
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(processo.getErrorStream()));
-            String linhaErro;
-            StringBuilder erros = new StringBuilder();
-            while ((linhaErro = errorReader.readLine()) != null) {
-                erros.append(linhaErro).append("\n");
-            }
-            errorReader.close();
+        System.out.println("[Restore] Executando importação de: " + sourceFilePath);
+        ProcessBuilder processBuilder = new ProcessBuilder(comando);
+        processBuilder.redirectInput(sourceFile);
+        processBuilder.redirectErrorStream(false);
 
-            // Também pode ser útil ler o stream de saída normal (stdout)
-            BufferedReader outputReader = new BufferedReader(new InputStreamReader(processo.getInputStream()));
-            String linhaOut;
-            while ((linhaOut = outputReader.readLine()) != null) {
-                System.out.println("mysql stdout: " + linhaOut); // Log da saída normal
-            }
-            outputReader.close();
+        Process processo = processBuilder.start();
+        StringBuilder erros = readStream(processo.getErrorStream()); // Lê stderr
+        StringBuilder output = readStream(processo.getInputStream()); // Lê stdout
+        int resultadoProcesso = processo.waitFor();
 
-
-            int resultadoProcesso = processo.waitFor();
-
-            if (resultadoProcesso == 0) {
-                System.out.println("Importação realizada com sucesso de: " + caminhoCompleto);
-            } else {
-                System.err.println("Erro durante a importação (código de saída: " + resultadoProcesso + "):");
-                System.err.print(erros.toString()); // Imprime os erros capturados do stderr
-            }
-        } catch (Exception e) { // Captura IOException, InterruptedException, etc.
-            System.err.println("Erro GERAL ao importar backup: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // A conexão não foi aberta neste método
-            // closeConnection(conn);
+        if (resultadoProcesso != 0) {
+            String errorMsg = "Erro na importação (mysql código: " + resultadoProcesso + ") do arquivo " + sourceFilePath + ".";
+            if (erros.length() > 0) { errorMsg += " Erros (stderr):\n" + erros.toString(); }
+            if (output.length() > 0) { errorMsg += " Saída (stdout):\n" + output.toString(); }
+            System.err.println(errorMsg);
+            throw new BackupRestoreException(errorMsg); // <<< LANÇANDO A EXCEÇÃO
+        } else {
+            System.out.println("[Restore] Importação realizada com sucesso de: " + sourceFilePath);
+            if (output.length() > 0) { System.out.println("[Restore] Saída (stdout):\n" + output); }
+            if (erros.length() > 0) { System.err.println("[Restore] AVISO: Importação OK (código 0), mas houve saída em stderr (warnings?):\n" + erros); }
         }
     }
+
+    // Método auxiliar para ler um InputStream e retornar como String
+    private static StringBuilder readStream(InputStream inputStream) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append(System.lineSeparator());
+            }
+        }
+        return sb;
+    }
+
+    /*
+     * // Definição da Exceção Customizada (Removida daqui)
+     * // Certifique-se que esta classe existe em: BackEnd.exception.BackupRestoreException.java
+     * public static class BackupRestoreException extends Exception {
+     *     public BackupRestoreException(String message) { super(message); }
+     *     public BackupRestoreException(String message, Throwable cause) { super(message, cause); }
+     * }
+     */
 }

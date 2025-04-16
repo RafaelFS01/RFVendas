@@ -177,7 +177,6 @@ public class ListarClientesController implements Initializable {
     private void atualizarLista() {
         pesquisaField.clear();
         carregarClientes();
-        ConnectionFactory.importarBancoDeDados("BACKUP.2024");
     }
 
     private void carregarClientes() {

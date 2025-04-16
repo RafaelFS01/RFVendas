@@ -1,52 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Raiz VBox: Contém todos os elementos da tela -->
 <VBox spacing="20" styleClass="form-container" xmlns="http://javafx.com/javafx/19"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="BackEnd.controller.GerenciamentoPermissoesController">
+      fx:controller="BackEnd.controller.GerenciamentoPermissoesController"
+      prefHeight="600.0" prefWidth="850.0"> <!-- Adicionado tamanho preferencial para melhor visualização inicial -->
 
     <!-- Cabeçalho -->
     <VBox styleClass="form-header" alignment="CENTER">
         <Label text="Gerenciamento de Usuários e Permissões" styleClass="form-title"/>
         <Label text="Gerencie os usuários do sistema e suas permissões" styleClass="form-subtitle"/>
+        <padding>
+            <Insets bottom="10.0"/> <!-- Espaçamento inferior no cabeçalho -->
+        </padding>
     </VBox>
 
     <!-- Barra de Ferramentas -->
     <HBox spacing="10" styleClass="toolbar-container" alignment="CENTER_LEFT">
-        <TextField fx:id="campoBusca" promptText="Buscar por nome, usuário ou email..."
-                   styleClass="search-field"/>
-        <Button text="Novo Usuário" onAction="#novoUsuario" styleClass="btn-primary"/>
-        <Button text="Atualizar Lista" onAction="#atualizarLista" styleClass="btn-secondary"/>
+        <children>
+            <!-- Campo de Busca -->
+            <TextField fx:id="campoBusca" promptText="Buscar por nome, usuário ou email..."
+                       styleClass="search-field" HBox.hgrow="ALWAYS"/> <!-- Faz o campo crescer -->
+
+            <!-- Botões de Ação -->
+            <Button text="Novo Usuário" onAction="#novoUsuario" styleClass="btn-primary"/>
+            <Button text="Atualizar Lista" onAction="#atualizarLista" styleClass="btn-secondary"/>
+
+            <!-- NOVOS BOTÕES DE BACKUP/RESTORE -->
+            <Button fx:id="btnExportarBackup" text="Exportar Backup" onAction="#handleExportarBackup" styleClass="btn-secondary"/>
+            <Button fx:id="btnImportarBackup" text="Importar Backup" onAction="#handleImportarBackup" styleClass="btn-secondary"/>
+            <!-- Fim dos novos botões -->
+
+        </children>
         <padding>
             <Insets top="10" right="10" bottom="10" left="10"/>
         </padding>
     </HBox>
 
     <!-- Tabela de Usuários -->
-    <TableView fx:id="tabelaUsuarios" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tabelaUsuarios" VBox.vgrow="ALWAYS"> <!-- Faz a tabela crescer verticalmente -->
         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/> <!-- Distribui espaço extra entre colunas -->
         </columnResizePolicy>
         <columns>
-            <TableColumn fx:id="colunaUsername" text="Usuário"/>
-            <TableColumn fx:id="colunaNome" text="Nome"/>
-            <TableColumn fx:id="colunaEmail" text="E-mail"/>
-            <TableColumn fx:id="colunaNivel" text="Nível de Acesso"/>
-            <TableColumn fx:id="colunaStatus" text="Status"/>
-            <TableColumn fx:id="colunaAcoes" text="Ações"/>
+            <!-- Definição das colunas (os fx:id conectam ao Controller) -->
+            <TableColumn fx:id="colunaUsername" text="Usuário" prefWidth="120.0"/>
+            <TableColumn fx:id="colunaNome" text="Nome" prefWidth="200.0"/>
+            <TableColumn fx:id="colunaEmail" text="E-mail" prefWidth="200.0"/>
+            <TableColumn fx:id="colunaNivel" text="Nível" prefWidth="80.0" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="colunaStatus" text="Status" prefWidth="80.0" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="colunaAcoes" text="Ações" prefWidth="150.0" style="-fx-alignment: CENTER;" sortable="false"/>
         </columns>
         <placeholder>
-            <Label text="Nenhum usuário encontrado." style="-fx-font-size: 26;"/>
+            <!-- Mensagem exibida quando a tabela está vazia -->
+            <Label text="Nenhum usuário encontrado." style="-fx-font-size: 18px; -fx-text-fill: grey;"/>
         </placeholder>
     </TableView>
 
     <!-- Barra de Status -->
     <HBox spacing="10" styleClass="status-bar" alignment="CENTER_RIGHT">
-        <Label fx:id="statusLabel" styleClass="status-label"/>
+        <children>
+            <!-- Label para exibir informações (total, ativos, inativos) -->
+            <Label fx:id="statusLabel" styleClass="status-label" text="Carregando informações..."/>
+        </children>
         <padding>
             <Insets top="5" right="10" bottom="5" left="10"/>
         </padding>
     </HBox>
+
+    <!-- Padding geral do VBox principal -->
+    <padding>
+        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+    </padding>
+
 </VBox>

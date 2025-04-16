@@ -218,7 +218,6 @@ public class ListarItensController implements Initializable {
 
             return matchBusca && matchStatus;
         });
-        ConnectionFactory.importarBancoDeDados("BACKUP.2024");
         tabelaItens.setItems(dadosFiltrados);
         atualizarStatusLabel();
 

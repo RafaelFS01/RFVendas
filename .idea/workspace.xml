@@ -4,13 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Alugueis básicos atualizados.">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/config.properties" afterDir="false" />
+    <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Aplicativo instalavel com mvn clean package.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/BackEnd/exception/BackupRestoreException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/GerenciamentoPermissoesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/GerenciamentoPermissoesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarClientesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarClientesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarItensController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarItensController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/MainController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/util/ConnectionFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/util/ConnectionFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/GerenciarPermissoes.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/GerenciarPermissoes.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,28 +58,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.Unnamed.executor": "Run",
-    "Downloaded.Files.Path.Enabled": "false",
-    "Maven.RFVendas [install].executor": "Run",
-    "Maven.RFVendas [org.apache.maven.plugins:maven-install-plugin:3.1.2:install-file].executor": "Run",
-    "Maven.RFVendas [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor": "Run",
-    "Maven.RFVendas [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Aluguel",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/rafaf/IdeaProjects/RFVendas/lib/javafx-sdk-22.0.2/lib/javafx.web.jar",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Maven.RFVendas [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.RFVendas [org.apache.maven.plugins:maven-install-plugin:3.1.2:install-file].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.RFVendas [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.RFVendas [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Aluguel&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/rafaf/IdeaProjects/RFVendas/lib/javafx-sdk-22.0.2/lib/javafx.web.jar&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\rafaf\IdeaProjects\RFVendas\.idea" />
@@ -136,7 +140,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744504617138</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Aplicativo instalavel com mvn clean package.">
+      <option name="closed" value="true" />
+      <created>1744517580737</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1744517580737</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -155,6 +167,7 @@
     <MESSAGE value="Início do Projeto." />
     <MESSAGE value="Estilos readaptados." />
     <MESSAGE value="Alugueis básicos atualizados." />
-    <option name="LAST_COMMIT_MESSAGE" value="Alugueis básicos atualizados." />
+    <MESSAGE value="Aplicativo instalavel com mvn clean package." />
+    <option name="LAST_COMMIT_MESSAGE" value="Aplicativo instalavel com mvn clean package." />
   </component>
 </project>
