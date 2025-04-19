@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+@SuppressWarnings("ALL")
 public class CadastrarItemController implements Initializable {
 
     // --- Campos FXML Existentes ---
