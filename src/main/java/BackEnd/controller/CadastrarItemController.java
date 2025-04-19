@@ -189,18 +189,21 @@ public class CadastrarItemController implements Initializable {
                 itemService.salvarItem(novoItem);
                 setIdItemAtual(novoItem.getId()); // Para dependências
 
-                Optional<ButtonType> result = AlertHelper.showConfirmation(
+                AlertHelper.showSuccess("Item '" + novoItem.getNome() + "' salvo com sucesso.");
+
+                /*Optional<ButtonType> result = AlertHelper.showConfirmation(
                         "Item Salvo!",
                         "Item '" + novoItem.getNome() + "' salvo com sucesso.\nDeseja adicionar dependências?",
                         "(Itens necessários para a produção)"
-                );
+                );*/
 
-                if (result.isPresent() && result.get() == ButtonType.YES) {
+                limparCampos();
+                /*if (result.isPresent() && result.get() == ButtonType.YES) {
                     prepararUiParaDependencias(true);
                     openAdicionarDependencia(1, null); // Abre primeira janela de dependência
                 } else {
                     limparCampos(); // Limpa para próximo cadastro
-                }
+                }*/
             } else {
                 // --- MODO EDIÇÃO ---
                 String imagemAntigaPath = itemSendoEditado.getImagemPath(); // Guarda path antigo
