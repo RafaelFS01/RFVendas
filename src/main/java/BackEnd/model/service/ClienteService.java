@@ -82,12 +82,6 @@ public class ClienteService {
         if (ValidationHelper.isNullOrEmpty(cliente.getCpfCnpj())) {
             throw new IllegalArgumentException("CPF/CNPJ do cliente é obrigatório.");
         }
-        if (cliente.getTipoCliente() == Cliente.TipoCliente.PESSOA_FISICA && !ValidationHelper.isValidCPF(cliente.getCpfCnpj())) {
-            throw new IllegalArgumentException("CPF inválido.");
-        }
-        if (cliente.getTipoCliente() == Cliente.TipoCliente.PESSOA_JURIDICA && !ValidationHelper.isValidCNPJ(cliente.getCpfCnpj())) {
-            throw new IllegalArgumentException("CNPJ inválido.");
-        }
         if (ValidationHelper.isNullOrEmpty(cliente.getLogradouro())) {
             throw new IllegalArgumentException("Logradouro é obrigatório.");
         }

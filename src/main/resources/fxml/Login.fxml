@@ -23,14 +23,14 @@
     <top>
         <VBox alignment="TOP_CENTER" spacing="10">
 
-            <Label text="Bem-vindo ao RF Vendas" textFill="#ffd700" style="-fx-font-weight: bold;
+            <Label text="Bem-vindo ao RF Aluguéis" textFill="#ffd700" style="-fx-font-weight: bold;
             -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 1), 4, 0.94, 0, 2);">
                 <font>
                     <Font name="Roboto" size="48.0" />
                 </font>
             </Label>
 
-            <Label text="RF Impressões" textFill="#ffd700" style="-fx-font-weight: bold;
+            <Label text="LL Noivas" textFill="#ffd700" style="-fx-font-weight: bold;
             -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 1), 4, 0.94, 0, 2); -fx-padding: 0 0 20">
                 <font>
                     <Font name="Roboto" size="30.0" />

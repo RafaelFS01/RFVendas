@@ -86,7 +86,7 @@ public class CadastrarClienteController {
         tipoClienteComboBox.getSelectionModel().selectedItemProperty().addListener((obs, old, novo) -> {
             cpfCnpjField.clear();
             if (novo != null) {
-                if (novo == Cliente.TipoCliente.PESSOA_FISICA) {
+                /*if (novo == Cliente.TipoCliente.PESSOA_FISICA) {
                     cpfCnpjField.setPromptText("Digite o CPF (11 dígitos)");
                     cpfCnpjField.textProperty().addListener((obsCpf, oldCpf, novoCpf) -> {
                         if (!novoCpf.matches("\\d*")) {
@@ -95,7 +95,7 @@ public class CadastrarClienteController {
                             cpfCnpjField.setText(oldCpf);
                         }
                     });
-                } else {
+                } else if(novo == Cliente.TipoCliente.PESSOA_JURIDICA) {
                     cpfCnpjField.setPromptText("Digite o CNPJ (14 dígitos)");
                     cpfCnpjField.textProperty().addListener((obsCnpj, oldCnpj, novoCnpj) -> {
                         if (!novoCnpj.matches("\\d*")) {
@@ -104,7 +104,7 @@ public class CadastrarClienteController {
                             cpfCnpjField.setText(oldCnpj);
                         }
                     });
-                }
+                }*/
             } else {
                 cpfCnpjField.setPromptText("Digite o CPF ou CNPJ");
             }

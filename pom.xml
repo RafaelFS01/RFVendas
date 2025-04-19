@@ -15,7 +15,7 @@
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
         <main.class>BackEnd.Main</main.class>
         <icon.dir>${project.basedir}/src/main/resources/icons</icon.dir>
-        <icon.name>icon.ico</icon.name>
+        <icon.name>LL_Noivas.ico</icon.name>
         <installer.app.version>1.0.0</installer.app.version>
     </properties>
 
@@ -186,8 +186,6 @@
                                     <arg value="${project.build.directory}/libs"/>
                                     <arg value="--win-shortcut"/>
                                     <arg value="--win-menu"/>
-                                    <!-- Mantenha esta linha por enquanto, remova depois -->
-                                    <arg value="--win-console"/>
                                 </exec>
                             </target>
                         </configuration>
