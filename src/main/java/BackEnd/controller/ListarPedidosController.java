@@ -1,5 +1,6 @@
 package BackEnd.controller;
 
+import BackEnd.model.entity.TipoPagamento;
 import BackEnd.model.entity.Pedido;
 import BackEnd.model.entity.StatusPedido;
 // TipoVenda não é mais usado
@@ -42,6 +43,8 @@ public class ListarPedidosController {
     @FXML private TableColumn<Pedido, StatusPedido> colunaStatus;
     @FXML private TableColumn<Pedido, Void> colunaAcoes;
     @FXML private Button btnVisualizarPedido;
+    @FXML private TableColumn<Pedido, TipoPagamento> colunaTipoPagamento;
+
 
     // --- Serviços e Dados ---
     private PedidoService pedidoService;
@@ -120,6 +123,10 @@ public class ListarPedidosController {
         colunaValor.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getValorTotal()));
         colunaValor.setCellFactory(formatarMoedaCellFactory());
 
+        colunaTipoPagamento.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getTipoPagamento()));
+        colunaTipoPagamento.setCellFactory(formatarTipoPagamentoCellFactory()); // Chama um novo método auxiliar
+
+
         colunaStatus.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatus()));
         colunaStatus.setCellFactory(formatarStatusCellFactory());
 
@@ -144,6 +151,21 @@ public class ListarPedidosController {
             protected void updateItem(Double price, boolean empty) {
                 super.updateItem(price, empty);
                 setText(empty || price == null ? null : String.format("R$ %.2f", price));
+            }
+        };
+    }
+
+    private Callback<TableColumn<Pedido, TipoPagamento>, TableCell<Pedido, TipoPagamento>> formatarTipoPagamentoCellFactory() {
+        return column -> new TableCell<>() {
+            @Override
+            protected void updateItem(TipoPagamento item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null); // Limpa a célula se não houver tipo de pagamento
+                } else {
+                    // Usa o método getDescricao() ou o toString() sobrescrito do Enum
+                    setText(item.getDescricao()); // Ou item.toString() se preferir
+                }
             }
         };
     }

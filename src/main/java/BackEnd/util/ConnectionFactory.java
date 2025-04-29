@@ -201,7 +201,7 @@ public class ConnectionFactory {
                """,
                 """
                 CREATE TABLE IF NOT EXISTS pedidos (
-                    id INT NOT NULL AUTO_INCREMENT, cliente_id VARCHAR(255) NOT NULL, data_pedido DATE NOT NULL, data_retorno DATE NULL, valor_total DECIMAL(10,2) NOT NULL DEFAULT 0.00, status ENUM('CONCLUIDO','EM_ANDAMENTO','CANCELADO') NOT NULL DEFAULT 'EM_ANDAMENTO', observacoes TEXT NULL, PRIMARY KEY (id), CONSTRAINT fk_pedido_cliente FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE RESTRICT ON UPDATE CASCADE
+                    id INT NOT NULL AUTO_INCREMENT, cliente_id VARCHAR(255) NOT NULL, data_pedido DATE NOT NULL, data_retorno DATE NULL, valor_total DECIMAL(10,2) NOT NULL DEFAULT 0.00, status ENUM('CONCLUIDO','EM_ANDAMENTO','CANCELADO') NOT NULL DEFAULT 'EM_ANDAMENTO', observacoes TEXT NULL, tipo_pagamento VARCHAR(50) NULL DEFAULT NULL, PRIMARY KEY (id), CONSTRAINT fk_pedido_cliente FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE RESTRICT ON UPDATE CASCADE
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
                 """,
                 """

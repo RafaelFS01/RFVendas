@@ -4,16 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Atualização para exportação e importação de backup.">
+    <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Remoção da adicionação de dependências.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/TipoPagamento.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarClienteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/CadastrarClienteController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ClienteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/ClienteService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/Login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/Login.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/Main.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/Main.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/images/icon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/images/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarPedidosController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarPedidosController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/RegistrarPedidoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/RegistrarPedidoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/PedidoDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/PedidoDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Pedido.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Pedido.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/PedidoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/PedidoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/util/ConnectionFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/util/ConnectionFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarPedidos.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ListarPedidos.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/RegistrarPedido.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/RegistrarPedido.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +26,7 @@
       <list>
         <option value="FxmlFile" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -155,7 +157,31 @@
       <option name="project" value="LOCAL" />
       <updated>1744823005629</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Pequenos ajustes de estilização.">
+      <option name="closed" value="true" />
+      <created>1745029736005</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1745029736005</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Remoção da adicionação de dependências.">
+      <option name="closed" value="true" />
+      <created>1745029973525</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1745029973525</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Remoção da adicionação de dependências.">
+      <option name="closed" value="true" />
+      <created>1745030034117</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1745030034117</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -176,6 +202,8 @@
     <MESSAGE value="Alugueis básicos atualizados." />
     <MESSAGE value="Aplicativo instalavel com mvn clean package." />
     <MESSAGE value="Atualização para exportação e importação de backup." />
-    <option name="LAST_COMMIT_MESSAGE" value="Atualização para exportação e importação de backup." />
+    <MESSAGE value="Pequenos ajustes de estilização." />
+    <MESSAGE value="Remoção da adicionação de dependências." />
+    <option name="LAST_COMMIT_MESSAGE" value="Remoção da adicionação de dependências." />
   </component>
 </project>

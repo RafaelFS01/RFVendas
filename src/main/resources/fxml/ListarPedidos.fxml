@@ -53,11 +53,12 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
         </columnResizePolicy>
         <columns>
-            <TableColumn fx:id="colunaId" text="ID" prefWidth="60" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="colunaId" text="ID" minWidth="9" style="-fx-alignment: CENTER;"/>
             <TableColumn fx:id="colunaCliente" text="Cliente" minWidth="200"/>
             <TableColumn fx:id="colunaData" text="Data Pedido" style="-fx-alignment: CENTER;"/>
             <TableColumn fx:id="colunaDataRetorno" text="Data Retorno"  style="-fx-alignment: CENTER;"/>
-            <TableColumn fx:id="colunaValor" text="Valor Total" prefWidth="120" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="colunaValor" text="Valor Total" minWidth="30" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="colunaTipoPagamento" text="Pagamento" minWidth="100" style="-fx-alignment: CENTER;"/>
             <TableColumn fx:id="colunaStatus" text="Status" prefWidth="120" style="-fx-alignment: CENTER;"/>
             <!-- Coluna Ações: Largura aumentada para acomodar o botão "Concluir" -->
             <TableColumn fx:id="colunaAcoes" text="Ações" minWidth="150"/>
