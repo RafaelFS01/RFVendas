@@ -5,6 +5,7 @@ module BackEnd {
     requires mysql.connector.j;
     requires javafx.graphics;
     requires javafx.base;
+    requires org.apache.pdfbox;
 
     opens BackEnd to javafx.fxml;
     opens BackEnd.controller to javafx.fxml;

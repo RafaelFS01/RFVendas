@@ -4,17 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Remoção da adicionação de dependências.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/TipoPagamento.java" afterDir="false" />
+    <list default="true" id="3d9b6468-92fd-47fa-a809-1d7fb806a055" name="Changes" comment="Adicionado forma de pagamento e a listagem com a forma.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/BackEnd/util/PedidoPdfGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarPedidosController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/ListarPedidosController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/controller/RegistrarPedidoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/controller/RegistrarPedidoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/PedidoDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/dao/impl/PedidoDAOImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Pedido.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/entity/Pedido.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/PedidoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/model/service/PedidoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/BackEnd/util/ConnectionFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/BackEnd/util/ConnectionFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ListarPedidos.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ListarPedidos.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/RegistrarPedido.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/RegistrarPedido.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,8 +20,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="FxmlFile" />
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -181,7 +176,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745030034117</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Adicionado forma de pagamento e a listagem com a forma.">
+      <option name="closed" value="true" />
+      <created>1745892458091</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1745892458091</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -204,6 +207,7 @@
     <MESSAGE value="Atualização para exportação e importação de backup." />
     <MESSAGE value="Pequenos ajustes de estilização." />
     <MESSAGE value="Remoção da adicionação de dependências." />
-    <option name="LAST_COMMIT_MESSAGE" value="Remoção da adicionação de dependências." />
+    <MESSAGE value="Adicionado forma de pagamento e a listagem com a forma." />
+    <option name="LAST_COMMIT_MESSAGE" value="Adicionado forma de pagamento e a listagem com a forma." />
   </component>
 </project>

@@ -5,6 +5,7 @@ import BackEnd.model.service.ClienteService;
 import BackEnd.model.service.ItemService; // Manter se usado para buscar Item em algum ponto futuro
 import BackEnd.model.service.PedidoService;
 import BackEnd.util.AlertHelper;
+import BackEnd.util.PedidoPdfGenerator; // <<< IMPORT ADICIONADO para o gerador de PDF
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,12 +18,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.FileChooser; // <<< IMPORT ADICIONADO para salvar arquivo
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter; // Import necessário para o converter do ComboBox
 import javafx.util.converter.DoubleStringConverter;
 
-import java.io.IOException;
+import java.io.File; // <<< IMPORT ADICIONADO para File
+import java.io.IOException; // <<< IMPORT ADICIONADO para IOException
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +34,6 @@ public class RegistrarPedidoController {
 
     // --- FXML Element Declarations ---
     @FXML private ComboBox<Cliente> cbCliente;
-    // REMOVIDO: @FXML private ComboBox<TipoVenda> cbTipoVenda; // Comentário mantido para clareza histórica
     @FXML private DatePicker dpDataPedido;
     @FXML private DatePicker dpDataRetorno;         // ADICIONADO ANTERIORMENTE
     @FXML private ComboBox<TipoPagamento> cbTipoPagamento; // <<< NOVO CAMPO ADICIONADO
@@ -75,7 +77,6 @@ public class RegistrarPedidoController {
     @FXML
     private void initialize() {
         carregarClientes();
-        // REMOVIDO: configurarComboBoxTipoVenda(); // Comentário mantido
         configurarComboBoxTipoPagamento(); // <<< NOVO MÉTODO CHAMADO
         configurarTableViewItensPedido();
         dpDataPedido.setValue(LocalDate.now()); // Define data do pedido como hoje
@@ -127,26 +128,6 @@ public class RegistrarPedidoController {
         // Como o Enum TipoPagamento sobrescreve o método toString() para retornar
         // a descrição amigável, não é estritamente necessário um StringConverter customizado
         // para exibir essa descrição no ComboBox (a menos que precise de lógica 'fromString').
-        // Se quisesse usar getDescricao() explicitamente ou o Enum não tivesse toString() sobrescrito:
-        /*
-        cbTipoPagamento.setConverter(new StringConverter<TipoPagamento>() {
-            @Override
-            public String toString(TipoPagamento tipo) {
-                // Retorna a descrição se o tipo não for nulo, senão retorna null
-                return tipo == null ? null : tipo.getDescricao();
-            }
-
-            @Override
-            public TipoPagamento fromString(String string) {
-                // Implementação para encontrar o Enum pela String (útil se o ComboBox fosse editável)
-                // Busca na lista de itens do ComboBox pelo tipo cuja descrição corresponde à string fornecida.
-                return cbTipoPagamento.getItems().stream()
-                        .filter(tp -> tp.getDescricao().equalsIgnoreCase(string)) // Comparação ignorando maiúsculas/minúsculas
-                        .findFirst()
-                        .orElse(null); // Retorna null se não encontrar correspondência
-            }
-        });
-        */
     }
 
 
@@ -160,30 +141,28 @@ public class RegistrarPedidoController {
         // Coluna ID do Item
         colunaId.setCellValueFactory(cellData -> {
             Item item = cellData.getValue().getItem();
-            // Retorna a propriedade do ID do item ou null se o item for inválido
             return item != null ? new SimpleIntegerProperty(item.getId()).asObject() : new SimpleObjectProperty<>(null);
         });
 
         // Coluna Nome do Item
         colunaNome.setCellValueFactory(cellData -> {
             Item item = cellData.getValue().getItem();
-            // Retorna a propriedade do nome do item ou uma mensagem de erro se inválido
             return new SimpleStringProperty(item != null ? item.getNome() : "<Item Inválido>");
         });
 
         // Coluna Preço de Venda (Editável)
         colunaPrecoVenda.setCellValueFactory(new PropertyValueFactory<>("precoVenda"));
-        colunaPrecoVenda.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter())); // Usa TextField para edição
-        colunaPrecoVenda.setOnEditCommit(event -> { // Ação ao confirmar a edição
+        colunaPrecoVenda.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        colunaPrecoVenda.setOnEditCommit(event -> {
             ItemPedido itemPedido = event.getRowValue();
             if (itemPedido != null) {
                 double novoPreco = event.getNewValue() != null ? event.getNewValue() : 0.0;
                 if (novoPreco > 0) {
                     itemPedido.setPrecoVenda(novoPreco);
-                    atualizarTotais(); // Recalcula totais após mudança de preço
+                    atualizarTotais();
                 } else {
                     AlertHelper.showWarning("Preço Inválido", "O preço de venda deve ser maior que zero.");
-                    tvItensPedido.refresh(); // Reverte a edição visualmente
+                    tvItensPedido.refresh();
                 }
             }
         });
@@ -196,27 +175,25 @@ public class RegistrarPedidoController {
 
         // Coluna Quantidade (Editável)
         colunaQuantidade.setCellValueFactory(new PropertyValueFactory<>("quantidade"));
-        colunaQuantidade.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter())); // Usa TextField para edição
-        colunaQuantidade.setOnEditCommit(event -> { // Ação ao confirmar a edição
+        colunaQuantidade.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        colunaQuantidade.setOnEditCommit(event -> {
             ItemPedido itemPedido = event.getRowValue();
             Double novaQuantidade = event.getNewValue();
 
             if (itemPedido != null && itemPedido.getItem() != null && novaQuantidade != null && novaQuantidade > 0) {
-                // Validação de quantidade disponível ANTES de commitar
                 if (novaQuantidade > itemPedido.getItem().getQuantidadeAtual()) {
                     AlertHelper.showWarning("Quantidade Indisponível",
                             "A quantidade solicitada (" + String.format("%.2f", novaQuantidade) + ") para o item '" +
                                     itemPedido.getItem().getNome() + "' excede a quantidade atual disponível (" +
                                     String.format("%.2f", itemPedido.getItem().getQuantidadeAtual()) + ").");
-                    tvItensPedido.refresh(); // Reverte a edição visualmente
+                    tvItensPedido.refresh();
                 } else {
                     itemPedido.setQuantidade(novaQuantidade);
-                    atualizarTotais(); // Recalcula totais após mudança de quantidade
+                    atualizarTotais();
                 }
             } else {
-                // Se valor inválido, item nulo, ou quantidade <= 0
                 AlertHelper.showWarning("Entrada Inválida", "A quantidade deve ser um número positivo.");
-                tvItensPedido.refresh(); // Reverte a edição visualmente
+                tvItensPedido.refresh();
             }
         });
 
@@ -243,36 +220,29 @@ public class RegistrarPedidoController {
         colunaAcoes.setCellFactory(col -> new TableCell<ItemPedido, Void>() {
             private final Button btnRemover = new Button("Remover");
             {
-                // Ação do botão remover
                 btnRemover.setOnAction(event -> {
-                    // Obtém o ItemPedido da linha atual
                     ItemPedido itemPedidoParaRemover = getTableView().getItems().get(getIndex());
                     if (itemPedidoParaRemover != null) {
-                        removerItemPedido(itemPedidoParaRemover); // Chama o método para remover
+                        removerItemPedido(itemPedidoParaRemover);
                     }
                 });
-                btnRemover.getStyleClass().add("btn-delete"); // Aplica estilo CSS ao botão
-                // Considerar adicionar um ícone gráfico se desejar
-                // btnRemover.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/icons/delete.png"))));
-                // btnRemover.setText(""); // Remover texto se usar ícone
+                btnRemover.getStyleClass().add("btn-delete");
             }
 
-            // Atualiza a célula para exibir o botão ou nada se a linha estiver vazia
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) {
-                    setGraphic(null); // Não mostra nada em linhas vazias
+                    setGraphic(null);
                 } else {
-                    setGraphic(btnRemover); // Mostra o botão na célula
+                    setGraphic(btnRemover);
                 }
             }
         });
 
         // --- Configurações Gerais da Tabela ---
-        tvItensPedido.setItems(itensPedido); // Vincula a lista observável à tabela
-        tvItensPedido.setEditable(true);     // Permite a edição das células configuradas
-        // Define um texto para ser exibido quando a tabela está vazia
+        tvItensPedido.setItems(itensPedido);
+        tvItensPedido.setEditable(true);
         tvItensPedido.setPlaceholder(new Label("Nenhum item adicionado ao pedido."));
     }
 
@@ -284,20 +254,17 @@ public class RegistrarPedidoController {
     @FXML
     private void abrirJanelaAdicionarProdutos() {
         try {
-            // Carrega o FXML da janela de seleção de itens
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SelecionarItens.fxml"));
             Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load())); // Cria a cena com o conteúdo carregado
+            stage.setScene(new Scene(loader.load()));
             stage.setTitle("Seleção de Itens para o Pedido");
-            stage.initModality(Modality.APPLICATION_MODAL); // Bloqueia interação com a janela principal
-            stage.initOwner(btnAdicionarProdutos.getScene().getWindow()); // Define a janela pai (opcional)
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(btnAdicionarProdutos.getScene().getWindow());
 
-            // Obtém o controlador da janela de seleção
             SelecionarItensController controller = loader.getController();
-            // Passa um método de callback para receber os itens selecionados
             controller.setCallback(this::adicionarItensAoPedido);
 
-            stage.showAndWait(); // Exibe a janela e espera ela ser fechada
+            stage.showAndWait();
         } catch (IOException e) {
             AlertHelper.showError("Erro ao Abrir Janela", "Não foi possível carregar a janela de seleção de itens.\nDetalhes: " + e.getMessage());
             e.printStackTrace();
@@ -313,48 +280,40 @@ public class RegistrarPedidoController {
      * @param itensSelecionados A lista de objetos Item que foram selecionados.
      */
     public void adicionarItensAoPedido(List<Item> itensSelecionados) {
-        if (itensSelecionados == null) return; // Segurança extra
+        if (itensSelecionados == null) return;
 
         for (Item item : itensSelecionados) {
-            if (item == null) continue; // Pula itens nulos na lista (pouco provável, mas seguro)
+            if (item == null) continue;
 
-            // Verifica se um ItemPedido com o mesmo Item (baseado no ID) já está na lista 'itensPedido'
-            final int itemId = item.getId(); // Para usar dentro da lambda
+            final int itemId = item.getId();
             boolean jaExiste = itensPedido.stream()
                     .anyMatch(ip -> ip.getItem() != null && ip.getItem().getId() == itemId);
 
             if (!jaExiste) {
-                // Verifica se o item possui quantidade atual disponível para ser adicionado
                 if (item.getQuantidadeAtual() <= 0) {
                     AlertHelper.showWarning("Item Sem Quantidade", "O item '" + item.getNome() + "' não possui quantidade disponível (Qtd Atual: " + String.format("%.2f",item.getQuantidadeAtual()) + ") e não pode ser adicionado.");
-                    continue; // Pula para o próximo item da seleção
+                    continue;
                 }
 
-                // Cria um novo ItemPedido
                 ItemPedido novoItemPedido = new ItemPedido();
-                novoItemPedido.setItem(item); // Associa o Item selecionado
-                // Define quantidade inicial como 1 (ou outra lógica, se necessário)
-                // Poderia ser Math.min(1.0, item.getQuantidadeAtual()) se quisesse limitar à qtd disponível já aqui
+                novoItemPedido.setItem(item);
                 novoItemPedido.setQuantidade(1.0);
-                // Define o preço de venda padrão do item (pode ser editado depois na tabela)
                 novoItemPedido.setPrecoVenda(item.getPrecoVenda());
 
-                // Validação final: A quantidade inicial (1.0) não pode exceder a disponível
                 if (novoItemPedido.getQuantidade() > item.getQuantidadeAtual()) {
                     AlertHelper.showWarning("Quantidade Insuficiente",
                             "Não há quantidade suficiente para adicionar o item '" + item.getNome() +
                                     "'. Disponível: " + String.format("%.2f", item.getQuantidadeAtual()) + ", Necessário: 1.00");
-                    continue; // Pula para o próximo item
+                    continue;
                 }
 
-                itensPedido.add(novoItemPedido); // Adiciona o novo item à lista observável (atualiza a tabela)
+                itensPedido.add(novoItemPedido);
 
             } else {
-                // Informa ao usuário que o item já foi adicionado
                 AlertHelper.showInfo("Item Já Adicionado", "O item '" + item.getNome() + "' já está na lista deste pedido.");
             }
         }
-        atualizarTotais(); // Recalcula e atualiza os labels de totais
+        atualizarTotais();
     }
 
     /**
@@ -363,8 +322,8 @@ public class RegistrarPedidoController {
      */
     private void removerItemPedido(ItemPedido itemPedido) {
         if (itemPedido != null) {
-            itensPedido.remove(itemPedido); // Remove da lista observável (atualiza a tabela)
-            atualizarTotais(); // Recalcula e atualiza os labels de totais
+            itensPedido.remove(itemPedido);
+            atualizarTotais();
         }
     }
 
@@ -373,12 +332,10 @@ public class RegistrarPedidoController {
      */
     private void atualizarTotais() {
         double valorTotal = calcularValorTotalPedido();
-        // Usa double para quantidade total para consistência, já que ItemPedido.quantidade é double
         double quantidadeTotal = itensPedido.stream()
                 .mapToDouble(ItemPedido::getQuantidade)
                 .sum();
 
-        // Atualiza os textos dos Labels formatando os números
         lblValorTotal.setText("Valor Total: R$ " + String.format("%.2f", valorTotal));
         lblQuantidadeTotal.setText("Quantidade Total: " + String.format("%.2f", quantidadeTotal));
     }
@@ -391,33 +348,30 @@ public class RegistrarPedidoController {
         if (itensPedido == null) {
             return 0.0;
         }
-        // Stream para processar a lista de itens do pedido
         return itensPedido.stream()
-                // Mapeia cada ItemPedido para o seu subtotal (quantidade * preço de venda)
                 .mapToDouble(ip -> {
-                    // Verificação de segurança para evitar NullPointerException
                     if (ip != null) {
                         return ip.getQuantidade() * ip.getPrecoVenda();
                     }
-                    return 0.0; // Retorna 0 se o ItemPedido for nulo
+                    return 0.0;
                 })
-                // Soma todos os subtotais calculados
                 .sum();
     }
 
 
     /**
-     * Valida os dados, monta o objeto Pedido e chama o PedidoService para salvar (novo)
-     * ou atualizar (edição) o pedido no banco de dados.
-     * Realiza validações de campos obrigatórios e de quantidade disponível.
+     * Valida os dados, monta o objeto Pedido, chama o PedidoService para salvar/atualizar,
+     * e então dispara a geração do PDF do pedido salvo/atualizado.
      */
     @FXML
     private void salvarPedido() {
+        Pedido novoPedido = null; // <<< Variável para guardar referência do novo pedido para o PDF
+
         try {
             // --- Validações de Campos Obrigatórios ---
             if (cbCliente.getValue() == null) {
                 AlertHelper.showWarning("Campo Obrigatório", "Por favor, selecione um Cliente.");
-                cbCliente.requestFocus(); // Foca no campo inválido
+                cbCliente.requestFocus();
                 return;
             }
             if (dpDataPedido.getValue() == null) {
@@ -425,7 +379,7 @@ public class RegistrarPedidoController {
                 dpDataPedido.requestFocus();
                 return;
             }
-            // Adicionar validação para Tipo de Pagamento se for obrigatório
+            // Validação opcional para Tipo de Pagamento:
             // if (cbTipoPagamento.getValue() == null) {
             //    AlertHelper.showWarning("Campo Obrigatório", "Por favor, selecione a Forma de Pagamento.");
             //    cbTipoPagamento.requestFocus();
@@ -440,31 +394,25 @@ public class RegistrarPedidoController {
             // --- Obtenção dos Dados da Interface ---
             Cliente clienteSelecionado = cbCliente.getValue();
             LocalDate dataPedidoSelecionada = dpDataPedido.getValue();
-            LocalDate dataRetornoSelecionada = dpDataRetorno.getValue(); // Pode ser null
-            TipoPagamento tipoPagamentoSelecionado = cbTipoPagamento.getValue(); // <<< OBTÉM O VALOR
+            LocalDate dataRetornoSelecionada = dpDataRetorno.getValue();
+            TipoPagamento tipoPagamentoSelecionado = cbTipoPagamento.getValue();
             String observacoesDigitadas = txtObservacoes.getText();
-            // Cria uma cópia da lista de itens atual para evitar problemas com concorrência se a lista for modificada externamente
             List<ItemPedido> itensAtuaisDoPedido = itensPedido.stream().collect(Collectors.toList());
-
 
             // --- Validações de Negócio (Itens) ---
             for (ItemPedido itemPedido : itensAtuaisDoPedido) {
                 if (itemPedido == null || itemPedido.getItem() == null) {
                     AlertHelper.showError("Erro Interno", "O pedido contém um item inválido (nulo). Verifique os itens adicionados.");
-                    return; // Impede o salvamento
+                    return;
                 }
-                // Verifica se a quantidade no pedido excede a quantidade atual DO ITEM NO ESTOQUE
-                // Esta validação é crucial para garantir consistência
                 if (itemPedido.getQuantidade() > itemPedido.getItem().getQuantidadeAtual()) {
                     AlertHelper.showError("Quantidade Insuficiente em Estoque",
                             "Não há quantidade atual suficiente para o item: '" + itemPedido.getItem().getNome() +
                                     "'.\nPedido: " + String.format("%.2f", itemPedido.getQuantidade()) +
                                     ", Disponível: " + String.format("%.2f", itemPedido.getItem().getQuantidadeAtual()));
-                    // Poderia focar na tabela e na linha/célula problemática se a API permitir facilmente
                     tvItensPedido.requestFocus();
-                    return; // Impede o salvamento
+                    return;
                 }
-                // Validação adicional: Quantidade e Preço devem ser positivos
                 if (itemPedido.getQuantidade() <= 0) {
                     AlertHelper.showError("Quantidade Inválida",
                             "A quantidade para o item '" + itemPedido.getItem().getNome() + "' deve ser maior que zero.");
@@ -480,52 +428,104 @@ public class RegistrarPedidoController {
             }
 
             // --- Lógica de Persistência: Atualizar ou Salvar Novo ---
-            double valorTotalCalculado = calcularValorTotalPedido(); // Recalcula por segurança
+            double valorTotalCalculado = calcularValorTotalPedido();
 
             if (pedidoSendoEditado != null) {
                 // --- Modo Edição: Atualizar Pedido Existente ---
                 pedidoSendoEditado.setCliente(clienteSelecionado);
                 pedidoSendoEditado.setDataPedido(dataPedidoSelecionada);
                 pedidoSendoEditado.setDataRetorno(dataRetornoSelecionada);
-                pedidoSendoEditado.setTipoPagamento(tipoPagamentoSelecionado); // <<< DEFINE O VALOR
+                pedidoSendoEditado.setTipoPagamento(tipoPagamentoSelecionado);
                 pedidoSendoEditado.setObservacoes(observacoesDigitadas);
-                // Garante que a lista de itens no objeto Pedido a ser salvo esteja atualizada
                 pedidoSendoEditado.setItens(itensAtuaisDoPedido);
                 pedidoSendoEditado.setValorTotal(valorTotalCalculado);
-                // Nota: O Status do pedido geralmente não é modificado nesta tela de registro/edição,
-                // a menos que haja uma regra de negócio específica. A conclusão ou cancelamento
-                // seriam feitos em outra funcionalidade. O status atual é mantido.
+                // Status é mantido
 
-                // Chama os serviços para persistir as alterações
-                pedidoService.atualizarPedido(pedidoSendoEditado); // Atualiza os dados principais do pedido
-                pedidoService.atualizarItens(pedidoSendoEditado);  // Atualiza a lista de itens (Serviço lida com a lógica de estoque)
+                pedidoService.atualizarPedido(pedidoSendoEditado);
+                pedidoService.atualizarItens(pedidoSendoEditado); // Serviço deduz estoque ao atualizar
 
-                AlertHelper.showSuccess( "O pedido ID " + pedidoSendoEditado.getId() + " foi atualizado com sucesso.");
+                AlertHelper.showSuccess("O pedido ID " + pedidoSendoEditado.getId() + " foi atualizado com sucesso.");
 
             } else {
                 // --- Modo Novo: Criar e Salvar Novo Pedido ---
-                Pedido novoPedido = new Pedido();
+                novoPedido = new Pedido(); // <<< Atribui à variável local
                 novoPedido.setCliente(clienteSelecionado);
                 novoPedido.setDataPedido(dataPedidoSelecionada);
-                novoPedido.setDataRetorno(dataRetornoSelecionada); // Define data de retorno (pode ser null)
-                novoPedido.setTipoPagamento(tipoPagamentoSelecionado); // <<< DEFINE O VALOR
+                novoPedido.setDataRetorno(dataRetornoSelecionada);
+                novoPedido.setTipoPagamento(tipoPagamentoSelecionado);
                 novoPedido.setObservacoes(observacoesDigitadas);
-                novoPedido.setItens(itensAtuaisDoPedido); // Define a lista de itens
-                novoPedido.setValorTotal(valorTotalCalculado); // Define o valor total calculado
-                novoPedido.setStatus(StatusPedido.EM_ANDAMENTO); // Define o status inicial padrão
+                novoPedido.setItens(itensAtuaisDoPedido);
+                novoPedido.setValorTotal(valorTotalCalculado);
+                novoPedido.setStatus(StatusPedido.EM_ANDAMENTO);
 
-                // Chama os serviços para persistir o novo pedido
-                pedidoService.salvarPedido(novoPedido); // Salva o pedido (obtém o ID gerado)
-                pedidoService.salvarItens(novoPedido);  // Salva os itens associados e deduz a quantidade atual (Serviço faz isso)
+                pedidoService.salvarPedido(novoPedido); // Salva dados principais (obtém ID)
+                pedidoService.salvarItens(novoPedido);  // Salva itens e deduz estoque
 
-                AlertHelper.showSuccess( "O novo pedido foi registrado com sucesso com ID " + novoPedido.getId() + ".");
+                AlertHelper.showSuccess("O novo pedido foi registrado com sucesso com ID " + novoPedido.getId() + ".");
             }
 
-            // Limpa a tela após salvar/atualizar com sucesso
+            // ---- Geração do PDF ----
+            // Garante que temos um pedido válido (seja o editado ou o recém-criado)
+            if (pedidoSendoEditado != null || novoPedido != null) {
+                Pedido pedidoParaPdf = (pedidoSendoEditado != null) ? pedidoSendoEditado : novoPedido;
+
+                // 1. Escolher o local para salvar
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Salvar PDF do Pedido");
+                // Sugerir nome de arquivo seguro
+                String initialFileName = String.format("Pedido_%d_%s.pdf",
+                        pedidoParaPdf.getId(),
+                        pedidoParaPdf.getCliente().getNome().replaceAll("[^a-zA-Z0-9_\\-\\.]", "_")); // Remove caracteres inválidos
+                fileChooser.setInitialFileName(initialFileName);
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+                // Mostrar diálogo para salvar (precisa de uma referência ao Stage atual)
+                Stage stage = (Stage) btnSalvar.getScene().getWindow(); // Obtem o Stage do botão
+                File selectedFile = fileChooser.showSaveDialog(stage);
+
+                if (selectedFile != null) {
+                    String filePath = selectedFile.getAbsolutePath();
+                    try {
+                        PedidoPdfGenerator pdfGenerator = new PedidoPdfGenerator();
+                        // Chama o gerador passando o pedido e o caminho do arquivo
+                        pdfGenerator.generatePdf(pedidoParaPdf, filePath);
+
+                        AlertHelper.showSuccess("PDF do pedido gerado com sucesso em:\n" + filePath);
+
+                        // Opcional: Abrir o PDF gerado (pode precisar de tratamento de exceção específico)
+                        // try {
+                        //     if (Desktop.isDesktopSupported()) {
+                        //         Desktop.getDesktop().open(selectedFile);
+                        //     } else {
+                        //         AlertHelper.showWarning("Ação não suportada", "Não foi possível abrir o arquivo PDF automaticamente.");
+                        //     }
+                        // } catch (IOException openEx) {
+                        //      AlertHelper.showError("Erro ao Abrir PDF", "Não foi possível abrir o arquivo PDF gerado.\n" + openEx.getMessage());
+                        // }
+
+                    } catch (IOException ioEx) {
+                        AlertHelper.showError("Erro ao Gerar PDF", "Não foi possível gerar ou salvar o arquivo PDF.\nVerifique as permissões e o caminho.\nDetalhes: " + ioEx.getMessage());
+                        ioEx.printStackTrace();
+                    } catch (IllegalArgumentException argEx) {
+                        AlertHelper.showError("Erro ao Gerar PDF", "Dados inválidos para gerar o PDF.\nDetalhes: " + argEx.getMessage());
+                        argEx.printStackTrace();
+                    } catch (Exception pdfEx) {
+                        AlertHelper.showError("Erro Inesperado no PDF", "Ocorreu um erro inesperado ao gerar o PDF.\nDetalhes: " + pdfEx.getMessage());
+                        pdfEx.printStackTrace();
+                    }
+                } else {
+                    // Usuário cancelou a seleção do arquivo
+                    AlertHelper.showInfo("Geração de PDF Cancelada", "A geração do PDF foi cancelada pelo usuário.");
+                }
+            }
+            // ---- Fim da Geração do PDF ----
+
+
+            // Limpa a tela após salvar/atualizar com sucesso E gerar/cancelar PDF
             limparCampos();
 
         } catch (Exception e) {
-            // Captura qualquer exceção inesperada durante o processo
+            // Captura qualquer exceção inesperada durante o processo de salvar pedido ou itens
             AlertHelper.showError("Erro ao Salvar Pedido", "Ocorreu um erro inesperado ao tentar salvar o pedido:\n" + e.getMessage());
             e.printStackTrace(); // Log detalhado do erro para o console/arquivo de log
         }
@@ -536,8 +536,8 @@ public class RegistrarPedidoController {
      */
     @FXML
     private void cancelar() {
-        // Pergunta ao usuário se realmente deseja cancelar, especialmente se houver dados não salvos (opcional)
-        // boolean confirmar = AlertHelper.showConfirmation("Cancelar Alterações", "Deseja realmente cancelar e limpar os campos?");
+        // Opcional: Adicionar confirmação
+        // boolean confirmar = AlertHelper.showConfirmation("Cancelar Alterações", "Deseja realmente cancelar e limpar os campos?", "").orElse(ButtonType.NO) == ButtonType.YES;
         // if (confirmar) {
         limparCampos();
         // }
@@ -551,14 +551,15 @@ public class RegistrarPedidoController {
      */
     private void limparCampos() {
         cbCliente.setValue(null);
-        dpDataPedido.setValue(LocalDate.now()); // Reseta para data atual
-        dpDataRetorno.setValue(null);          // Limpa data de retorno
-        cbTipoPagamento.setValue(null);        // <<< LIMPA TIPO DE PAGAMENTO
+        dpDataPedido.setValue(LocalDate.now());
+        dpDataRetorno.setValue(null);
+        cbTipoPagamento.setValue(null); // <<< LIMPA TIPO DE PAGAMENTO
         txtObservacoes.clear();
-        itensPedido.clear();                   // Limpa a lista observável (limpa a tabela)
-        atualizarTotais();                     // Reseta os labels de total para R$ 0,00 e Qtd 0.00
-        pedidoSendoEditado = null;             // Garante que a próxima ação de salvar seja "novo", não "edição"
-        cbCliente.requestFocus();              // Devolve o foco para o primeiro campo (opcional)
+        itensPedido.clear();
+        atualizarTotais();
+        pedidoSendoEditado = null;
+        btnSalvar.setText("Salvar Pedido"); // Garante que o botão volte ao texto original
+        cbCliente.requestFocus();
     }
 
     /**
@@ -568,45 +569,32 @@ public class RegistrarPedidoController {
      */
     public void preencherDadosPedido(Pedido pedido) {
         if (pedido == null) {
-            // Se um pedido nulo for passado, apenas limpa a tela
             System.err.println("Aviso: Tentativa de preencher dados com um pedido nulo.");
             limparCampos();
             return;
         }
-        // Armazena a referência ao pedido que está sendo editado
         pedidoSendoEditado = pedido;
 
         // --- Preenche os campos da interface ---
-        // É importante que o objeto Cliente dentro do Pedido esteja completamente carregado.
-        // Se o ComboBox usa objetos Cliente, o objeto exato precisa estar na lista do ComboBox
-        // ou a seleção por objeto pode falhar visualmente. A busca por ID seria mais robusta se necessário.
         cbCliente.setValue(pedido.getCliente());
         dpDataPedido.setValue(pedido.getDataPedido());
-        dpDataRetorno.setValue(pedido.getDataRetorno());         // Preenche data de retorno
-        cbTipoPagamento.setValue(pedido.getTipoPagamento());     // <<< PREENCHE TIPO DE PAGAMENTO
+        dpDataRetorno.setValue(pedido.getDataRetorno());
+        cbTipoPagamento.setValue(pedido.getTipoPagamento()); // <<< PREENCHE TIPO DE PAGAMENTO
         txtObservacoes.setText(pedido.getObservacoes());
 
         // --- Preenche a tabela de itens ---
-        itensPedido.clear(); // Limpa itens possivelmente existentes de uma operação anterior
+        itensPedido.clear();
         if (pedido.getItens() != null && !pedido.getItens().isEmpty()) {
-            // Adiciona todos os itens do pedido à lista observável.
-            // IMPORTANTE: Garanta que os objetos 'Item' dentro de 'ItemPedido'
+            // IMPORTANTE: Garanta que os objetos Item dentro de ItemPedido
             // contenham a 'quantidadeAtual' CORRETA do estoque no momento do carregamento.
-            // O PedidoDAOImpl e ItemPedidoDAOImpl devem garantir isso ao buscar o pedido.
             itensPedido.addAll(pedido.getItens());
         } else {
-            // Log ou aviso se a lista de itens do pedido estiver vazia ou nula.
-            System.out.println("Info: Pedido ID " + pedido.getId() + " carregado para edição sem itens ou com lista de itens nula.");
+            System.out.println("Info: Pedido ID " + pedido.getId() + " carregado para edição sem itens.");
         }
 
-        // Atualiza os labels de totais com base nos itens carregados
         atualizarTotais();
 
-        // (Opcional) Mudar o texto do botão salvar para "Atualizar Pedido"
-        btnSalvar.setText("Atualizar Pedido");
+        btnSalvar.setText("Atualizar Pedido"); // Muda o texto do botão para indicar edição
     }
-
-    // Poderiam existir outros métodos conforme a necessidade,
-    // como validações específicas, formatações, etc.
 
 }
